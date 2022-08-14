@@ -1,0 +1,67 @@
+---
+title: "`r report_name`"
+output: 
+  html_document:
+    css: ["css/details_summary.css", "css/style.css"]
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, results='asis'}
+
+# header block
+
+```
+
+**Notes:**  
+A key explaining how to read the icons for Variation, Assurance, and Data Quality is at the [bottom of this document.](#icon-key)
+
+```{r echo=FALSE, fig.height=4, fig.width=7, message=FALSE, results='asis'}
+
+# main report render
+
+```
+
+---
+
+<details>
+  <summary>
+    <h4 class = "outer_flex" id="icon-key" style = "justify-content: flex-start">
+    How to read the icons used in this document
+    </h4>
+  </summary>
+  <div class = "details_content">
+
+**SPC Variation Icons**
+
+Used to summarise the type of variation seen in the most recent data point of a given measure.  
+
+Icons | Variation Type | 
+:----:|:---------------|
+<img src = "../img/variation_icons/SC_HI_CON.png" class = "icon"> <img src = "../img/variation_icons/SC_LO_CON.png" class = "icon"> | The most recent data point exhibits special cause variation (in a concerning direction).  H is high, L is Low.  
+<img src = "../img/variation_icons/SC_HI_IMP.png" class = "icon"> <img src = "../img/variation_icons/SC_LO_IMP.png" class = "icon"> | The most recent data point exhibits special cause variation (in an improving direction).  H is high, L is Low.  
+<img src = "../img/variation_icons/SC_HI_NEUTRAL.png" class = "icon"> <img src = "../img/variation_icons/SC_LO_NEUTRAL.png" class = "icon"> | The most recent data point exhibits special cause variation, but neither direction represents concern or improvement (ie. the measure is neutral).  H is high, L is low.  
+<img src = "../img/variation_icons/CC.png" class = "icon"> | The most recent data point exhibits common cause variation (ie. naturally-occurring variation, that is not statistically significant).  
+ 
+ ---
+
+**SPC Assurance Icons**
+
+Used to summarise whether a measure is assured to meet a target.  
+
+Icons | Assurance Type
+:----:|:---------------
+<img src = "../img/assurance_icons/PASSTARG.png" class = "icon"> | The process is assured, and is likely to consistently pass the target set.  
+<img src = "../img/assurance_icons/RNDTARG.png" class = "icon"> | The process is not assured, and will pass and fail the target based on variation in the process.
+<img src = "../img/assurance_icons/FAILTARG.png" class = "icon"> | The process is not assured, and is likely to consistently fail to meet the target set.  
+
+  </div>
+</details>
+
+---
+Report owner:  
+Data owners:  
+Report reference:  

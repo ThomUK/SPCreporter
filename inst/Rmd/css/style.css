@@ -1,0 +1,69 @@
+.outer_flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inner_flex {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.px-10{
+  padding: 0 10px 0 10px;
+}
+
+.measure_title {
+  flex-grow: 1;
+  padding: 0 0.5rem 0 0.5rem;
+  width: 30%;
+}
+
+.spc_logo {
+  width: 50px;
+  height: 50px;
+  margin: 0 0.5rem 0 0.5rem;
+  overflow-wrap: break-word;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* htmltools insists on wrapping with p tag.  this removes margin */
+  .spc_logo p {
+    margin: 0;
+  }
+
+.spc_logo img {
+  border-radius: 5px;
+}
+
+.mini_card {
+  width: 50px;
+  margin: 0 0.5rem 0 0.5rem;
+}
+
+.wide_card {
+  width: 100px;
+  margin: 0 0.5rem 0 0.5rem;
+}
+
+.mini_card_key {
+  text-align: center;
+}
+
+.mini_card_value {
+  width: 100%;
+  text-align: center;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.table {
+  max-width: 500px;
+}
+.icon {
+  width: 45px;
+}
