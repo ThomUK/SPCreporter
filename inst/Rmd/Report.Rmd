@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r echo=FALSE, results='asis'}
 
-# header block
+# title block
 
 ```
 
@@ -22,6 +22,9 @@ A key explaining how to read the icons for Variation, Assurance, and Data Qualit
 ```{r echo=FALSE, fig.height=4, fig.width=7, message=FALSE, results='asis'}
 
 # main report render
+
+# add the header bar
+spcr_add_header_bar()
 
 ```
 

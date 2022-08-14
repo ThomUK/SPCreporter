@@ -7,6 +7,9 @@
 #'
 spcr_make_report <- function(report_title = "SPC Report", output_directory = "/"){
 
+  # add the header bar
+  spcr_add_header_bar()
+
   # create the output file name from the report title and a timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
   output_file_name = paste0(
