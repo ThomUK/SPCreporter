@@ -1,12 +1,17 @@
 Package: SPCreporter
-Title: What the Package Does (One Line, Title Case)
+Title: Creates Metric Reports using Statistical Process Control in the NHS style
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Tom", "Smith", , "tomsmith_uk@hotmail.com", role = c("aut", "cre"))
+Description: Takes a dataset file and a configuration file to produce an html
+    report with each metric presented as an SPC chart.  The initial rendering of
+    the report contains the charts folded to enable quick scanning of
+    "variation" and "assurance" status.  Each metric can be unfolded to reveal
+    the SPC chart to support clinical and management planning. 
+    The NHSRplothtedots package is used for SPC calcuations, and the "variation"
+    and "assurance" is in line with the popular standard withing the UK's
+    National Health Service (NHS).
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
