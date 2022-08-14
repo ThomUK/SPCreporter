@@ -5,7 +5,7 @@
 #' @param highlight_colour String. The Hex colour of the background
 #' @param class String. The html class name
 #'
-#' @return
+#' @return String. HTML string of the mini-card component
 #' @noRd
 #'
 spcr_mini_card <- function(key, value, highlight_colour = "#FFFFFF", class = NULL){
