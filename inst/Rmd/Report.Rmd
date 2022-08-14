@@ -1,5 +1,5 @@
 ---
-title: "`r report_name`"
+title: "`r report_title`"
 output: 
   html_document:
     css: ["css/details_summary.css", "css/style.css"]
