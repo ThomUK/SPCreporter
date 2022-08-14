@@ -9,7 +9,7 @@ Description: Takes a dataset file and a configuration file to produce an html
     "variation" and "assurance" status.  Each metric can be unfolded to reveal
     the SPC chart to support clinical and management planning. 
     The NHSRplothtedots package is used for SPC calcuations, and the "variation"
-    and "assurance" is in line with the popular standard withing the UK's
+    and "assurance" is in line with the popular standard within the UK's
     National Health Service (NHS).
 License: MIT + file LICENSE
 Encoding: UTF-8
