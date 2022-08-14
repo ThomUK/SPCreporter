@@ -1,5 +1,7 @@
 #' Add the header bar to the report
 #'
+#' @noRd
+#'
 spcr_add_header_bar <- function(){
 
   # a function to create a mini-card HTML layout

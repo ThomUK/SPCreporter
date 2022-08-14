@@ -9,9 +9,9 @@ spcr_check_measure_data <- function(.data) {
 
   # pivot incoming measure_data from wide to long
   long_data <- .data %>% tidyr::pivot_longer(
-    -c(ref, measure_name, comment), names_to = "date", values_to = "value") %>%
-    dplyr::select(ref, measure_name, date, value) %>%
-    dplyr::filter(!is.na(value))
+    -c(.data$ref, .data$measure_name, .data$comment), names_to = "date", values_to = "value") %>%
+    dplyr::select(.data$ref, .data$measure_name, .data$date, .data$value) %>%
+    dplyr::filter(!is.na(.data$value))
 
   # handle varying date column heading formats
   suppressWarnings(
