@@ -15,7 +15,6 @@ spcr_check_config_data <- function(.data) {
   mandatory_columns <- c(
     "ref",
     "measure_name",
-    "domain",
     "data_source",
     "data_owner",
     "lead_person",

@@ -1,22 +1,24 @@
 #' Make a bundle of data including all SPC calcs
 #'
+#' @param report_config Dataframe.  Config information for the report
 #' @param measure_data Dataframe.  Data for the measures
 #' @param measure_config Dataframe.  Config information for the measures
 #'
 #' @return Dataframe.  A nested dataframe containing calculated charts and parsed text
 #' @export
 #'
-spcr_make_data_bundle <- function(measure_data, measure_config) {
+spcr_make_data_bundle <- function(report_config, measure_data, measure_config) {
+
+  #TODO add function to check report_config
 
   # check measure_data
   measure_data <- spcr_check_measure_data(measure_data)
-  #return(measure_data)
 
   # check measure_config
   measure_config <- spcr_check_config_data(measure_config)
 
   # make a vector of the ref numbers to create charts for
-  refs <- measure_data %>%
+  refs <- report_config %>%
     dplyr::pull(ref) %>% unique()
 
   # check reference numbers and measure names agree across both data frames
@@ -25,11 +27,12 @@ spcr_make_data_bundle <- function(measure_data, measure_config) {
   purrr::walk(refs, spcr_check_measure_titles, measure_data = measure_data, measure_config = measure_config)
 
   # create and name cols for the results dataframe
-  result_df = as.data.frame(matrix(ncol=22, nrow = length(refs)))
+  result_df = as.data.frame(matrix(ncol=23, nrow = length(refs)))
   names(result_df) = c(
     "Ref",
     "Measure_Name",
     "Domain",
+    "Aggregation",
     "First_Date",
     "Last_Date",
     "Data_Source",
@@ -58,11 +61,13 @@ spcr_make_data_bundle <- function(measure_data, measure_config) {
 
     # subset down to the measure of interest
     subset_config <- measure_config[measure_config$ref == ref,]
+    subset_report_config <- report_config[measure_config$ref == ref,]
     subset_measure_data <- measure_data[measure_data$ref == ref,]
 
     # separate out the information required
     measure_name <- subset_config$measure_name
-    domain <- subset_config$domain
+    domain <- subset_report_config$domain
+    aggregation <- subset_report_config$aggregation
     data_source <- subset_config$data_source
     data_owner <- subset_config$data_owner
     lead_person <- subset_config$lead_person
@@ -122,6 +127,7 @@ spcr_make_data_bundle <- function(measure_data, measure_config) {
         as.character(ref),
         measure_name,
         domain,
+        aggregation,
         first_date,
         last_date,
         data_source,
