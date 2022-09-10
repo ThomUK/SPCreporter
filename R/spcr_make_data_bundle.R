@@ -12,7 +12,8 @@ spcr_make_data_bundle <- function(report_config, measure_data, measure_config) {
   #TODO add function to check report_config
 
   # check measure_data
-  measure_data <- spcr_check_measure_data(measure_data)
+  measure_data <- spcr_check_measure_data(measure_data) %>%
+    purrr::map_df(spcr_lengthen_measure_data)
 
   # check measure_config
   measure_config <- spcr_check_config_data(measure_config)
