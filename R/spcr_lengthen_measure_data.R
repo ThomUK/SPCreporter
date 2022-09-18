@@ -1,11 +1,12 @@
 #' (internal function) Transform the data from wide to long format
 #'
 #' @param .data Dataframe.  Data in wide format.
+#' @param frequency String.  Typically "weekly" or "monthly"
 #'
 #' @return Dataframe in long format
 #' @noRd
 #'
-spcr_lengthen_measure_data <- function(.data){
+spcr_lengthen_measure_data <- function(.data, frequency){
 
   assertthat::assert_that(
     "data.frame" %in% class(.data),
@@ -15,7 +16,8 @@ spcr_lengthen_measure_data <- function(.data){
   # pivot incoming measure_data from wide to long
   long_data <- .data %>% tidyr::pivot_longer(
     -c(.data$ref, .data$measure_name, .data$comment), names_to = "date", values_to = "value") %>%
-    dplyr::select(.data$ref, .data$measure_name, .data$date, .data$value) %>%
+    dplyr::mutate(frequency = frequency) %>%
+    dplyr::select(-.data$comment) %>%
     dplyr::filter(!is.na(.data$value))
 
   # handle varying date column heading formats

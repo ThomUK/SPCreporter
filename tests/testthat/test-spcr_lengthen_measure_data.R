@@ -12,11 +12,12 @@ test_that("it has a happy path", {
     ref = c(1, 1),
     measure_name = c("a name", "a name"),
     date = as.Date(c("2022-01-01", "2022-02-01")),
-    value = c(10, 20)
+    value = c(10, 20),
+    frequency = "Monthly"
   )
 
   expect_equal(
-    spcr_lengthen_measure_data(data_in),
+    spcr_lengthen_measure_data(data_in, "Monthly"),
     expected_out
   )
 
