@@ -1,7 +1,7 @@
 #' Make a bundle of data including all SPC calcs
 #'
 #' @param report_config Dataframe.  Config information for the report
-#' @param measure_data Dataframe.  Data for the measures
+#' @param measure_data List.  List containing dataframes of data in wide format
 #' @param measure_config Dataframe.  Config information for the measures
 #'
 #' @return Dataframe.  A nested dataframe containing calculated charts and parsed text
@@ -28,7 +28,7 @@ spcr_make_data_bundle <- function(report_config, measure_data, measure_config) {
   purrr::walk(refs, spcr_check_measure_titles, measure_data = measure_data, measure_config = measure_config)
 
   # create and name cols for the results dataframe
-  result_df = as.data.frame(matrix(ncol=23, nrow = length(refs)))
+  result_df <- as.data.frame(matrix(ncol=23, nrow = length(refs)))
   names(result_df) = c(
     "Ref",
     "Measure_Name",
@@ -62,7 +62,7 @@ spcr_make_data_bundle <- function(report_config, measure_data, measure_config) {
 
     # subset down to the measure of interest
     subset_config <- measure_config[measure_config$ref == ref,]
-    subset_report_config <- report_config[measure_config$ref == ref,]
+    subset_report_config <- report_config[report_config$ref == ref,]
     subset_measure_data <- measure_data[measure_data$ref == ref,]
 
     # separate out the information required
