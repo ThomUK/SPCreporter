@@ -17,7 +17,7 @@ spcr_make_data_bundle <- function(report_config, measure_data, measure_config) {
     purrr::map2_df(.y = names(data), .f = spcr_lengthen_measure_data)
 
   # check measure_config
-  measure_config <- spcr_check_config_data(measure_config)
+  measure_config <- spcr_check_measure_config(measure_config)
 
   # make a vector of the ref numbers to create charts for
   refs <- report_config %>%

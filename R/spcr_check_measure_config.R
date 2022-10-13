@@ -1,15 +1,15 @@
-#' (internal function) Check the config data
+#' (internal function) Check the measure config info
 #'
-#' @param .data Dataframe of config data
+#' @param .data Dataframe of measure config
 #'
 #' @return dataframe after checking
 #' @noRd
 #'
-spcr_check_config_data <- function(.data) {
+spcr_check_measure_config <- function(.data) {
 
   assertthat::assert_that(
     inherits(.data, "data.frame"),
-    msg = "spcr_check_config_data: config_data must be a data.frame"
+    msg = "spcr_check_measure_config: config_data must be a data.frame"
   )
 
   mandatory_columns <- c(
@@ -30,7 +30,7 @@ spcr_check_config_data <- function(.data) {
 
   assertthat::assert_that(
     all(mandatory_columns %in% names(.data)),
-    msg = "spcr_check_config_data: config_data is missing a mandatory column.  Check the input spreadsheet."
+    msg = "spcr_check_measure_config: config_data is missing a mandatory column.  Check the input spreadsheet."
   )
 
   return(.data)
