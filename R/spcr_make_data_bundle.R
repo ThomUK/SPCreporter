@@ -26,7 +26,7 @@ spcr_make_data_bundle <- function(report_config, measure_data, measure_config) {
   # check reference numbers and measure names agree across both data frames
   # this is to guard against typos and errors in reported figures
   # by ensuring a typo in one place (ref or title) will create an error
-  purrr::walk(refs, spcr_check_measure_titles, measure_data = measure_data, measure_config = measure_config)
+  purrr::walk(refs, spcr_check_measure_names, measure_data = measure_data, measure_config = measure_config)
 
   # create and name cols for the results dataframe
   result_df <- as.data.frame(matrix(ncol=23, nrow = length(refs)))
