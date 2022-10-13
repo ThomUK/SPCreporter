@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # do all spc calculations and store the result in a dataframe
 # this data_bundle includes the ggplot chart objects, as well as various
 # columns to make report authoring easier
-data_bundle <- spcr_make_data_bundle(report_config, data_wide, metric_config)
+data_bundle <- spcr_make_data_bundle(data_wide, metric_config, report_config)
 
 ```
 
