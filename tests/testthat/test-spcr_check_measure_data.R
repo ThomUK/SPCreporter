@@ -10,14 +10,14 @@ test_that("it contains only allowed items", {
 
   expect_error(
     spcr_check_measure_data(list("Once in a blue moon" = 1)),
-    "spcr_check_measure_data: The list items must be from 'Weekly' or 'Monthly'."
+    "spcr_check_measure_data: The list items must be from 'week' or 'month'."
   )
 })
 
 test_that("it returns the item passed in", {
 
   expect_equal(
-    spcr_check_measure_data(list("Monthly" = 1)),
-    list("Monthly" = 1)
+    spcr_check_measure_data(list("month" = 1)),
+    list("month" = 1)
   )
 })
