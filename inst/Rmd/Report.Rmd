@@ -9,11 +9,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# do all spc calculations and store the result in a dataframe
-# this data_bundle includes the ggplot chart objects, as well as various
-# columns to make report authoring easier
-data_bundle <- spcr_make_data_bundle(data_wide, metric_config, report_config)
-
 ```
 
 ```{r echo=FALSE, results='asis'}
@@ -32,8 +27,8 @@ A key explaining how to read the icons for Variation, Assurance, and Data Qualit
 # add the header bar
 spcr_add_header_bar()
 
-# build the accordion for each metric
-walk(data_bundle$Ref, ~ spcr_render_accordion(data_bundle[., ]))
+# build the report accordions row by row
+purrr::pwalk(data_bundle, spcr_render_accordion)
 
 ```
 

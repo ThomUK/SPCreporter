@@ -31,7 +31,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   improvement_direction <- subset_config$improvement_direction
   target <- subset_config$target[1]
   target_text <- spcr_get_target_text(target, improvement_direction, unit)
-  target_set_by <- subset_config$target_set_by
+  target_set_by <- spcr_get_target_set_by(target, subset_config$target_set_by)
   data_quality <- subset_config$data_quality
   baseline_period <- subset_config$baseline_period
   rebase_dates <- subset_config$rebase_dates
