@@ -33,5 +33,8 @@ spcr_check_measure_config <- function(.data) {
     msg = "spcr_check_measure_config: config_data is missing a mandatory column.  Check the input spreadsheet."
   )
 
+  # convert refs to character vectors
+  .data$ref <- as.character(.data$ref)
+
   return(.data)
 }
