@@ -77,7 +77,7 @@ spcr_render_accordion <- function(.data){
         width = 900,
         height = 400
       ),
-      htmltools::p(if(nchar(.data$Rebase_Comment)) paste0("Rebase comments: ", .data$Rebase_Comment)),
+      htmltools::p(if(!is.na(.data$Rebase_Comment)) paste0("Rebase comments: ", .data$Rebase_Comment)),
       htmltools::div(paste0("Metric owner: ", .data$Lead_Person)),
       htmltools::div(paste0("Data owner: ", .data$Data_Owner))
     ),
