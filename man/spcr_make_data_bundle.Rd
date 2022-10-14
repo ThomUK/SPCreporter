@@ -4,17 +4,17 @@
 \alias{spcr_make_data_bundle}
 \title{Make a bundle of data including all SPC calcs}
 \usage{
-spcr_make_data_bundle(report_config, measure_data, measure_config)
+spcr_make_data_bundle(measure_data, measure_config, report_config)
 }
 \arguments{
-\item{report_config}{Dataframe.  Config information for the report}
+\item{measure_data}{list. List containing dataframes of data in wide format}
 
-\item{measure_data}{Dataframe.  Data for the measures}
+\item{measure_config}{dataframe. Config information for the measures}
 
-\item{measure_config}{Dataframe.  Config information for the measures}
+\item{report_config}{dataframe. Config information for the report}
 }
 \value{
-Dataframe.  A nested dataframe containing calculated charts and parsed text
+dataframe. A nested dataframe containing calculated charts and parsed text
 }
 \description{
 Make a bundle of data including all SPC calcs

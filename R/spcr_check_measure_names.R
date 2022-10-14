@@ -1,4 +1,4 @@
-#' (internal function) Check measure titles to avoid mismatches
+#' (internal function) Check measure names to avoid mismatches
 #' Returns errors messages in cases of mismatch
 #'
 #' @param ref A single reference number to check
@@ -8,7 +8,7 @@
 #' @return NULL
 #' @noRd
 #'
-spcr_check_measure_titles <- function(ref, measure_data, measure_config)
+spcr_check_measure_names <- function(ref, measure_data, measure_config)
 {
 
   # check that the config table includes this ref number
