@@ -1,15 +1,15 @@
-#' (internal function) Get the character representation of the target
+#' Get the character representation of the target
 #'
-#' @param target The target (probably a numeric)
-#' @param improvement_direction One of "increase", "decrease", or "neutral"
-#' @param unit One of "integer", "decimal", or "%"
+#' @param target string/numeric. The target (probably a numeric)
+#' @param improvement_direction string. One of "increase", "decrease", or "neutral"
+#' @param unit string. One of "integer", "decimal", or "%"
 #'
 #' @return A character string suitable for inclusion in the report
 #' @noRd
 #'
 spcr_get_target_text <- function(target, improvement_direction, unit) {
 
-  if(is.na(target)) return("No target set")
+  if(is.na(target)) return("-")
   if(tolower(improvement_direction) == "neutral") return("Neutral")
 
   if(unit == "%") target <- round(target * 100, 1)
