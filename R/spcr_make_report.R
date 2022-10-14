@@ -1,11 +1,12 @@
 #' Make Report
 #'
+#' @param data_bundle list. The pre-processed bundle of information (made with spcr_make_data_bundle())
 #' @param report_title String. The title of the report
 #' @param output_directory String. The name of the directory to save the resulting report to
 #'
 #' @export
 #'
-spcr_make_report <- function(report_title = "SPC Report", output_directory = "/"){
+spcr_make_report <- function(data_bundle, report_title = "SPC Report", output_directory = "/"){
 
   # add the header bar
   spcr_add_header_bar()
