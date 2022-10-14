@@ -27,8 +27,8 @@ A key explaining how to read the icons for Variation, Assurance, and Data Qualit
 # add the header bar
 spcr_add_header_bar()
 
-# build the accordion for each metric
-purrr::walk(data_bundle$Ref, ~ spcr_render_accordion(data_bundle[data_bundle$Ref == ., ]))
+# build the report accordions row by row
+purrr::pwalk(data_bundle, spcr_render_accordion)
 
 ```
 
