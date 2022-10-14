@@ -4,9 +4,15 @@
 \alias{spcr_make_report}
 \title{Make Report}
 \usage{
-spcr_make_report(report_title = "SPC Report", output_directory = "/")
+spcr_make_report(
+  data_bundle,
+  report_title = "SPC Report",
+  output_directory = "/"
+)
 }
 \arguments{
+\item{data_bundle}{list. The pre-processed bundle of information (made with spcr_make_data_bundle())}
+
 \item{report_title}{String. The title of the report}
 
 \item{output_directory}{String. The name of the directory to save the resulting report to}
