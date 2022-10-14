@@ -9,7 +9,8 @@
 #'
 spcr_make_data_bundle <- function(measure_data, measure_config, report_config) {
 
-  #TODO add function to check report_config
+  # check report_config
+  report_config <- spcr_check_report_config(report_config)
 
   # check measure_data, and lengthen the different aggregation levels into a single long dataframe
   # adding the frequency in as a column
