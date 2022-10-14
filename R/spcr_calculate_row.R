@@ -1,3 +1,18 @@
+#' Calculate and format all the information which is later required for
+#' the report, including the spc calcs, and the resulting ggplot. This function
+#' also handles rounding, capitalisation, and the addition of percentage
+#' symbols where appropriate.
+#'
+#' @param ref character. The reference number for the measure.
+#' @param aggregation character. The aggregation level required in the report.
+#' @param measure_data dataframe. The data to be reported.
+#' @param measure_config dataframe. The config information for each measure.
+#' @param report_config dataframe. The config for the report, including domain.
+#'
+#' @return dataframe. A single row dataframe with chart and spc nested within.
+#'
+#' @noRd
+#'
 spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, report_config){
 
   # subset down to the measure of interest
