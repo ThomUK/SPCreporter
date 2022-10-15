@@ -26,7 +26,7 @@ test_that("it has a happy path", {
 test_that("it only accepts a dataframe", {
 
   expect_error(
-    spcr_lengthen_measure_data("not a dataframe"),
+    spcr_lengthen_measure_data("not a dataframe", "week"),
     "spcr_lengthen_measure_data: The data must be a dataframe."
   )
 

@@ -1,7 +1,7 @@
-#' (internal function) Transform the data from wide to long format
+#' Transform the data from wide to long format
 #'
-#' @param .data Dataframe.  Data in wide format.
-#' @param frequency String.  Typically "weekly" or "monthly"
+#' @param .data dataframe.  Data in wide format.
+#' @param frequency dtring.  Typically "weekly" or "monthly"
 #'
 #' @return Dataframe in long format
 #' @noRd
@@ -9,7 +9,7 @@
 spcr_lengthen_measure_data <- function(.data, frequency){
 
   assertthat::assert_that(
-    "data.frame" %in% class(.data),
+    inherits(.data, "data.frame"),
     msg = "spcr_lengthen_measure_data: The data must be a dataframe."
   )
 
