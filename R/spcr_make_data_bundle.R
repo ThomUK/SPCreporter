@@ -15,7 +15,7 @@ spcr_make_data_bundle <- function(measure_data, measure_config, report_config) {
   # check measure_data, and lengthen the different aggregation levels into a single long dataframe
   # adding the frequency in as a column
   measure_data <- spcr_check_measure_data(measure_data) %>%
-    purrr::map2_df(.y = names(data), .f = spcr_lengthen_measure_data)
+    purrr::map2_df(.y = names(measure_data), .f = spcr_lengthen_measure_data)
 
   # check measure_config
   measure_config <- spcr_check_measure_config(measure_config)
