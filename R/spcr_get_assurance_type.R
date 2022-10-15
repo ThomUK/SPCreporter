@@ -24,4 +24,5 @@ spcr_get_assurance_type <- function(spc, improvement_direction) {
   if(target <= lpl && tolower(improvement_direction) == "decrease" ) return("FAIL_TARG")
   if(target >= upl && tolower(improvement_direction) == "increase" ) return("FAIL_TARG")
 
+  stop("spcr_get_assurance_type: Unable to determine SPC assurance type.")
 }
