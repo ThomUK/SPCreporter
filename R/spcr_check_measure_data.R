@@ -1,6 +1,6 @@
-#' (internal function) Check the measure data
+#' Check the measure data
 #'
-#' @param .data List. List containing dataframes of data in wide format.
+#' @param .data list. List containing dataframes of data in wide format.
 #'
 #' @return List
 #' @noRd

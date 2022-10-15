@@ -14,14 +14,6 @@ test_that("it contains only allowed items", {
   )
 })
 
-test_that("it returns the item passed in", {
-
-  expect_equal(
-    spcr_check_measure_data(list("month" = 1)),
-    list("month" = 1)
-  )
-})
-
 measure_data <- list(
   week = tibble::tibble(
     ref = c("1", "2", "3"),
