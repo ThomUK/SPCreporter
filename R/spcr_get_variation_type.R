@@ -1,9 +1,9 @@
 #' Find the name of the variation type
 #'
-#' @param spc A dataframe as returned from the NHSRplothedots SPC package
-#' @param improvement_direction A character string of "Increase", "Decrease", or "Neutral"
+#' @param spc dataframe. As returned from the {NHSRplothedots} SPC package
+#' @param improvement_direction string. "Increase", "Decrease", or "Neutral"
 #'
-#' @return String name of the variation type
+#' @return string. Name of the variation type
 #' @noRd
 #'
 spcr_get_variation_type <- function(spc, improvement_direction) {
