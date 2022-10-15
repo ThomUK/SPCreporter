@@ -17,13 +17,12 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
 
   # subset down to the measure of interest
   subset_config <- measure_config[measure_config$ref == ref,]
-  subset_report_config <- report_config[report_config$ref == ref,]
+  subset_report_config <- report_config[report_config$ref == ref & report_config$aggregation == aggregation,]
   subset_measure_data <- measure_data[measure_data$ref == ref & measure_data$frequency == aggregation,]
 
   # separate out the information required
   measure_name <- subset_config$measure_name
   domain <- subset_report_config$domain
-  aggregation <- subset_report_config$aggregation
   data_source <- subset_config$data_source
   data_owner <- subset_config$data_owner
   lead_person <- subset_config$lead_person

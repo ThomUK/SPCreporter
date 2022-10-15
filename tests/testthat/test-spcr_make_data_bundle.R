@@ -59,12 +59,18 @@ report_config <- tibble::tibble(
   aggregation = c("week", "week", "week", "month", "month", "month")
 )
 
-# test_that("it returns a dataframe of the expected size", {
-#
-#   r <- spcr_make_data_bundle(measure_data, measure_config, report_config)
-#
-#   expect_equal(
-#     TBC,
-#     TBC
-#   )
-# })
+test_that("it returns a dataframe of the expected size", {
+
+  r <- spcr_make_data_bundle(measure_data, measure_config, report_config)
+
+  expect_equal(
+    nrow(r),
+    6
+  )
+
+  expect_equal(
+    ncol(r),
+    23
+  )
+
+})
