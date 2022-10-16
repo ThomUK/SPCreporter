@@ -39,6 +39,11 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   last_date <- subset_measure_data$date %>% max()
   last_data_point <- subset_measure_data$value %>% utils::tail(n = 1)
 
+  # throw a warning if the unit is "integer", but the data contains decimals
+  if(unit == "Integer" & any(subset_measure_data$value%%1 != 0)){
+    warning("spcr_calculate_row: Measure ", ref, " is configured as an integer, but has been supplied with decimal data.")
+  }
+
   # friendly formatting for percentages
   if(unit == "%"){
     last_data_point <- paste0(round(last_data_point * 100, 1), "%")
