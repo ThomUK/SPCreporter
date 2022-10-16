@@ -7,7 +7,7 @@ test_that("it returns dash when no target is set", {
 
 })
 
-test_that("it returns Neutral when imporvement dirn is neutral", {
+test_that("it returns Neutral when improvement dirn is neutral", {
 
   expect_equal(
     spcr_get_target_text(100, "neutral", "decimal"),
@@ -50,6 +50,22 @@ test_that("it rounds and appends % to percentages", {
   expect_equal(
     spcr_get_target_text(0.9566, "increase", "%"),
     "\u2265 95.7%"
+  )
+
+})
+
+test_that("it rounds decimals", {
+
+  # <= symbol
+  expect_equal(
+    spcr_get_target_text(0.9544444, "decrease", "decimal"),
+    "\u2264 0.95"
+  )
+
+  # >= symbol
+  expect_equal(
+    spcr_get_target_text(0.9566, "increase", "decimal"),
+    "\u2265 0.96"
   )
 
 })

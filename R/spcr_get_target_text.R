@@ -14,8 +14,8 @@ spcr_get_target_text <- function(target, improvement_direction, unit) {
 
   if(unit == "%") target <- round(target * 100, 1)
 
-  if(tolower(improvement_direction) == "increase") string <- paste0("\u2265 ", target) # \u2265 is: ≥
-  if(tolower(improvement_direction) == "decrease") string <- paste0("\u2264 ", target) # \u2264 is: ≤
+  if(tolower(improvement_direction) == "increase") string <- paste0("\u2265 ", round(target, 2)) # \u2265 is: ≥
+  if(tolower(improvement_direction) == "decrease") string <- paste0("\u2264 ", round(target, 2)) # \u2264 is: ≤
 
   if(unit == "%") string <- paste0(string, "%")
 
