@@ -2,21 +2,39 @@
 % Please edit documentation in R/spcr_make_report.R
 \name{spcr_make_report}
 \alias{spcr_make_report}
-\title{Make Report}
+\title{Make the SPC Report}
 \usage{
 spcr_make_report(
   data_bundle,
-  report_title = "SPC Report",
+  title = "SPC Report",
+  data_cutoff_dttm,
+  subtitle = NULL,
+  intro = NULL,
+  logo_path = NULL,
+  department = NULL,
+  department_text_colour = "black",
   output_directory = "/"
 )
 }
 \arguments{
 \item{data_bundle}{list. The pre-processed bundle of information (made with spcr_make_data_bundle())}
 
-\item{report_title}{String. The title of the report}
+\item{title}{string. The report title, printed at the top of the report}
 
-\item{output_directory}{String. The name of the directory to save the resulting report to}
+\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
+
+\item{subtitle}{string. The report subtitle, printed at the top of the report}
+
+\item{intro}{string. Intro text printed at the head of the report}
+
+\item{logo_path}{string. Filepath of the logo to be used on the report}
+
+\item{department}{string. A text suffix positioned underneath the logo, for eg. department name}
+
+\item{department_text_colour}{string. The colour of the department text}
+
+\item{output_directory}{string. The name of the directory to save the resulting report to}
 }
 \description{
-Make Report
+Make the SPC Report
 }
