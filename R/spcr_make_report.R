@@ -1,12 +1,20 @@
 #' Make Report
 #'
 #' @param data_bundle list. The pre-processed bundle of information (made with spcr_make_data_bundle())
-#' @param report_title String. The title of the report
-#' @param output_directory String. The name of the directory to save the resulting report to
+#' @param title string. The report title, printed at the top of the report
+#' @param subtitle string. The report subtitle, printed at the top of the report
+#' @param intro string. Intro text printed at the head of the report
+#' @param output_directory string. The name of the directory to save the resulting report to
 #'
 #' @export
 #'
-spcr_make_report <- function(data_bundle, report_title = "SPC Report", output_directory = "/"){
+spcr_make_report <- function(
+    data_bundle,
+    title = "SPC Report",
+    subtitle = NULL,
+    intro = NULL,
+    output_directory = "/"
+  ){
 
   # add the header bar
   spcr_add_header_bar()
@@ -14,7 +22,7 @@ spcr_make_report <- function(data_bundle, report_title = "SPC Report", output_di
   # create the output file name from the report title and a timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
   output_file_name = paste0(
-    sub(" ", "_", report_title), # replace spaces with underscores
+    sub(" ", "_", title), # replace spaces with underscores
     "_",
     time_stamp,
     ".html"

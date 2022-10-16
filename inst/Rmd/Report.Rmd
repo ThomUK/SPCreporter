@@ -1,5 +1,6 @@
 ---
-title: "`r report_title`"
+title: "`r title`"
+subtitle: "`r subtitle`"
 output: 
   html_document:
     css: ["css/details_summary.css", "css/style.css"]
@@ -16,6 +17,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # title block
 
 ```
+
+`r intro`
 
 **Notes:**  
 A key explaining how to read the icons for Variation, Assurance, and Data Quality is at the [bottom of this document.](#icon-key)
