@@ -8,6 +8,7 @@
 #' @param logo_path string. Filepath of the logo to be used on the report
 #' @param department string. A text suffix positioned underneath the logo, for eg. department name
 #' @param output_directory string. The name of the directory to save the resulting report to
+#' @param department_text_colour string. The colour of the department text
 #'
 #' @export
 #'
@@ -19,6 +20,7 @@ spcr_make_report <- function(
     intro = NULL,
     logo_path = NULL,
     department = NULL,
+    department_text_colour = "black",
     output_directory = "/"
   ){
 

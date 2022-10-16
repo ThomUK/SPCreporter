@@ -17,7 +17,8 @@ spcr_make_report_title_block(
   data_cutoff_dttm = data_cutoff_dttm,
   subtitle = subtitle,
   logo_path = logo_path,
-  department = department
+  department = department,
+  department_text_colour = department_text_colour
 )
 
 ```

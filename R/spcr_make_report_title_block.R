@@ -5,16 +5,18 @@
 #' @param subtitle string. The subtitle for the report
 #' @param logo_path string. Filepath of the logo to be used on the report
 #' @param department string. A text suffix positioned underneath the logo, for eg. department name
+#' @param department_text_colour string. The colour of the department text
 #'
 #' @return string. An HTML string for inclusion in the Rmd report
 #' @noRd
 #'
 spcr_make_report_title_block <- function(
-  title, 
-  data_cutoff_dttm, 
-  subtitle = NULL, 
-  logo_path = NULL, 
-  department = NULL
+  title,
+  data_cutoff_dttm,
+  subtitle = NULL,
+  logo_path = NULL,
+  department = NULL,
+  department_text_colour = "black"
 ){
 
 assertthat::assert_that(
@@ -58,7 +60,7 @@ assertthat::assert_that(
       )
     ),
     htmltools::div( # right-hand header (logo)
-      style = "width: 30%; display: flex; flex-direction: column; justify-content: flex-start; color: mediumorchid; font-weight: bold;",
+      style = paste0("width: 30%; display: flex; flex-direction: column; justify-content: flex-start; color: ", department_text_colour, "; font-weight: bold;"),
       htmltools::img(
         src = logo,
         alt = "Logo"
