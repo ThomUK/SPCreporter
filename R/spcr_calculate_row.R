@@ -26,7 +26,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   data_source <- subset_config$data_source
   data_owner <- subset_config$data_owner
   lead_person <- subset_config$lead_person
-  unit <- subset_config$unit
+  unit <- tolower(subset_config$unit)
   improvement_direction <- subset_config$improvement_direction
   target <- subset_config$target[1]
   target_text <- spcr_get_target_text(target, improvement_direction, unit)
@@ -40,14 +40,14 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   last_data_point <- subset_measure_data$value %>% utils::tail(n = 1)
 
   # throw a warning if the unit is "integer", but the data contains decimals
-  if(unit == "Integer" & any(subset_measure_data$value%%1 != 0)){
+  if(unit == "integer" & any(subset_measure_data$value%%1 != 0)){
     warning("spcr_calculate_row: Measure ", ref, " is configured as an integer, but has been supplied with decimal data.")
   }
 
   # friendly formatting for percentages
   if(unit == "%"){
     last_data_point <- paste0(round(last_data_point * 100, 1), "%")
-  } else if(unit == "Decimal"){
+  } else if(unit == "decimal"){
     last_data_point <- as.character(round(last_data_point, 2))
   } else {
     last_data_point <- as.character(last_data_point)
