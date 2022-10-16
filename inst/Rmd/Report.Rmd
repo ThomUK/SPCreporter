@@ -1,6 +1,4 @@
 ---
-title: "`r title`"
-subtitle: "`r subtitle`"
 output: 
   html_document:
     css: ["css/details_summary.css", "css/style.css"]
@@ -14,7 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r echo=FALSE, results='asis'}
 
-# title block
+spcr_make_report_title_block(
+  title = title,
+  data_cutoff_dttm = data_cutoff_dttm,
+  subtitle = subtitle,
+  logo_path = logo_path,
+  department = department
+)
 
 ```
 

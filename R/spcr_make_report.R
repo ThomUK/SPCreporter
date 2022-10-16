@@ -1,9 +1,12 @@
-#' Make Report
+#' Make the SPC Report
 #'
 #' @param data_bundle list. The pre-processed bundle of information (made with spcr_make_data_bundle())
 #' @param title string. The report title, printed at the top of the report
 #' @param subtitle string. The report subtitle, printed at the top of the report
+#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param intro string. Intro text printed at the head of the report
+#' @param logo_path string. Filepath of the logo to be used on the report
+#' @param department string. A text suffix positioned underneath the logo, for eg. department name
 #' @param output_directory string. The name of the directory to save the resulting report to
 #'
 #' @export
@@ -11,8 +14,11 @@
 spcr_make_report <- function(
     data_bundle,
     title = "SPC Report",
+    data_cutoff_dttm,
     subtitle = NULL,
     intro = NULL,
+    logo_path = NULL,
+    department = NULL,
     output_directory = "/"
   ){
 
