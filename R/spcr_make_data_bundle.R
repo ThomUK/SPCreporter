@@ -22,7 +22,7 @@ spcr_make_data_bundle <- function(measure_data, measure_config, report_config) {
 
   # make a vector of the ref numbers to create charts for
   refs <- report_config %>%
-    dplyr::pull(ref) %>% unique()
+    dplyr::pull("ref") %>% unique()
 
   # check reference numbers and measure names agree across both data frames
   # this is to guard against typos and errors in reported figures
