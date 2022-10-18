@@ -4,7 +4,7 @@ output:
     css: ["css/details_summary.css", "css/style.css"]
     theme: cosmo
 ---
-
+<body style="background-color:`r paper_colour`;">
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -34,7 +34,11 @@ A key explaining how to read the icons for Variation, Assurance, and Data Qualit
 spcr_add_header_bar()
 
 # build the report accordions row by row
-purrr::pwalk(data_bundle, spcr_render_accordion)
+purrr::pwalk(
+  data_bundle, 
+  spcr_render_accordion, 
+  accordion_colour = accordion_colour
+)
 
 ```
 

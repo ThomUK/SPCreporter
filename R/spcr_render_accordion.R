@@ -1,4 +1,4 @@
-#' (internal function) Render an accordion unit
+#' Render an accordion unit
 #'
 #' @param Ref string/numeric. The measure reference
 #' @param Measure_Name string. The measure name
@@ -23,6 +23,7 @@
 #' @param Last_Data_Point string. The most recent data point
 #' @param Variation_Type string. The variation logo name
 #' @param Assurance_Type string. The assurance logo name
+#' @param accordion_colour string. A valid HTML Hex Colour Code
 #'
 #' @return string. HTML string for inclusion in the markdown report
 #' @noRd
@@ -50,10 +51,10 @@ spcr_render_accordion <- function(
   Chart,
   Last_Data_Point,
   Variation_Type,
-  Assurance_Type
+  Assurance_Type,
+  accordion_colour
   ){
 
-  background_colour <- "#CCF2FF" # pale blue
   highlight_colour <- "#FFFFFF" #TODO white for up to date, yellow for delayed updates
 
   message("Knitting measure: ", Ref, " - ", Measure_Name)
@@ -97,7 +98,7 @@ spcr_render_accordion <- function(
   accordion <- htmltools::tags$details(
     htmltools::tags$summary(
       style = glue::glue(
-        'background-color: {background_colour}; ',
+        'background-color: {accordion_colour}; ',
       ),
       htmltools::div(
         class = "outer_flex",
