@@ -27,6 +27,8 @@ spcr_make_report <- function(
     intro = NULL,
     author_name,
     author_email,
+    paper_colour = "#FFFFFF", # white
+    accordion_colour = "#CCF2FF", # pale blue
     output_directory = "/"
   ){
 
