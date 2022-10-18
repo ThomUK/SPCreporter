@@ -28,6 +28,7 @@ Imports:
     magrittr,
     NHSRplotthedots,
     purrr,
+    rlang,
     rmarkdown,
     tidyr,
     utils
