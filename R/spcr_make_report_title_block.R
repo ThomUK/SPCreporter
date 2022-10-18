@@ -1,6 +1,7 @@
 #' Make report title block
 #'
 #' @param title string. The title for the report
+#' @param report_ref string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)
 #' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param subtitle string. The subtitle for the report
 #' @param logo_path string. Filepath of the logo to be used on the report
@@ -12,6 +13,7 @@
 #'
 spcr_make_report_title_block <- function(
   title,
+  report_ref,
   data_cutoff_dttm,
   subtitle = NULL,
   logo_path = NULL,
@@ -49,6 +51,10 @@ assertthat::assert_that(
       htmltools::h2(
         style = "margin: 1rem 0 0 0",
         subtitle
+      ),
+      htmltools::h4(
+        style = "margin: 1rem 0 0 0",
+        paste0("Report reference: ", report_ref) # report reference
       ),
       htmltools::h4(
         style = "margin: 1rem 0 0 0",
