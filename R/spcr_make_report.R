@@ -12,6 +12,8 @@
 #' @param author_name string. The author's name
 #' @param author_email string. The author's contact email address
 #' @param output_directory string. The name of the directory to save the resulting report to
+#' @param paper_colour string. Customise the background colour using a valid HTML Hex Colour Code
+#' @param accordion_colour string. Customise the accordion colour using a valid HTML Hex Colour Code
 #'
 #' @export
 #'

@@ -44,6 +44,10 @@ spcr_make_report(
 
 \item{author_email}{string. The author's contact email address}
 
+\item{paper_colour}{string. Customise the background colour using a valid HTML Hex Colour Code}
+
+\item{accordion_colour}{string. Customise the accordion colour using a valid HTML Hex Colour Code}
+
 \item{output_directory}{string. The name of the directory to save the resulting report to}
 }
 \description{
