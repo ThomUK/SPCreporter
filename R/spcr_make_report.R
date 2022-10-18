@@ -3,26 +3,39 @@
 #' @param data_bundle list. The pre-processed bundle of information (made with spcr_make_data_bundle())
 #' @param title string. The report title, printed at the top of the report
 #' @param subtitle string. The report subtitle, printed at the top of the report
+#' @param report_ref string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)
 #' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
-#' @param intro string. Intro text printed at the head of the report
 #' @param logo_path string. Filepath of the logo to be used on the report
 #' @param department string. A text suffix positioned underneath the logo, for eg. department name
-#' @param output_directory string. The name of the directory to save the resulting report to
 #' @param department_text_colour string. The colour of the department text
+#' @param intro string. Intro text printed at the head of the report
+#' @param author_name string. The author's name
+#' @param author_email string. The author's contact email address
+#' @param output_directory string. The name of the directory to save the resulting report to
 #'
 #' @export
 #'
 spcr_make_report <- function(
     data_bundle,
     title = "SPC Report",
-    data_cutoff_dttm,
     subtitle = NULL,
-    intro = NULL,
+    report_ref,
+    data_cutoff_dttm,
     logo_path = NULL,
     department = NULL,
     department_text_colour = "black",
+    intro = NULL,
+    author_name,
+    author_email,
     output_directory = "/"
   ){
+
+  # check that the required arguments are not missing
+  # this is necessary because most are used in the Rmd, and do not throw an error here
+  purrr::map(
+    c(report_ref, data_cutoff_dttm, author_name, author_email),
+    exists
+  )
 
   # add the header bar
   spcr_add_header_bar()

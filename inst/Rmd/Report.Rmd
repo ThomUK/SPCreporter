@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 spcr_make_report_title_block(
   title = title,
+  report_ref = report_ref,
   data_cutoff_dttm = data_cutoff_dttm,
   subtitle = subtitle,
   logo_path = logo_path,
@@ -77,6 +78,7 @@ Icons | Assurance Type
 </details>
 
 ---
-Report owner:  
-Data owners:  
-Report reference:  
+Report reference:  `r report_ref`  
+Report author:  `r author_name` [`r author_email`](`r paste0("mailto:", author_email, "?subject=Report ", report_ref, "...")`)  
+
+END  
