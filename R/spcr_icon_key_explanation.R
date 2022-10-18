@@ -1,6 +1,7 @@
 #' Returns the markdown used in the Icon Key
 #'
 #' @return string. Must be valid markdown.
+#' @noRd
 #'
 spcr_icon_key_explanation <- function() {
   return(

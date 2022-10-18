@@ -7,12 +7,17 @@
 spcr_make_report(
   data_bundle,
   title = "SPC Report",
-  data_cutoff_dttm,
   subtitle = NULL,
-  intro = NULL,
+  report_ref,
+  data_cutoff_dttm,
   logo_path = NULL,
   department = NULL,
   department_text_colour = "black",
+  intro = NULL,
+  author_name,
+  author_email,
+  paper_colour = "#FFFFFF",
+  accordion_colour = "#CCF2FF",
   output_directory = "/"
 )
 }
@@ -21,17 +26,23 @@ spcr_make_report(
 
 \item{title}{string. The report title, printed at the top of the report}
 
-\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
-
 \item{subtitle}{string. The report subtitle, printed at the top of the report}
 
-\item{intro}{string. Intro text printed at the head of the report}
+\item{report_ref}{string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)}
+
+\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
 
 \item{logo_path}{string. Filepath of the logo to be used on the report}
 
 \item{department}{string. A text suffix positioned underneath the logo, for eg. department name}
 
 \item{department_text_colour}{string. The colour of the department text}
+
+\item{intro}{string. Intro text printed at the head of the report}
+
+\item{author_name}{string. The author's name}
+
+\item{author_email}{string. The author's contact email address}
 
 \item{output_directory}{string. The name of the directory to save the resulting report to}
 }
