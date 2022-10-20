@@ -18,7 +18,8 @@ spcr_make_report(
   author_email,
   paper_colour = "#FFFFFF",
   accordion_colour = "#CCF2FF",
-  output_directory = "/"
+  output_directory = "/",
+  include_dq_icon = TRUE
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ spcr_make_report(
 \item{accordion_colour}{string. Customise the accordion colour using a valid HTML Hex Colour Code}
 
 \item{output_directory}{string. The name of the directory to save the resulting report to}
+
+\item{include_dq_icon}{logical. Is the data quality icon required on the final report}
 }
 \description{
 Make the SPC Report
