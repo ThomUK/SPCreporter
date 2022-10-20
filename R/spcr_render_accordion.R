@@ -92,7 +92,7 @@ spcr_render_accordion <- function(
   }
 
   # prepare data quality assurance indicator icon
-  #dqai_icon <- img(src = paste0(dirname(getwd()), "/img/data_quality_assurance_indicator/star_", dq_icon_name, ".png"), width = "45px") # blank placeholder
+  dqai_icon <- htmltools::img(src = system.file("img/dq_icons/", paste0("star_", Data_Quality, ".png"), package="SPCreporter"), width = "45px") # blank placeholder
 
   #make html structure
   accordion <- htmltools::tags$details(
@@ -111,7 +111,7 @@ spcr_render_accordion <- function(
           htmltools::div(spcr_mini_card("Actual", Last_Data_Point)), # value for latest date
           htmltools::div(variation_icon, class = "spc_logo"), # spc variation icon
           htmltools::div(assurance_icon, class = "spc_logo"), # spc assurance icon
-          #div(dqai_icon, class = "spc_logo") # data quality assurance indicator
+          htmltools::div(dqai_icon, class = "spc_logo") # data quality assurance indicator
         )
       )
     ),
