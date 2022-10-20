@@ -36,6 +36,10 @@ measure_data <- list(
   )
 )
 
+# process info to get it into the same shape as spcr_make_data_bundle does
+measure_data_long <- spcr_check_measure_data(measure_data) %>%
+  purrr::map2_df(.y = names(measure_data), .f = spcr_lengthen_measure_data)
+
 measure_config <- tibble::tibble(
   ref = c("1", "2", "3"),
   measure_name = c("M1", "M2", "M3"),
@@ -93,6 +97,48 @@ test_that("it throws a warning if any measure is labelled as integer but has dec
   expect_warning(
     spcr_calculate_row("1", "week", measure_data_decimals, measure_config, report_config),
     regexp = "spcr_calculate_row: Measure 1 is configured as an integer, but has been supplied with decimal data."
+  )
+
+})
+
+test_that("it returns the first date correctly", {
+
+  expect_equal(
+    spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)$First_Date,
+    as.Date("2020-01-06")
+  )
+
+  expect_equal(
+    spcr_calculate_row("1", "month", measure_data_long, measure_config, report_config)$First_Date,
+    as.Date("2020-01-01")
+  )
+
+})
+
+test_that("it returns the last date correctly", {
+
+  expect_equal(
+    spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)$Last_Date,
+    as.Date("2020-03-23")
+  )
+
+  expect_equal(
+    spcr_calculate_row("1", "month", measure_data_long, measure_config, report_config)$Last_Date,
+    as.Date("2020-12-01")
+  )
+
+})
+
+test_that("it returns the 'updated to' string correctly", {
+
+  expect_equal(
+    spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)$Updated_To,
+    "29-Mar-2020"
+  )
+
+  expect_equal(
+    spcr_calculate_row("1", "month", measure_data_long, measure_config, report_config)$Updated_To,
+    "31-Dec-2020"
   )
 
 })

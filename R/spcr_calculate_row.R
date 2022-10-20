@@ -44,6 +44,17 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     warning("spcr_calculate_row: Measure ", ref, " is configured as an integer, but has been supplied with decimal data.")
   }
 
+  # calculate the updated_to date string
+  if(aggregation == "week"){
+    updated_to <- (lubridate::ceiling_date(last_date, unit = "week", week_start = 1) - lubridate::days(1)) %>%
+      format.Date("%d-%b-%Y")
+  } else if(aggregation == "month"){
+    updated_to <- (lubridate::ceiling_date(last_date, unit = "month") - lubridate::days(1)) %>%
+      format.Date("%d-%b-%Y")
+  } else {
+    updated_to <- "-"
+  }
+
   # friendly formatting for percentages
   if(unit == "%"){
     last_data_point <- paste0(round(last_data_point * 100, 1), "%")
@@ -92,6 +103,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     Aggregation = aggregation,
     First_Date = as.Date(first_date, origin = "1970-01-01"),
     Last_Date = as.Date(last_date, origin = "1970-01-01"),
+    Updated_To = updated_to,
     Data_Source = data_source,
     Data_Owner = data_owner,
     Accountable_Person = accountable_person,
