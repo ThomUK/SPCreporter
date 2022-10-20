@@ -99,7 +99,7 @@ spcr_render_accordion <- function(
       ),
       htmltools::div(
         class = "outer_flex",
-        htmltools::h4(paste0("#", Ref, " - ", Measure_Name), class = "measure_title"),
+        htmltools::h4(glue::glue('# {Ref} - {Measure_Name}'), class = "measure_title"),
         htmltools::div(
           class = "inner_flex",
           htmltools::div(spcr_mini_card("Updated to", Updated_To, highlight_colour = highlight_colour, class = "wide_card")), # date of most recent data
@@ -117,7 +117,7 @@ spcr_render_accordion <- function(
 #      htmltools::p(if(!is.null(commentary)) paste0("Commentary: ", commentary)),
       htmltools::plotTag(
         Chart,
-        alt = paste0("An SPC Chart for metric reference: ", Ref, ", ", Measure_Name),
+        alt = glue::glue('An SPC Chart for metric reference: {Ref}, {Measure_Name}'),
         width = 900,
         height = 450
       ),
