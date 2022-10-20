@@ -65,7 +65,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     improvement_direction = tolower(improvement_direction)
   )
   plot <- spc %>% NHSRplotthedots::ptd_create_ggplot(
-    point_size = 3,
+    point_size = 5,
     percentage_y_axis = is_percentage,
     main_title = paste0("#", ref, " - ", measure_name),
     x_axis_label = NULL,
@@ -75,6 +75,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     break_lines = "limits"
   ) +
     ggplot2::theme(
+      text = element_text(size = 16),
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
