@@ -25,7 +25,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   domain <- subset_report_config$domain
   data_source <- subset_config$data_source
   data_owner <- subset_config$data_owner
-  lead_person <- subset_config$lead_person
+  accountable_person <- subset_config$accountable_person
   unit <- tolower(subset_config$unit)
   improvement_direction <- subset_config$improvement_direction
   target <- subset_config$target[1]
@@ -94,7 +94,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     Last_Date = as.Date(last_date, origin = "1970-01-01"),
     Data_Source = data_source,
     Data_Owner = data_owner,
-    Lead_Person = lead_person,
+    Accountable_Person = accountable_person,
     Unit = unit,
     Improvement_Direction = improvement_direction,
     Target = target,

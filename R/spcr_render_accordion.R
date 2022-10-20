@@ -8,7 +8,7 @@
 #' @param Last_Date date.
 #' @param Data_Source string. The name of the data origin
 #' @param Data_Owner string. The person/area who manage the reporting data
-#' @param Lead_Person string. The person/area who is responsible for the measure
+#' @param Accountable_Person string. The person/area who is accountable for the measure
 #' @param Unit string. Integer, Decimal, or %
 #' @param Improvement_Direction string. Increase, Decrease, or Neutral
 #' @param Target numeric. The target (or NA)
@@ -38,7 +38,7 @@ spcr_render_accordion <- function(
   Last_Date,
   Data_Source,
   Data_Owner,
-  Lead_Person,
+  Accountable_Person,
   Unit,
   Improvement_Direction,
   Target,
@@ -127,7 +127,7 @@ spcr_render_accordion <- function(
         height = 400
       ),
       htmltools::p(if(!is.na(Rebase_Comment)) paste0("Rebase comments: ", Rebase_Comment)),
-      htmltools::div(paste0("Metric owner: ", Lead_Person)),
+      htmltools::div(paste0("Accountable Person: ", Accountable_Person)),
       htmltools::div(paste0("Data owner: ", Data_Owner))
     ),
     style = glue::glue(

@@ -17,7 +17,7 @@ spcr_check_measure_config <- function(.data) {
     "measure_name",
     "data_source",
     "data_owner",
-    "lead_person",
+    "accountable_person",
     "unit",
     "improvement_direction",
     "target",
