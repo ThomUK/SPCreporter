@@ -61,6 +61,10 @@ spcr_render_accordion <- function(
 
   message("Knitting measure: ", Ref, " - ", Measure_Name)
 
+  # handle missing names by replacing with dashes
+  if(is.na(Accountable_Person)) Accountable_Person <- "-"
+  if(is.na(Data_Owner)) Data_Owner <- "-"
+
   # prepare the latest data string
   if(Aggregation == "week" & !is.na(Last_Date)){
     updated_to <- (lubridate::ceiling_date(Last_Date, unit = "week", week_start = 1) - lubridate::days(1)) %>%
@@ -124,7 +128,7 @@ spcr_render_accordion <- function(
         Chart,
         alt = paste0("An SPC Chart for metric reference: ", Ref, ", ", Measure_Name),
         width = 900,
-        height = 400
+        height = 450
       ),
       htmltools::p(if(!is.na(Rebase_Comment)) paste0("Rebase comments: ", Rebase_Comment)),
       htmltools::div(paste0("Accountable Person: ", Accountable_Person)),
