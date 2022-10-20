@@ -31,13 +31,16 @@ A key explaining how to read the icons for Variation, Assurance, and Data Qualit
 ```{r echo=FALSE, fig.height=4, fig.width=7, message=FALSE, results='asis'}
 
 # add the header bar
-spcr_add_header_bar()
+spcr_add_header_bar(
+  include_dq_icon = include_dq_icon
+)
 
 # build the report accordions row by row
 purrr::pwalk(
   data_bundle, 
   spcr_render_accordion, 
-  accordion_colour = accordion_colour
+  accordion_colour = accordion_colour,
+  include_dq_icon = include_dq_icon
 )
 
 ```
