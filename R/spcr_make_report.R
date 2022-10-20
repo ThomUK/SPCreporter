@@ -14,6 +14,7 @@
 #' @param output_directory string. The name of the directory to save the resulting report to
 #' @param paper_colour string. Customise the background colour using a valid HTML Hex Colour Code
 #' @param accordion_colour string. Customise the accordion colour using a valid HTML Hex Colour Code
+#' @param include_dq_icon logical. Is the data quality icon required on the final report
 #'
 #' @export
 #'
@@ -31,7 +32,8 @@ spcr_make_report <- function(
     author_email,
     paper_colour = "#FFFFFF", # white
     accordion_colour = "#CCF2FF", # pale blue
-    output_directory = "/"
+    output_directory = "/",
+    include_dq_icon = TRUE
   ){
 
   # check that the required arguments are not missing
@@ -40,9 +42,6 @@ spcr_make_report <- function(
     c(report_ref, data_cutoff_dttm, author_name, author_email),
     exists
   )
-
-  # add the header bar
-  spcr_add_header_bar()
 
   # create the output file name from the report title and a timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")

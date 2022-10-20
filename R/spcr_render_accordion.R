@@ -24,6 +24,7 @@
 #' @param Variation_Type string. The variation logo name
 #' @param Assurance_Type string. The assurance logo name
 #' @param accordion_colour string. A valid HTML Hex Colour Code
+#' @param include_dq_icon logical. Is the data quality icon required on the final report
 #'
 #' @return string. HTML string for inclusion in the markdown report
 #' @noRd
@@ -52,7 +53,8 @@ spcr_render_accordion <- function(
   Last_Data_Point,
   Variation_Type,
   Assurance_Type,
-  accordion_colour
+  accordion_colour,
+  include_dq_icon
   ){
 
   highlight_colour <- "#FFFFFF" #TODO white for up to date, yellow for delayed updates
@@ -111,7 +113,7 @@ spcr_render_accordion <- function(
           htmltools::div(spcr_mini_card("Actual", Last_Data_Point)), # value for latest date
           htmltools::div(variation_icon, class = "spc_logo"), # spc variation icon
           htmltools::div(assurance_icon, class = "spc_logo"), # spc assurance icon
-          htmltools::div(dqai_icon, class = "spc_logo") # data quality assurance indicator
+          if(include_dq_icon) htmltools::div(dqai_icon, class = "spc_logo") # data quality assurance indicator
         )
       )
     ),
