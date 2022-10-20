@@ -75,7 +75,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     break_lines = "limits"
   ) +
     ggplot2::theme(
-      text = element_text(size = 16),
+      text = ggplot2::element_text(size = 16),
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
