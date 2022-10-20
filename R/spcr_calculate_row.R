@@ -66,6 +66,8 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
 
   is_percentage <- dplyr::if_else(unit == "%", TRUE, FALSE)
 
+  x_date_format <- dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y")
+
   # do the SPC calcs and store the results
   spc <- NHSRplotthedots::ptd_spc(
     subset_measure_data,
@@ -81,7 +83,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     main_title = paste0("#", ref, " - ", measure_name),
     x_axis_label = NULL,
     y_axis_label = NULL,
-    x_axis_date_format = "%b'%y",
+    x_axis_date_format = x_date_format,
     icons_position = "none",
     break_lines = "limits"
   ) +
