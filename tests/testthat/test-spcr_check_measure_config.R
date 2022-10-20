@@ -4,7 +4,7 @@ measure_config <- tibble::tibble(
   measure_name = c("M1", "M2", "M3"),
   data_source = c("S1", "S2", "S3"),
   data_owner = c("O1", "O2", "O3"),
-  lead_person = c("L1", "L2", "L3"),
+  accountable_person = c("L1", "L2", "L3"),
   unit = c("Integer", "Decimal", "%"),
   improvement_direction = c("Neutral", "Increase", "Decrease"),
   target = c(NA, 10, 0.2),

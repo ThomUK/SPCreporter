@@ -25,7 +25,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   domain <- subset_report_config$domain
   data_source <- subset_config$data_source
   data_owner <- subset_config$data_owner
-  lead_person <- subset_config$lead_person
+  accountable_person <- subset_config$accountable_person
   unit <- tolower(subset_config$unit)
   improvement_direction <- subset_config$improvement_direction
   target <- subset_config$target[1]
@@ -42,6 +42,17 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   # throw a warning if the unit is "integer", but the data contains decimals
   if(unit == "integer" & any(subset_measure_data$value%%1 != 0)){
     warning("spcr_calculate_row: Measure ", ref, " is configured as an integer, but has been supplied with decimal data.")
+  }
+
+  # calculate the updated_to date string
+  if(aggregation == "week"){
+    updated_to <- (lubridate::ceiling_date(last_date, unit = "week", week_start = 1) - lubridate::days(1)) %>%
+      format.Date("%d-%b-%Y")
+  } else if(aggregation == "month"){
+    updated_to <- (lubridate::ceiling_date(last_date, unit = "month") - lubridate::days(1)) %>%
+      format.Date("%d-%b-%Y")
+  } else {
+    updated_to <- "-"
   }
 
   # friendly formatting for percentages
@@ -75,7 +86,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     break_lines = "limits"
   ) +
     ggplot2::theme(
-      text = element_text(size = 16),
+      text = ggplot2::element_text(size = 16),
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
@@ -92,9 +103,10 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     Aggregation = aggregation,
     First_Date = as.Date(first_date, origin = "1970-01-01"),
     Last_Date = as.Date(last_date, origin = "1970-01-01"),
+    Updated_To = updated_to,
     Data_Source = data_source,
     Data_Owner = data_owner,
-    Lead_Person = lead_person,
+    Accountable_Person = accountable_person,
     Unit = unit,
     Improvement_Direction = improvement_direction,
     Target = target,

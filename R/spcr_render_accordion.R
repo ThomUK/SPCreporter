@@ -6,9 +6,10 @@
 #' @param Aggregation string. Aggregation level
 #' @param First_Date date.
 #' @param Last_Date date.
+#' @param Updated_To string. The date of the most recent data (end of reporting period)
 #' @param Data_Source string. The name of the data origin
 #' @param Data_Owner string. The person/area who manage the reporting data
-#' @param Lead_Person string. The person/area who is responsible for the measure
+#' @param Accountable_Person string. The person/area who is accountable for the measure
 #' @param Unit string. Integer, Decimal, or %
 #' @param Improvement_Direction string. Increase, Decrease, or Neutral
 #' @param Target numeric. The target (or NA)
@@ -36,9 +37,10 @@ spcr_render_accordion <- function(
   Aggregation,
   First_Date,
   Last_Date,
+  Updated_To,
   Data_Source,
   Data_Owner,
-  Lead_Person,
+  Accountable_Person,
   Unit,
   Improvement_Direction,
   Target,
@@ -61,16 +63,9 @@ spcr_render_accordion <- function(
 
   message("Knitting measure: ", Ref, " - ", Measure_Name)
 
-  # prepare the latest data string
-  if(Aggregation == "week" & !is.na(Last_Date)){
-    updated_to <- (lubridate::ceiling_date(Last_Date, unit = "week", week_start = 1) - lubridate::days(1)) %>%
-      format.Date("%d-%b-%Y")
-  } else if(Aggregation == "month" & !is.na(Last_Date)){
-    updated_to <- (lubridate::ceiling_date(Last_Date, unit = "month") - lubridate::days(1)) %>%
-      format.Date("%d-%b-%Y")
-  } else {
-    updated_to <- "-"
-  }
+  # handle missing names by replacing with dashes
+  if(is.na(Accountable_Person)) Accountable_Person <- "-"
+  if(is.na(Data_Owner)) Data_Owner <- "-"
 
   # prepare spc icons
   if(Variation_Type %in% c("CC", "SC_LO_CON", "SC_LO_NEUTRAL", "SC_LO_IMP", "SC_HI_CON", "SC_HI_NEUTRAL", "SC_HI_IMP")) {
@@ -104,10 +99,10 @@ spcr_render_accordion <- function(
       ),
       htmltools::div(
         class = "outer_flex",
-        htmltools::h4(paste0("#", Ref, " - ", Measure_Name), class = "measure_title"),
+        htmltools::h4(glue::glue('# {Ref} - {Measure_Name}'), class = "measure_title"),
         htmltools::div(
           class = "inner_flex",
-          htmltools::div(spcr_mini_card("Updated to", updated_to, highlight_colour = highlight_colour, class = "wide_card")), # date of most recent data
+          htmltools::div(spcr_mini_card("Updated to", Updated_To, highlight_colour = highlight_colour, class = "wide_card")), # date of most recent data
           htmltools::div(spcr_mini_card("Target", Target_Text)), # a text string representing the target
           htmltools::div(spcr_mini_card("Set by", Target_Set_By)), # who set the target
           htmltools::div(spcr_mini_card("Actual", Last_Data_Point)), # value for latest date
@@ -122,12 +117,12 @@ spcr_render_accordion <- function(
 #      htmltools::p(if(!is.null(commentary)) paste0("Commentary: ", commentary)),
       htmltools::plotTag(
         Chart,
-        alt = paste0("An SPC Chart for metric reference: ", Ref, ", ", Measure_Name),
+        alt = glue::glue('An SPC Chart for metric reference: {Ref}, {Measure_Name}'),
         width = 900,
-        height = 400
+        height = 450
       ),
       htmltools::p(if(!is.na(Rebase_Comment)) paste0("Rebase comments: ", Rebase_Comment)),
-      htmltools::div(paste0("Metric owner: ", Lead_Person)),
+      htmltools::div(paste0("Accountable Person: ", Accountable_Person)),
       htmltools::div(paste0("Data owner: ", Data_Owner))
     ),
     style = glue::glue(
