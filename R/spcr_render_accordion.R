@@ -94,7 +94,7 @@ spcr_render_accordion <- function(
   dqai_icon <- htmltools::img(src = system.file("img/dq_icons/", paste0("star_", Data_Quality, ".png"), package="SPCreporter"), width = "45px") # blank placeholder
 
   # make html structure for the domain title if required
-  domain_title <- if(Needs_Domain_Heading) htmltools::div(Domain)
+  domain_title <- if(Needs_Domain_Heading) htmltools::tags$h3(glue::glue('{Domain}:'))
 
   # make html structure for main accordion
   accordion <- htmltools::tags$details(
