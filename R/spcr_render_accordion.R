@@ -24,6 +24,7 @@
 #' @param Last_Data_Point string. The most recent data point
 #' @param Variation_Type string. The variation logo name
 #' @param Assurance_Type string. The assurance logo name
+#' @param Needs_Domain_Heading logical. True if the domain heading should be printed on the report
 #' @param accordion_colour string. A valid HTML Hex Colour Code
 #' @param include_dq_icon logical. Is the data quality icon required on the final report
 #'
@@ -55,6 +56,7 @@ spcr_render_accordion <- function(
   Last_Data_Point,
   Variation_Type,
   Assurance_Type,
+  Needs_Domain_Heading,
   accordion_colour,
   include_dq_icon
   ){
@@ -91,7 +93,10 @@ spcr_render_accordion <- function(
   # prepare data quality assurance indicator icon
   dqai_icon <- htmltools::img(src = system.file("img/dq_icons/", paste0("star_", Data_Quality, ".png"), package="SPCreporter"), width = "45px") # blank placeholder
 
-  #make html structure
+  # make html structure for the domain title if required
+  domain_title <- if(Needs_Domain_Heading) htmltools::tags$h3(glue::glue('{Domain}:'))
+
+  # make html structure for main accordion
   accordion <- htmltools::tags$details(
     htmltools::tags$summary(
       style = glue::glue(
@@ -131,6 +136,9 @@ spcr_render_accordion <- function(
   )
 
   #expand into html
-  cat(htmltools::doRenderTags(accordion, indent = FALSE))
+  result <- c(
+    cat(htmltools::doRenderTags(domain_title, indent = FALSE)),
+    cat(htmltools::doRenderTags(accordion, indent = FALSE))
+  )
 
 }
