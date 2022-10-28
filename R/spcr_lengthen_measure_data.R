@@ -15,10 +15,10 @@ spcr_lengthen_measure_data <- function(.data, frequency){
 
   # pivot incoming measure_data from wide to long
   long_data <- .data %>% tidyr::pivot_longer(
-    -c(.data$ref, .data$measure_name, .data$comment), names_to = "date", values_to = "value") %>%
+    -c("ref", "measure_name", "comment"), names_to = "date", values_to = "value") %>%
     dplyr::mutate(frequency = frequency) %>%
-    dplyr::select(-.data$comment) %>%
-    dplyr::filter(!is.na(.data$value))
+    dplyr::select(-"comment") %>%
+    dplyr::filter(!is.na("value"))
 
   # handle varying date column heading formats
   suppressWarnings(
