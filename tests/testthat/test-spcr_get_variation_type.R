@@ -1,6 +1,5 @@
 
 test_that("it returns correct string when last point is common cause", {
-
   spc <- data.frame(
     point_type = c("special_cause_improvement", "common_cause"),
     relative_to_mean = 0
@@ -10,11 +9,9 @@ test_that("it returns correct string when last point is common cause", {
     spcr_get_variation_type(spc, "neutral"),
     "CC"
   )
-
 })
 
 test_that("it returns correct strings when improvement direction is neutral", {
-
   spc <- data.frame(
     point_type = c("common_cause", "special_cause_neutral"),
     relative_to_mean = -1
@@ -34,11 +31,9 @@ test_that("it returns correct strings when improvement direction is neutral", {
     spcr_get_variation_type(spc, "neutral"),
     "SC_HI_NEUTRAL"
   )
-
 })
 
 test_that("it returns correct strings when improvement direction is increase", {
-
   spc <- data.frame(
     point_type = c("common_cause", "special_cause_concern")
   )
@@ -56,11 +51,9 @@ test_that("it returns correct strings when improvement direction is increase", {
     spcr_get_variation_type(spc, "increase"),
     "SC_HI_IMP"
   )
-
 })
 
 test_that("it returns correct strings when improvement direction is decrease", {
-
   spc <- data.frame(
     point_type = c("common_cause", "special_cause_concern")
   )
@@ -78,5 +71,4 @@ test_that("it returns correct strings when improvement direction is decrease", {
     spcr_get_variation_type(spc, "decrease"),
     "SC_LO_IMP"
   )
-
 })

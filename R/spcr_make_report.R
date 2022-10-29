@@ -18,24 +18,21 @@
 #'
 #' @export
 #'
-spcr_make_report <- function(
-    data_bundle,
-    title = "SPC Report",
-    subtitle = NULL,
-    report_ref,
-    data_cutoff_dttm,
-    logo_path = NULL,
-    department = NULL,
-    department_text_colour = "black",
-    intro = NULL,
-    author_name,
-    author_email,
-    paper_colour = "#FFFFFF", # white
-    accordion_colour = "#CCF2FF", # pale blue
-    output_directory = "/",
-    include_dq_icon = TRUE
-  ){
-
+spcr_make_report <- function(data_bundle,
+                             title = "SPC Report",
+                             subtitle = NULL,
+                             report_ref,
+                             data_cutoff_dttm,
+                             logo_path = NULL,
+                             department = NULL,
+                             department_text_colour = "black",
+                             intro = NULL,
+                             author_name,
+                             author_email,
+                             paper_colour = "#FFFFFF", # white
+                             accordion_colour = "#CCF2FF", # pale blue
+                             output_directory = "/",
+                             include_dq_icon = TRUE) {
   # check that the required arguments are not missing
   # this is necessary because most are used in the Rmd, and do not throw an error here
   purrr::map(
@@ -45,7 +42,7 @@ spcr_make_report <- function(
 
   # create the output file name from the report title and a timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
-  output_file_name = paste0(
+  output_file_name <- paste0(
     sub(" ", "_", title), # replace spaces with underscores
     "_",
     time_stamp,
@@ -55,7 +52,7 @@ spcr_make_report <- function(
   # render the html output
   message("Making HTML output...")
   rmarkdown::render(
-    system.file("Rmd", "Report.Rmd", package="SPCreporter"),
+    system.file("Rmd", "Report.Rmd", package = "SPCreporter"),
     output_dir = file.path(getwd(), output_directory),
     output_file = output_file_name
   )
@@ -70,5 +67,4 @@ spcr_make_report <- function(
 
   # finished!!
   beepr::beep(1)
-
 }

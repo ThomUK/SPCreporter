@@ -31,80 +31,73 @@
 #' @return string. HTML string for inclusion in the markdown report
 #' @noRd
 #'
-spcr_render_accordion <- function(
-  Ref,
-  Measure_Name,
-  Domain,
-  Aggregation,
-  First_Date,
-  Last_Date,
-  Updated_To,
-  Data_Source,
-  Data_Owner,
-  Accountable_Person,
-  Unit,
-  Improvement_Direction,
-  Target,
-  Target_Text,
-  Target_Set_By,
-  Data_Quality,
-  Baseline_Period,
-  Rebase_Dates,
-  Rebase_Comment,
-  Chart_Data,
-  Chart,
-  Last_Data_Point,
-  Variation_Type,
-  Assurance_Type,
-  Needs_Domain_Heading,
-  accordion_colour,
-  include_dq_icon
-  ){
-
-  highlight_colour <- "#FFFFFF" #TODO white for up to date, yellow for delayed updates
+spcr_render_accordion <- function(Ref,
+                                  Measure_Name,
+                                  Domain,
+                                  Aggregation,
+                                  First_Date,
+                                  Last_Date,
+                                  Updated_To,
+                                  Data_Source,
+                                  Data_Owner,
+                                  Accountable_Person,
+                                  Unit,
+                                  Improvement_Direction,
+                                  Target,
+                                  Target_Text,
+                                  Target_Set_By,
+                                  Data_Quality,
+                                  Baseline_Period,
+                                  Rebase_Dates,
+                                  Rebase_Comment,
+                                  Chart_Data,
+                                  Chart,
+                                  Last_Data_Point,
+                                  Variation_Type,
+                                  Assurance_Type,
+                                  Needs_Domain_Heading,
+                                  accordion_colour,
+                                  include_dq_icon) {
+  highlight_colour <- "#FFFFFF" # TODO white for up to date, yellow for delayed updates
 
   message("Knitting measure: ", Ref, " - ", Measure_Name)
 
   # handle missing names by replacing with dashes
-  if(is.na(Accountable_Person)) Accountable_Person <- "-"
-  if(is.na(Data_Owner)) Data_Owner <- "-"
+  if (is.na(Accountable_Person)) Accountable_Person <- "-"
+  if (is.na(Data_Owner)) Data_Owner <- "-"
 
   # prepare spc icons
-  if(Variation_Type %in% c("CC", "SC_LO_CON", "SC_LO_NEUTRAL", "SC_LO_IMP", "SC_HI_CON", "SC_HI_NEUTRAL", "SC_HI_IMP")) {
-
+  if (Variation_Type %in% c("CC", "SC_LO_CON", "SC_LO_NEUTRAL", "SC_LO_IMP", "SC_HI_CON", "SC_HI_NEUTRAL", "SC_HI_IMP")) {
     # render the image
-    variation_icon <- htmltools::img(src = system.file("img/variation_icons/", paste0(Variation_Type, ".png"), package="SPCreporter"), width = "45px")
-  } else{
-
+    variation_icon <- htmltools::img(src = system.file("img/variation_icons/", paste0(Variation_Type, ".png"), package = "SPCreporter"), width = "45px")
+  } else {
     # pass the text through
     variation_icon <- Variation_Type # text is passed through
   }
 
-  if(Assurance_Type %in% c("PASS_TARG", "FAIL_TARG", "RND_TARG")) {
-
-    #render the image
-    assurance_icon <- htmltools::img(src = system.file("img/assurance_icons/", paste0(Assurance_Type, ".png"), package="SPCreporter"), width = "45px")
-  } else{
-
+  if (Assurance_Type %in% c("PASS_TARG", "FAIL_TARG", "RND_TARG")) {
+    # render the image
+    assurance_icon <- htmltools::img(src = system.file("img/assurance_icons/", paste0(Assurance_Type, ".png"), package = "SPCreporter"), width = "45px")
+  } else {
     # pass the text through
     assurance_icon <- Assurance_Type # the name will be "No SPC", or "No target"
   }
 
   # prepare data quality assurance indicator icon
-  dqai_icon <- htmltools::img(src = system.file("img/dq_icons/", paste0("star_", Data_Quality, ".png"), package="SPCreporter"), width = "45px") # blank placeholder
+  dqai_icon <- htmltools::img(src = system.file("img/dq_icons/", paste0("star_", Data_Quality, ".png"), package = "SPCreporter"), width = "45px") # blank placeholder
 
   # make html structure for the domain title if required
-  domain_title <- if(Needs_Domain_Heading) htmltools::tags$h3(glue::glue('{Domain}:'))
+  domain_title <- if (Needs_Domain_Heading) htmltools::tags$h3(glue::glue("{Domain}:"))
 
   # make html structure for main accordion
   accordion <- htmltools::tags$details(
     htmltools::tags$summary(
       style = glue::glue(
-        'background-color: {accordion_colour}; ',
+        "background-color: {accordion_colour}; ",
       ),
       htmltools::div(
         class = "outer_flex",
-        htmltools::h4(glue::glue('# {Ref} - {Measure_Name}'), class = "measure_title"),
+        htmltools::h4(glue::glue("# {Ref} - {Measure_Name}"), class = "measure_title"),
         htmltools::div(
           class = "inner_flex",
           htmltools::div(spcr_mini_card("Updated to", Updated_To, highlight_colour = highlight_colour, class = "wide_card")), # date of most recent data
@@ -113,32 +106,31 @@ spcr_render_accordion <- function(
           htmltools::div(spcr_mini_card("Actual", Last_Data_Point)), # value for latest date
           htmltools::div(variation_icon, class = "spc_logo"), # spc variation icon
           htmltools::div(assurance_icon, class = "spc_logo"), # spc assurance icon
-          if(include_dq_icon) htmltools::div(dqai_icon, class = "spc_logo") # data quality assurance indicator
+          if (include_dq_icon) htmltools::div(dqai_icon, class = "spc_logo") # data quality assurance indicator
         )
       )
     ),
     htmltools::div(
       class = "details_content",
-#      htmltools::p(if(!is.null(commentary)) paste0("Commentary: ", commentary)),
+      #      htmltools::p(if(!is.null(commentary)) paste0("Commentary: ", commentary)),
       htmltools::plotTag(
         Chart,
-        alt = glue::glue('An SPC Chart for metric reference: {Ref}, {Measure_Name}'),
+        alt = glue::glue("An SPC Chart for metric reference: {Ref}, {Measure_Name}"),
         width = 900,
         height = 450
       ),
-      htmltools::p(if(!is.na(Rebase_Comment)) paste0("Rebase comments: ", Rebase_Comment)),
+      htmltools::p(if (!is.na(Rebase_Comment)) paste0("Rebase comments: ", Rebase_Comment)),
       htmltools::div(paste0("Accountable Person: ", Accountable_Person)),
       htmltools::div(paste0("Data owner: ", Data_Owner))
     ),
     style = glue::glue(
-      'margin-bottom: 1rem; '
+      "margin-bottom: 1rem; "
     ),
   )
 
-  #expand into html
+  # expand into html
   result <- c(
     cat(htmltools::doRenderTags(domain_title, indent = FALSE)),
     cat(htmltools::doRenderTags(accordion, indent = FALSE))
   )
-
 }

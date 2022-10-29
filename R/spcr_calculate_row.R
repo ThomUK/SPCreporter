@@ -13,12 +13,11 @@
 #'
 #' @noRd
 #'
-spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, report_config){
-
+spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, report_config) {
   # subset down to the measure of interest
-  subset_config <- measure_config[measure_config$ref == ref,]
-  subset_report_config <- report_config[report_config$ref == ref & report_config$aggregation == aggregation,]
-  subset_measure_data <- measure_data[measure_data$ref == ref & measure_data$frequency == aggregation,]
+  subset_config <- measure_config[measure_config$ref == ref, ]
+  subset_report_config <- report_config[report_config$ref == ref & report_config$aggregation == aggregation, ]
+  subset_measure_data <- measure_data[measure_data$ref == ref & measure_data$frequency == aggregation, ]
 
   # separate out the information required
   measure_name <- subset_config$measure_name
@@ -40,15 +39,15 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   last_data_point <- subset_measure_data$value %>% utils::tail(n = 1)
 
   # throw a warning if the unit is "integer", but the data contains decimals
-  if(unit == "integer" & any(subset_measure_data$value%%1 != 0)){
+  if (unit == "integer" & any(subset_measure_data$value %% 1 != 0)) {
     warning("spcr_calculate_row: Measure ", ref, " is configured as an integer, but has been supplied with decimal data.")
   }
 
   # calculate the updated_to date string
-  if(aggregation == "week"){
+  if (aggregation == "week") {
     updated_to <- (lubridate::ceiling_date(last_date, unit = "week", week_start = 1) - lubridate::days(1)) %>%
       format.Date("%d-%b-%Y")
-  } else if(aggregation == "month"){
+  } else if (aggregation == "month") {
     updated_to <- (lubridate::ceiling_date(last_date, unit = "month") - lubridate::days(1)) %>%
       format.Date("%d-%b-%Y")
   } else {
@@ -56,9 +55,9 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   }
 
   # friendly formatting for percentages
-  if(unit == "%"){
+  if (unit == "%") {
     last_data_point <- paste0(round(last_data_point * 100, 1), "%")
-  } else if(unit == "decimal"){
+  } else if (unit == "decimal") {
     last_data_point <- as.character(round(last_data_point, 2))
   } else {
     last_data_point <- as.character(last_data_point)
@@ -124,5 +123,4 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     Variation_Type = variation_type,
     Assurance_Type = assurance_type
   )
-
 }

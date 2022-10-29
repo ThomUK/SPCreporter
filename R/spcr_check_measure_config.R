@@ -6,7 +6,6 @@
 #' @noRd
 #'
 spcr_check_measure_config <- function(.data) {
-
   assertthat::assert_that(
     inherits(.data, "data.frame"),
     msg = "spcr_check_measure_config: config_data must be a data.frame"

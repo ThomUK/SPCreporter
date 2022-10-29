@@ -11,36 +11,33 @@
 #' @return string. An HTML string for inclusion in the Rmd report
 #' @noRd
 #'
-spcr_make_report_title_block <- function(
-  title,
-  report_ref,
-  data_cutoff_dttm,
-  subtitle = NULL,
-  logo_path = NULL,
-  department = NULL,
-  department_text_colour = "black"
-){
+spcr_make_report_title_block <- function(title,
+                                         report_ref,
+                                         data_cutoff_dttm,
+                                         subtitle = NULL,
+                                         logo_path = NULL,
+                                         department = NULL,
+                                         department_text_colour = "black") {
+  assertthat::assert_that(
+    !rlang::is_missing(data_cutoff_dttm),
+    msg = "spcr_make_report_title_block: Please provide a data cutoff date-time. This is the last time for which data is included in the report."
+  )
 
-assertthat::assert_that(
-  !rlang::is_missing(data_cutoff_dttm),
-  msg = "spcr_make_report_title_block: Please provide a data cutoff date-time. This is the last time for which data is included in the report."
-)
-
-assertthat::assert_that(
-  inherits(data_cutoff_dttm, "POSIXct"),
-  msg = "spcr_make_report_title_block: The data cutoff date must be a POSIXct object"
-)
+  assertthat::assert_that(
+    inherits(data_cutoff_dttm, "POSIXct"),
+    msg = "spcr_make_report_title_block: The data cutoff date must be a POSIXct object"
+  )
 
   # handle the logo path
-  if(is.null(logo_path)){
-    logo <- system.file("img/NHS_logo.jpg", package="SPCreporter")
-  } else{
+  if (is.null(logo_path)) {
+    logo <- system.file("img/NHS_logo.jpg", package = "SPCreporter")
+  } else {
     logo <- logo_path
   }
 
   # structure the html
   output <- htmltools::div( # header bar
-    style ="display: flex; justify-content: space-between; align-items: flex-start; margin: 3rem 0 2rem 0;",
+    style = "display: flex; justify-content: space-between; align-items: flex-start; margin: 3rem 0 2rem 0;",
     htmltools::div( # left-hand header (titles)
       style = "display: flex; flex-direction: column; justify-content: flex-start;",
       htmltools::h1(
@@ -80,5 +77,4 @@ assertthat::assert_that(
 
   # render into html
   cat(htmltools::doRenderTags(output, indent = FALSE))
-
 }

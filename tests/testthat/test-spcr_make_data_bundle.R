@@ -60,7 +60,6 @@ report_config <- tibble::tibble(
 )
 
 test_that("it returns a dataframe of the expected size", {
-
   r <- spcr_make_data_bundle(measure_data, measure_config, report_config)
 
   expect_equal(
@@ -72,5 +71,4 @@ test_that("it returns a dataframe of the expected size", {
     ncol(r),
     25
   )
-
 })

@@ -1,6 +1,5 @@
 
 test_that("it returns correct string when improvement direction is neutral", {
-
   spc <- data.frame(
     upl = 5,
     lpl = 1,
@@ -11,11 +10,9 @@ test_that("it returns correct string when improvement direction is neutral", {
     spcr_get_assurance_type(spc, "neutral"),
     "Neutral"
   )
-
 })
 
 test_that("it returns correct string when no target is set", {
-
   spc <- data.frame(
     upl = 5,
     lpl = 1,
@@ -26,11 +23,9 @@ test_that("it returns correct string when no target is set", {
     spcr_get_assurance_type(spc, "increase"),
     "No target"
   )
-
 })
 
 test_that("it returns correct string in pass/fail conditions", {
-
   # improvement direction = increase
   spc <- data.frame(
     upl = 3,
@@ -54,11 +49,9 @@ test_that("it returns correct string in pass/fail conditions", {
     spcr_get_assurance_type(spc, "decrease"),
     "RND_TARG"
   )
-
 })
 
 test_that("it returns correct string in failing conditions", {
-
   # improvement direction = increase
   spc <- data.frame(
     target = 4, # the target is above process limits
@@ -83,11 +76,9 @@ test_that("it returns correct string in failing conditions", {
     spcr_get_assurance_type(spc, "decrease"),
     "FAIL_TARG"
   )
-
 })
 
 test_that("it returns correct string in passing conditions", {
-
   # improvement direction = increase
   spc <- data.frame(
     upl = 3,
@@ -111,5 +102,4 @@ test_that("it returns correct string in passing conditions", {
     spcr_get_assurance_type(spc, "decrease"),
     "PASS_TARG"
   )
-
 })

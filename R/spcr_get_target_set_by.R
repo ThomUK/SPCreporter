@@ -7,9 +7,9 @@
 #' @noRd
 #'
 spcr_get_target_set_by <- function(target, target_set_by) {
-
-  if(is.na(target)) return("-")
+  if (is.na(target)) {
+    return("-")
+  }
 
   return(target_set_by)
-
 }

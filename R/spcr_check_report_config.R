@@ -1,5 +1,4 @@
 spcr_check_report_config <- function(report_config) {
-
   assertthat::assert_that(
     inherits(report_config, "data.frame"),
     msg = "spcr_check_report_config: The report config must be a dataframe."
@@ -21,5 +20,4 @@ spcr_check_report_config <- function(report_config) {
   report_config$ref <- as.character(report_config$ref)
 
   return(report_config)
-
 }

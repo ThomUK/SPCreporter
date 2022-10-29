@@ -80,7 +80,6 @@ report_config <- tibble::tibble(
 # })
 
 test_that("it throws a warning if any measure is labelled as integer but has decimals supplied in the data.", {
-
   # create the decimals for measure 1, which is an integer in the measure_config
   measure_data_decimals <- measure_data
 
@@ -98,11 +97,9 @@ test_that("it throws a warning if any measure is labelled as integer but has dec
     spcr_calculate_row("1", "week", measure_data_decimals, measure_config, report_config),
     regexp = "spcr_calculate_row: Measure 1 is configured as an integer, but has been supplied with decimal data."
   )
-
 })
 
 test_that("it returns the first date correctly", {
-
   expect_equal(
     spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)$First_Date,
     as.Date("2020-01-06")
@@ -112,11 +109,9 @@ test_that("it returns the first date correctly", {
     spcr_calculate_row("1", "month", measure_data_long, measure_config, report_config)$First_Date,
     as.Date("2020-01-01")
   )
-
 })
 
 test_that("it returns the last date correctly", {
-
   expect_equal(
     spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)$Last_Date,
     as.Date("2020-03-23")
@@ -126,11 +121,9 @@ test_that("it returns the last date correctly", {
     spcr_calculate_row("1", "month", measure_data_long, measure_config, report_config)$Last_Date,
     as.Date("2020-12-01")
   )
-
 })
 
 test_that("it returns the 'updated to' string correctly", {
-
   expect_equal(
     spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)$Updated_To,
     "29-Mar-2020"
@@ -140,5 +133,4 @@ test_that("it returns the 'updated to' string correctly", {
     spcr_calculate_row("1", "month", measure_data_long, measure_config, report_config)$Updated_To,
     "31-Dec-2020"
   )
-
 })

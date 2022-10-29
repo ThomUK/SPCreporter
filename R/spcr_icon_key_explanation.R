@@ -28,6 +28,5 @@ Icons | Assurance Type
 <img src = "../img/assurance_icons/PASS_TARG.png" class = "icon"> | The process is assured, and is likely to consistently pass the target set.
 <img src = "../img/assurance_icons/RND_TARG.png" class = "icon"> | The process is not assured, and will pass and fail the target based on variation in the process.
 <img src = "../img/assurance_icons/FAIL_TARG.png" class = "icon"> | The process is not assured, and is likely to consistently fail to meet the target set.  '
-
   )
 }

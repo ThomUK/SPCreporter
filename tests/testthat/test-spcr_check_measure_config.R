@@ -16,9 +16,8 @@ measure_config <- tibble::tibble(
 )
 
 test_that("it coerces refs to character vectors", {
-
   # create the error by assigning numeric refs
-  measure_config$ref <- c(1,2,3)
+  measure_config$ref <- c(1, 2, 3)
 
   r <- spcr_check_measure_config(measure_config)
 
@@ -26,5 +25,4 @@ test_that("it coerces refs to character vectors", {
     r$ref,
     c("1", "2", "3")
   )
-
 })

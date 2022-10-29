@@ -8,9 +8,7 @@
 #' @return NULL
 #' @noRd
 #'
-spcr_check_measure_names <- function(ref, measure_data, measure_config)
-{
-
+spcr_check_measure_names <- function(ref, measure_data, measure_config) {
   # check that the config table includes this ref number
   assertthat::assert_that(
     length(measure_config[measure_config$ref == ref, ]$ref) > 0,

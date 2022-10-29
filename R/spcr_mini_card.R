@@ -8,7 +8,7 @@
 #' @return String. HTML string of the mini-card component
 #' @noRd
 #'
-spcr_mini_card <- function(key, value, highlight_colour = "#FFFFFF", class = NULL){
+spcr_mini_card <- function(key, value, highlight_colour = "#FFFFFF", class = NULL) {
   htmltools::div(
     htmltools::div(key, class = "mini_card_key"),
     htmltools::div(value, class = "mini_card_value", style = paste0("background-color: ", highlight_colour, ";")),

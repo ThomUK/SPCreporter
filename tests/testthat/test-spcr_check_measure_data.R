@@ -1,5 +1,4 @@
 test_that("it errors if the data is not a list", {
-
   expect_error(
     spcr_check_measure_data("not a list"),
     "spcr_check_measure_data: The data must be a list."
@@ -7,7 +6,6 @@ test_that("it errors if the data is not a list", {
 })
 
 test_that("it contains only allowed items", {
-
   expect_error(
     spcr_check_measure_data(list("Once in a blue moon" = 1)),
     "spcr_check_measure_data: The list items must be from 'week' or 'month'."
@@ -52,10 +50,9 @@ measure_data <- list(
 )
 
 test_that("it coerces refs to character vectors", {
-
   # create the error by assigning numeric refs
-  measure_data[["week"]]$ref <- c(1,2,3)
-  measure_data[["month"]]$ref <- c(1,2,3)
+  measure_data[["week"]]$ref <- c(1, 2, 3)
+  measure_data[["month"]]$ref <- c(1, 2, 3)
 
 
   r <- spcr_check_measure_data(measure_data)
@@ -64,5 +61,4 @@ test_that("it coerces refs to character vectors", {
     r[["week"]]$ref,
     c("1", "2", "3")
   )
-
 })

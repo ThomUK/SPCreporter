@@ -7,7 +7,6 @@ report_config <- tibble::tibble(
 )
 
 test_that("it coerces refs to character vectors", {
-
   # create the error by assigning numeric refs
   report_config$ref <- c(1, 2, 3, 1, 2, 3)
 
@@ -17,5 +16,4 @@ test_that("it coerces refs to character vectors", {
     r$ref,
     c("1", "2", "3", "1", "2", "3")
   )
-
 })
