@@ -70,7 +70,7 @@ test_that("it returns a dataframe of the expected size", {
 
   expect_equal(
     ncol(r),
-    24
+    25
   )
 
 })
