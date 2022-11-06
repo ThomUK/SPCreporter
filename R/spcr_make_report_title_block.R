@@ -28,11 +28,32 @@ spcr_make_report_title_block <- function(title,
     msg = "spcr_make_report_title_block: The data cutoff date must be a POSIXct object"
   )
 
-  # handle the logo path
+  # handle the logo (either none, a default NHS logo inside the package, or the image passed in by the usaer)
   if (is.null(logo_path)) {
-    logo <- system.file("img/NHS_logo.jpg", package = "SPCreporter")
-  } else {
-    logo <- logo_path
+    # an empty div
+    logo_block <- htmltools::doRenderTags(
+      htmltools::div(
+      ),
+      indent = FALSE
+    )
+  } else if(logo_path == "nhs"){
+    # default NHS logo
+    logo_block <- htmltools::doRenderTags(
+      htmltools::img(
+        src = system.file("img/NHS_logo.jpg", package = "SPCreporter"),
+        alt = "Logo"
+      ),
+      indent = FALSE
+    )
+  }else {
+    # the logo passed in by the user
+    logo_block <- htmltools::doRenderTags(
+      htmltools::img(
+        src = logo_path,
+        alt = "Logo"
+      ),
+      indent = FALSE
+    )
   }
 
   # structure the html
@@ -64,10 +85,7 @@ spcr_make_report_title_block <- function(title,
     ),
     htmltools::div( # right-hand header (logo)
       style = paste0("width: 30%; display: flex; flex-direction: column; justify-content: flex-start; color: ", department_text_colour, "; font-weight: bold;"),
-      htmltools::img(
-        src = logo,
-        alt = "Logo"
-      ),
+      logo_block,
       htmltools::div(
         style = "text-align: right;",
         department
