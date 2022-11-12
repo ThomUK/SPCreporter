@@ -1,13 +1,13 @@
 #' Make a bundle of data including all SPC calcs
 #'
 #' @param measure_data list. List containing dataframes of data in wide format
-#' @param measure_config dataframe. Config information for the measures
 #' @param report_config dataframe. Config information for the report
+#' @param measure_config dataframe. Config information for the measures
 #'
 #' @return dataframe. A nested dataframe containing calculated charts and parsed text
 #' @export
 #'
-spcr_make_data_bundle <- function(measure_data, measure_config, report_config) {
+spcr_make_data_bundle <- function(measure_data, report_config, measure_config) {
   # check report_config
   report_config <- spcr_check_report_config(report_config)
 
