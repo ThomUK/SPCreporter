@@ -19,7 +19,7 @@
 #' @export
 #'
 spcr_make_report <- function(data_bundle,
-                             title = "SPC Report",
+                             title,
                              subtitle = NULL,
                              report_ref,
                              data_cutoff_dttm,
