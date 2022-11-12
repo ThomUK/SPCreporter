@@ -1,6 +1,6 @@
 Package: SPCreporter
 Title: Creates Metric Reports using Statistical Process Control in the NHS style
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Tom", "Smith", , "tomsmith_uk@hotmail.com", role = c("aut", "cre"))
 Description: Takes a dataset file and a configuration file to produce an html
@@ -28,12 +28,12 @@ Imports:
     magrittr,
     NHSRplotthedots,
     purrr,
-    readxl,
     rlang,
     rmarkdown,
     tidyr,
     utils
 Suggests: 
+    readxl,
     testthat (>= 3.0.0),
     tibble
 Config/testthat/edition: 3
