@@ -67,12 +67,19 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
 
   x_date_format <- dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y")
 
+  # ptd_spc function needs NULL for target when no target is set
+  if(is.na(target)){
+    spc_target <- NULL
+  } else {
+    spc_target <- target
+  }
+
   # do the SPC calcs and store the results
   spc <- NHSRplotthedots::ptd_spc(
     subset_measure_data,
     value_field = "value",
     date_field = "date",
-    target = target,
+    target = spc_target, # set to NULL in code if NA in source data
     #      fix_after_n_points = #TODO
     improvement_direction = tolower(improvement_direction)
   )
