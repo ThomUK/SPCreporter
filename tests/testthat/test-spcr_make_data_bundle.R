@@ -72,3 +72,21 @@ test_that("it returns a dataframe of the expected size", {
     25
   )
 })
+
+test_that("it works when no targets are set", {
+
+  # replace all targets with NA, as if not set
+  measure_config$target <- NA
+
+  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
+
+  expect_equal(
+    nrow(r),
+    6
+  )
+
+  expect_equal(
+    ncol(r),
+    25
+  )
+})
