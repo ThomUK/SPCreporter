@@ -1,18 +1,20 @@
-test_that("it errors if the data is not a list", {
-  expect_error(
-    spcr_check_measure_data("not a list"),
-    "spcr_check_measure_data: The data must be a list."
-  )
-})
+"it errors if the data is not a list" |>
+  test_that({
+    expect_error(
+      spcr_check_measure_data("not a list"),
+      "spcr_check_measure_data: The data must be a list."
+    )
+  })
 
-test_that("List contains at least one of the required items", {
-  expect_error(
-    spcr_check_measure_data(list("Once in a blue moon" = 1)),
-    "spcr_check_measure_data: Data for either 'week' or 'month' is required."
-  )
-})
+"list contains at least one of the required items" |>
+  test_that({
+    expect_error(
+      spcr_check_measure_data(list("Once in a blue moon" = 1)),
+      "spcr_check_measure_data: Data for either 'week' or 'month' is required."
+    )
+  })
 
-"List containing extra elements is allowed" |>
+"list containing extra elements is allowed" |>
   test_that({
     expect_no_error(
       list(
@@ -24,7 +26,7 @@ test_that("List contains at least one of the required items", {
     )
   })
 
-"List containing either 'week' or 'month' is allowed" |>
+"list containing either 'week' or 'month' is allowed" |>
   test_that({
 
     expect_no_error(
@@ -44,7 +46,7 @@ test_that("List contains at least one of the required items", {
     )
   })
 
-"Capitalised list items are allowed" |>
+"capitalised list items are allowed" |>
   test_that({
     expect_no_error(
       list(
@@ -91,16 +93,16 @@ measure_data <- list(
   )
 )
 
-test_that("it coerces refs to character vectors", {
-  # create the error by assigning numeric refs
-  measure_data[["week"]]$ref <- c(1, 2, 3)
-  measure_data[["month"]]$ref <- c(1, 2, 3)
+"it coerces refs to character vectors" |>
+  test_that({
+    # create the error by assigning numeric refs
+    measure_data[["week"]]$ref <- c(1, 2, 3)
+    measure_data[["month"]]$ref <- c(1, 2, 3)
 
+    r <- spcr_check_measure_data(measure_data)
 
-  r <- spcr_check_measure_data(measure_data)
-
-  expect_equal(
-    r[["week"]]$ref,
-    c("1", "2", "3")
-  )
-})
+    expect_equal(
+      r[["week"]]$ref,
+      c("1", "2", "3")
+    )
+  })
