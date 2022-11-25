@@ -12,7 +12,7 @@ spcr_check_measure_data <- function(.data) {
   )
 
   assertthat::assert_that(
-    all(names(.data) %in% c("week", "month")),
+    all(c("week", "month") %in% names(.data)),
     msg = "spcr_check_measure_data: The list items must be from 'week' or 'month'."
   )
 
