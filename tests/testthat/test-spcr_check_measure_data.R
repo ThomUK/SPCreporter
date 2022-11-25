@@ -44,6 +44,15 @@ test_that("List contains at least one of the required items", {
     )
   })
 
+"Capitalised list items are allowed" |>
+  test_that({
+    expect_no_error(
+      list(
+        Week = data.frame(ref = 1) # Week not week
+      ) |>
+        spcr_check_measure_data()
+    )
+  })
 
 measure_data <- list(
   week = tibble::tibble(

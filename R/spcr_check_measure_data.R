@@ -11,6 +11,9 @@ spcr_check_measure_data <- function(.data) {
     msg = "spcr_check_measure_data: The data must be a list."
   )
 
+  # convert list names to lower case
+  names(.data) <- names(.data) |> tolower()
+
   assertthat::assert_that(
     any(c("week", "month") %in% names(.data)),
     msg = "spcr_check_measure_data: Data for either 'week' or 'month' is required."
