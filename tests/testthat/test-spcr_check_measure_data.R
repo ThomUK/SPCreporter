@@ -5,10 +5,10 @@ test_that("it errors if the data is not a list", {
   )
 })
 
-test_that("it contains only allowed items", {
+test_that("List contains at least one of the required items", {
   expect_error(
     spcr_check_measure_data(list("Once in a blue moon" = 1)),
-    "spcr_check_measure_data: The list items must be from 'week' or 'month'."
+    "spcr_check_measure_data: Data for either 'week' or 'month' is required."
   )
 })
 
@@ -24,15 +24,21 @@ test_that("it contains only allowed items", {
     )
   })
 
-"List missing either `week` or `month` causes error" |>
+"List containing either 'week' or 'month' is allowed" |>
   test_that({
-    expect_error(
+
+    expect_no_error(
       list(
-        week = data.frame(ref = 1),
-        # test what happens if someone submits capitalised list element name;
-        # might be a good idea to sanitise to lower case on read in.
-        Month = data.frame(ref = 2),
-        asdf = data.frame(ref = 3)
+        week = data.frame(ref = 1)
+        # month list item is not provided
+      ) |>
+        spcr_check_measure_data()
+    )
+
+    expect_no_error(
+      list(
+        # week list item is not provided
+        month = data.frame(ref = 2)
       ) |>
         spcr_check_measure_data()
     )
