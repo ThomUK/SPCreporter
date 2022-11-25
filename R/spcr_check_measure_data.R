@@ -12,8 +12,8 @@ spcr_check_measure_data <- function(.data) {
   )
 
   assertthat::assert_that(
-    all(names(.data) %in% c("week", "month")),
-    msg = "spcr_check_measure_data: The list items must be from 'week' or 'month'."
+    all(c("week", "month") %in% names(.data)),
+    msg = "spcr_check_measure_data: The list must contain items named 'week' and 'month'."
   )
 
   # convert refs to character vectors

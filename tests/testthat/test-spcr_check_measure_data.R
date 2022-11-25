@@ -12,6 +12,34 @@ test_that("it contains only allowed items", {
   )
 })
 
+
+"List containing extra elements is allowed" |>
+  test_that({
+    expect_no_error(
+      list(
+        week = data.frame(ref = 1),
+        month = data.frame(ref = 2),
+        asdf = data.frame(ref = 3)
+      ) |>
+        spcr_check_measure_data()
+    )
+  })
+
+"List missing either `week` or `month` causes error" |>
+  test_that({
+    expect_error(
+      list(
+        week = data.frame(ref = 1),
+        # test what happens if someone submits capitalised list element name;
+        # might be a good idea to sanitise to lower case on read in.
+        Month = data.frame(ref = 2),
+        asdf = data.frame(ref = 3)
+      ) |>
+        spcr_check_measure_data()
+    )
+  })
+
+
 measure_data <- list(
   week = tibble::tibble(
     ref = c("1", "2", "3"),
