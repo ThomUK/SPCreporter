@@ -12,14 +12,13 @@ test_that("it contains only allowed items", {
   )
 })
 
-
 "List containing extra elements is allowed" |>
   test_that({
     expect_no_error(
       list(
         week = data.frame(ref = 1),
         month = data.frame(ref = 2),
-        asdf = data.frame(ref = 3)
+        asdf = data.frame(ref = 3) # extra element
       ) |>
         spcr_check_measure_data()
     )
