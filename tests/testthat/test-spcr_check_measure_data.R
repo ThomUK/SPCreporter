@@ -18,9 +18,9 @@
   test_that({
     expect_no_error(
       list(
-        week = data.frame(ref = 1),
-        month = data.frame(ref = 2),
-        asdf = data.frame(ref = 3) # extra element
+        week = data.frame(ref = 1, measure_name = "M1", comment = NA),
+        month = data.frame(ref = 2, measure_name = "M2", comment = NA),
+        asdf = data.frame(some = "other data") # extra element
       ) |>
         spcr_check_measure_data()
     )
@@ -31,7 +31,7 @@
 
     expect_no_error(
       list(
-        week = data.frame(ref = 1)
+        week = data.frame(ref = 1, measure_name = "M1", comment = NA)
         # month list item is not provided
       ) |>
         spcr_check_measure_data()
@@ -40,7 +40,7 @@
     expect_no_error(
       list(
         # week list item is not provided
-        month = data.frame(ref = 2)
+        month = data.frame(ref = 2, measure_name = "M2", comment = NA)
       ) |>
         spcr_check_measure_data()
     )
@@ -50,7 +50,7 @@
   test_that({
     expect_no_error(
       list(
-        Week = data.frame(ref = 1) # Week not week
+        Week = data.frame(ref = 1, measure_name = "M1", comment = NA) # Week not week
       ) |>
         spcr_check_measure_data()
     )
@@ -104,5 +104,24 @@ measure_data <- list(
     expect_equal(
       r[["week"]]$ref,
       c("1", "2", "3")
+    )
+  })
+
+"it errors helpfully when column names are missing or mis-spelled" |>
+  test_that({
+    # create the error by removing a required column
+    measure_data[["week"]]$ref <- NULL
+
+    expect_error(
+      spcr_check_measure_data(measure_data),
+      "spcr_check_for_required_columns: Column ref is missing from the measure_data. Check for typos in the column names."
+    )
+
+    # error persists when the column is mis-spelled
+    measure_data[["week"]]$Reference <- c(1, 2, 3)
+
+    expect_error(
+      spcr_check_measure_data(measure_data),
+      "spcr_check_for_required_columns: Column ref is missing from the measure_data. Check for typos in the column names."
     )
   })
