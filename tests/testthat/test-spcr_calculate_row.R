@@ -37,7 +37,7 @@ measure_data <- list(
 )
 
 # process info to get it into the same shape as spcr_make_data_bundle does
-measure_data_long <- spcr_check_measure_data(measure_data) %>%
+measure_data_long <- spcr_check_measure_data(measure_data) |>
   purrr::map2_df(.y = names(measure_data), .f = spcr_lengthen_measure_data)
 
 measure_config <- tibble::tibble(
@@ -84,8 +84,8 @@ test_that("it throws a warning if any measure is labelled as integer but has dec
   measure_data_decimals <- measure_data
 
   # process info to get it into the same shape as spcr_make_data_bundle does
-  measure_data_decimals <- spcr_check_measure_data(measure_data_decimals) %>%
-    purrr::map2_df(.y = names(measure_data_decimals), .f = spcr_lengthen_measure_data) %>%
+  measure_data_decimals <- spcr_check_measure_data(measure_data_decimals) |>
+    purrr::map2_df(.y = names(measure_data_decimals), .f = spcr_lengthen_measure_data) |>
     dplyr::mutate(
       value = dplyr::case_when(
         measure_name == "M1" ~ value + 0.5,

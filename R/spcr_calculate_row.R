@@ -34,9 +34,9 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   baseline_period <- subset_config$baseline_period
   rebase_dates <- subset_config$rebase_dates
   rebase_comment <- subset_config$rebase_comment
-  first_date <- subset_measure_data$date %>% min()
-  last_date <- subset_measure_data$date %>% max()
-  last_data_point <- subset_measure_data$value %>% utils::tail(n = 1)
+  first_date <- subset_measure_data$date |> min()
+  last_date <- subset_measure_data$date |> max()
+  last_data_point <- subset_measure_data$value |> utils::tail(n = 1)
 
   # throw a warning if the unit is "integer", but the data contains decimals
   if (unit == "integer" & any(subset_measure_data$value %% 1 != 0)) {
@@ -45,10 +45,10 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
 
   # calculate the updated_to date string
   if (aggregation == "week") {
-    updated_to <- (lubridate::ceiling_date(last_date, unit = "week", week_start = 1) - lubridate::days(1)) %>%
+    updated_to <- (lubridate::ceiling_date(last_date, unit = "week", week_start = 1) - lubridate::days(1)) |>
       format.Date("%d-%b-%Y")
   } else if (aggregation == "month") {
-    updated_to <- (lubridate::ceiling_date(last_date, unit = "month") - lubridate::days(1)) %>%
+    updated_to <- (lubridate::ceiling_date(last_date, unit = "month") - lubridate::days(1)) |>
       format.Date("%d-%b-%Y")
   } else {
     updated_to <- "-"
@@ -83,7 +83,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
     #      fix_after_n_points = #TODO
     improvement_direction = tolower(improvement_direction)
   )
-  plot <- spc %>% NHSRplotthedots::ptd_create_ggplot(
+  plot <- spc |> NHSRplotthedots::ptd_create_ggplot(
     point_size = 5,
     percentage_y_axis = is_percentage,
     main_title = paste0("#", ref, " - ", measure_name),

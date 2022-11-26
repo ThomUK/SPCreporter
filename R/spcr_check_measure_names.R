@@ -20,8 +20,8 @@ spcr_check_measure_names <- function(ref, measure_data, measure_config) {
   )
 
   # find the titles to compare
-  m_title <- measure_data[measure_data$ref == ref, ]$measure_name %>% unique()
-  c_title <- measure_config[measure_config$ref == ref, ]$measure_name %>% unique()
+  m_title <- measure_data[measure_data$ref == ref, ]$measure_name |> unique()
+  c_title <- measure_config[measure_config$ref == ref, ]$measure_name |> unique()
 
   # check that the titles match
   assertthat::assert_that(
