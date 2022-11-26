@@ -4,17 +4,16 @@ spcr_check_report_config <- function(report_config) {
     msg = "spcr_check_report_config: The report config must be a dataframe."
   )
 
-  mandatory_columns <- c(
+  # check for column names, and provide a helpful error message if needed
+  required_columns <- c(
     "ref",
     "measure_name",
     "domain",
     "aggregation"
   )
 
-  assertthat::assert_that(
-    all(mandatory_columns %in% names(report_config)),
-    msg = "spcr_check_report_config: report_config is missing a mandatory column.  Check the input spreadsheet."
-  )
+  # check required cols are present
+  spcr_check_for_required_columns(report_config, "report_config", required_columns)
 
   # convert refs to character vectors
   report_config$ref <- as.character(report_config$ref)
