@@ -20,8 +20,8 @@ spcr_check_measure_data <- function(.data) {
   )
 
   # convert refs to character vectors
-  .data[["week"]]$ref <- as.character(.data[["week"]]$ref)
-  .data[["month"]]$ref <- as.character(.data[["month"]]$ref)
+  if("week" %in% names(.data)) .data[["week"]]$ref <- as.character(.data[["week"]]$ref)
+  if("month" %in% names(.data)) .data[["month"]]$ref <- as.character(.data[["month"]]$ref)
 
   return(.data)
 }
