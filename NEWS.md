@@ -1,4 +1,6 @@
-# SPCreporter 0.1.1:9000
+# SPCreporter 0.1.2
+
+## Useability improvements
 
 * measure_data requires data for only one (or more) of "week" or "month".
 * measure_data tolerates capitalised list (worksheet) names.
