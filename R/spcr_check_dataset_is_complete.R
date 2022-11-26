@@ -17,7 +17,6 @@ spcr_check_dataset_is_complete <- function(report_config, measure_data) {
 
   missing <- dplyr::setdiff(required_data, supplied_data)
 
-
   # build an error message if there are missing data items
   assertthat::assert_that(
     nrow(missing) == 0,
