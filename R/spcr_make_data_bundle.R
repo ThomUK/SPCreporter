@@ -11,13 +11,19 @@ spcr_make_data_bundle <- function(measure_data, report_config, measure_config) {
   # check report_config
   report_config <- spcr_check_report_config(report_config)
 
-  # check measure_data, and lengthen the different aggregation levels into a single long dataframe
-  # adding the frequency in as a column
-  measure_data <- spcr_check_measure_data(measure_data) |>
-    purrr::map2_df(.y = names(measure_data), .f = spcr_lengthen_measure_data)
+  # check measure_data
+  measure_data <- spcr_check_measure_data(measure_data)
 
   # check measure_config
   measure_config <- spcr_check_measure_config(measure_config)
+
+  # check all required data is supplied
+  spcr_check_dataset_is_complete(report_config, measure_data)
+
+  # lengthen the measure data aggregation levels into a single long dataframe
+  # adding the frequency in as a column
+  measure_data <- measure_data |>
+    purrr::map2_df(.y = names(measure_data), .f = spcr_lengthen_measure_data)
 
   # make a vector of the ref numbers to create charts for
   refs <- report_config |>
