@@ -1,16 +1,60 @@
-test_that("it errors if the data is not a list", {
-  expect_error(
-    spcr_check_measure_data("not a list"),
-    "spcr_check_measure_data: The data must be a list."
-  )
-})
+"it errors if the data is not a list" |>
+  test_that({
+    expect_error(
+      spcr_check_measure_data("not a list"),
+      "spcr_check_measure_data: The data must be a list."
+    )
+  })
 
-test_that("it contains only allowed items", {
-  expect_error(
-    spcr_check_measure_data(list("Once in a blue moon" = 1)),
-    "spcr_check_measure_data: The list items must be from 'week' or 'month'."
-  )
-})
+"list contains at least one of the required items" |>
+  test_that({
+    expect_error(
+      spcr_check_measure_data(list("Once in a blue moon" = 1)),
+      "spcr_check_measure_data: Data for either 'week' or 'month' is required."
+    )
+  })
+
+"list containing extra elements is allowed" |>
+  test_that({
+    expect_no_error(
+      list(
+        week = data.frame(ref = 1),
+        month = data.frame(ref = 2),
+        asdf = data.frame(ref = 3) # extra element
+      ) |>
+        spcr_check_measure_data()
+    )
+  })
+
+"list containing either 'week' or 'month' is allowed" |>
+  test_that({
+
+    expect_no_error(
+      list(
+        week = data.frame(ref = 1)
+        # month list item is not provided
+      ) |>
+        spcr_check_measure_data()
+    )
+
+    expect_no_error(
+      list(
+        # week list item is not provided
+        month = data.frame(ref = 2)
+      ) |>
+        spcr_check_measure_data()
+    )
+  })
+
+"capitalised list items are allowed" |>
+  test_that({
+    expect_no_error(
+      list(
+        Week = data.frame(ref = 1) # Week not week
+      ) |>
+        spcr_check_measure_data()
+    )
+  })
 
 measure_data <- list(
   week = tibble::tibble(
@@ -49,16 +93,16 @@ measure_data <- list(
   )
 )
 
-test_that("it coerces refs to character vectors", {
-  # create the error by assigning numeric refs
-  measure_data[["week"]]$ref <- c(1, 2, 3)
-  measure_data[["month"]]$ref <- c(1, 2, 3)
+"it coerces refs to character vectors" |>
+  test_that({
+    # create the error by assigning numeric refs
+    measure_data[["week"]]$ref <- c(1, 2, 3)
+    measure_data[["month"]]$ref <- c(1, 2, 3)
 
+    r <- spcr_check_measure_data(measure_data)
 
-  r <- spcr_check_measure_data(measure_data)
-
-  expect_equal(
-    r[["week"]]$ref,
-    c("1", "2", "3")
-  )
-})
+    expect_equal(
+      r[["week"]]$ref,
+      c("1", "2", "3")
+    )
+  })
