@@ -1,7 +1,7 @@
 "it errors if the data is not a list" |>
   test_that({
     expect_error(
-      spcr_check_measure_data("not a list"),
+      spcr_check_measure_data(tibble::tibble(this_is = "not a list")),
       "spcr_check_measure_data: The data must be a list."
     )
   })

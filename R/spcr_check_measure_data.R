@@ -7,7 +7,7 @@
 #'
 spcr_check_measure_data <- function(.data) {
   assertthat::assert_that(
-    class(.data) == "list",
+    inherits(.data, "list"),
     msg = "spcr_check_measure_data: The data must be a list."
   )
 
