@@ -114,7 +114,7 @@ measure_data <- list(
 
     expect_error(
       spcr_check_measure_data(measure_data),
-      "spcr_check_for_required_columns: Column ref is missing from the measure_data. Check for typos in the column names."
+      "spcr_check_for_required_columns: Column 'ref' is missing from the measure_data. Check for typos in the column names."
     )
 
     # error persists when the column is mis-spelled
@@ -122,6 +122,6 @@ measure_data <- list(
 
     expect_error(
       spcr_check_measure_data(measure_data),
-      "spcr_check_for_required_columns: Column ref is missing from the measure_data. Check for typos in the column names."
+      "spcr_check_for_required_columns: Column 'ref' is missing from the measure_data. Check for typos in the column names."
     )
   })

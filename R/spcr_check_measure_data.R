@@ -53,9 +53,9 @@ spcr_check_for_required_columns <- function(dtf, name_of_dataframe_being_checked
 
     # throw the error
     stop(
-      "spcr_check_for_required_columns: Column ",
+      "spcr_check_for_required_columns: Column '",
       first_missing_column,
-      " is missing from the ",
+      "' is missing from the ",
       name_of_dataframe_being_checked,
       ". Check for typos in the column names."
     )
