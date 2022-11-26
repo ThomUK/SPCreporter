@@ -106,3 +106,22 @@ measure_data <- list(
       c("1", "2", "3")
     )
   })
+
+"it errors helpfully when column names are missing or mis-spelled" |>
+  test_that({
+    # create the error by removing a required column
+    measure_data[["week"]]$ref <- NULL
+
+    expect_error(
+      spcr_check_measure_data(measure_data),
+      "spcr_check_for_required_columns: Column ref is missing from the measure_data. Check for typos in the column names."
+    )
+
+    # error persists when the column is mis-spelled
+    measure_data[["week"]]$Reference <- c(1, 2, 3)
+
+    expect_error(
+      spcr_check_measure_data(measure_data),
+      "spcr_check_for_required_columns: Column ref is missing from the measure_data. Check for typos in the column names."
+    )
+  })
