@@ -134,3 +134,20 @@ test_that("it returns the 'updated to' string correctly", {
     "31-Dec-2020"
   )
 })
+
+"it ignores NAs in the ref column of the measure_config" |>
+test_that({
+
+  # create the error condition
+  measure_config <- measure_config |>
+    dplyr::bind_rows(
+      tibble::tibble(
+        ref = NA
+      )
+    )
+
+  expect_no_error(
+    spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)
+  )
+
+})
