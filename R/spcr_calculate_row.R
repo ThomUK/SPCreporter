@@ -94,6 +94,9 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
     icons_position = "none",
     break_lines = "limits"
   ) +
+    ggplot2::labs(
+      caption = paste0("Data source: ", data_source)
+    ) +
     ggplot2::theme(
       text = ggplot2::element_text(size = 16),
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
