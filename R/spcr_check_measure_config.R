@@ -34,5 +34,11 @@ spcr_check_measure_config <- function(.data) {
   # convert refs to character vectors
   .data$ref <- as.character(.data$ref)
 
+  # convert target to numeric
+  # warnings for coercing "-" to NA are surpressed
+  suppressWarnings(
+    .data$target <- as.numeric(.data$target)
+  )
+
   return(.data)
 }
