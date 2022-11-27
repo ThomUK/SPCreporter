@@ -11,7 +11,8 @@ spcr_check_measure_config <- function(.data) {
     msg = "spcr_check_measure_config: config_data must be a data.frame"
   )
 
-  mandatory_columns <- c(
+  # check for column names, and provide a helpful error message if needed
+  required_columns <- c(
     "ref",
     "measure_name",
     "data_source",
@@ -27,13 +28,17 @@ spcr_check_measure_config <- function(.data) {
     "rebase_comment"
   )
 
-  assertthat::assert_that(
-    all(mandatory_columns %in% names(.data)),
-    msg = "spcr_check_measure_config: config_data is missing a mandatory column.  Check the input spreadsheet."
-  )
+  # check required cols are present
+  spcr_check_for_required_columns(.data, "measure_config", required_columns)
 
   # convert refs to character vectors
   .data$ref <- as.character(.data$ref)
+
+  # convert target to numeric
+  # warnings for coercing "-" to NA are surpressed
+  suppressWarnings(
+    .data$target <- as.numeric(.data$target)
+  )
 
   return(.data)
 }

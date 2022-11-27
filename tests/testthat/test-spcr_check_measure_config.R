@@ -26,3 +26,22 @@ test_that("it coerces refs to character vectors", {
     c("1", "2", "3")
   )
 })
+
+"it errors helpfully when column names are missing or mis-spelled" |>
+  test_that({
+    # create the error by removing a required column
+    measure_config$unit <- NULL
+
+    expect_error(
+      spcr_check_measure_config(measure_config),
+      "spcr_check_for_required_columns: Column 'unit' is missing from the measure_config. Check for typos in the column names."
+    )
+
+    # error persists when the column is mis-spelled
+    measure_config$Unit <- c("Integer", "Decimal", "%")
+
+    expect_error(
+      spcr_check_measure_config(measure_config),
+      "spcr_check_for_required_columns: Column 'unit' is missing from the measure_config. Check for typos in the column names."
+    )
+  })
