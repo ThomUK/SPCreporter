@@ -15,7 +15,7 @@
 #'
 spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config, report_config) {
   # subset down to the measure of interest
-  subset_config <- measure_config %>%
+  subset_config <- measure_config |>
       dplyr::filter(ref == ref_no)
   subset_report_config <- report_config[report_config$ref == ref_no & report_config$aggregation == aggregation, ]
   subset_measure_data <- measure_data[measure_data$ref == ref_no & measure_data$frequency == aggregation, ]
