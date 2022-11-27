@@ -3,7 +3,7 @@
 #' also handles rounding, capitalisation, and the addition of percentage
 #' symbols where appropriate.
 #'
-#' @param ref character. The reference number for the measure.
+#' @param ref_no character. The reference number for the measure.
 #' @param aggregation character. The aggregation level required in the report.
 #' @param measure_data dataframe. The data to be reported.
 #' @param measure_config dataframe. The config information for each measure.
@@ -13,11 +13,12 @@
 #'
 #' @noRd
 #'
-spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, report_config) {
+spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config, report_config) {
   # subset down to the measure of interest
-  subset_config <- measure_config[measure_config$ref == ref, ]
-  subset_report_config <- report_config[report_config$ref == ref & report_config$aggregation == aggregation, ]
-  subset_measure_data <- measure_data[measure_data$ref == ref & measure_data$frequency == aggregation, ]
+  subset_config <- measure_config %>%
+      dplyr::filter(ref == ref_no)
+  subset_report_config <- report_config[report_config$ref == ref_no & report_config$aggregation == aggregation, ]
+  subset_measure_data <- measure_data[measure_data$ref == ref_no & measure_data$frequency == aggregation, ]
 
   # separate out the information required
   measure_name <- subset_config$measure_name
@@ -40,7 +41,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
 
   # throw a warning if the unit is "integer", but the data contains decimals
   if (unit == "integer" & any(subset_measure_data$value %% 1 != 0)) {
-    warning("spcr_calculate_row: Measure ", ref, " is configured as an integer, but has been supplied with decimal data.")
+    warning("spcr_calculate_row: Measure ", ref_no, " is configured as an integer, but has been supplied with decimal data.")
   }
 
   # calculate the updated_to date string
@@ -86,7 +87,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
   plot <- spc |> NHSRplotthedots::ptd_create_ggplot(
     point_size = 5,
     percentage_y_axis = is_percentage,
-    main_title = paste0("#", ref, " - ", measure_name),
+    main_title = paste0("#", ref_no, " - ", measure_name),
     x_axis_label = NULL,
     y_axis_label = NULL,
     x_axis_date_format = x_date_format,
@@ -105,7 +106,7 @@ spcr_calculate_row <- function(ref, aggregation, measure_data, measure_config, r
 
   # assemble the result
   result <- tibble::tibble(
-    Ref = as.character(ref),
+    Ref = as.character(ref_no),
     Measure_Name = measure_name,
     Domain = domain,
     Aggregation = aggregation,
