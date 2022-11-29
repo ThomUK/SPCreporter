@@ -69,7 +69,7 @@ test_that("it returns a dataframe of the expected size", {
 
   expect_equal(
     ncol(r),
-    25
+    27
   )
 })
 
@@ -87,7 +87,7 @@ test_that("it works when no targets are set", {
 
   expect_equal(
     ncol(r),
-    25
+    27
   )
 })
 
