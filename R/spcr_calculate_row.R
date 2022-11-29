@@ -26,6 +26,8 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   data_source <- subset_config$data_source
   data_owner <- subset_config$data_owner
   accountable_person <- subset_config$accountable_person
+  reviewed_at <- ifelse("reviewed_at" %in% colnames(subset_config), subset_config$reviewed_at, NA) # optional column
+  escalated_to <- ifelse("escalated_to" %in% colnames(subset_config), subset_config$escalated_to, NA) # optional column
   unit <- tolower(subset_config$unit)
   improvement_direction <- subset_config$improvement_direction
   target <- subset_config$target[1]
@@ -119,6 +121,8 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
     Data_Source = data_source,
     Data_Owner = data_owner,
     Accountable_Person = accountable_person,
+    Reviewed_At = reviewed_at,
+    Escalated_To = escalated_to,
     Unit = unit,
     Improvement_Direction = improvement_direction,
     Target = target,
