@@ -1,4 +1,12 @@
-# SPCreporter 0.1.3.9000
+# SPCreporter 0.1.4
+
+## Feature addition
+
+* Add two new optional columns to the measure_config: "Reviewed At", and "Escalated To".  If present the text in these fields is rendered into the final report below each chart.  
+
+## Bugfix
+
+* Fixed an error caused when measure_data contained NAs.  The package will now tolerate NAs in the data.  
 
 # SPCreporter 0.1.3
 
