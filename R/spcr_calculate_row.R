@@ -26,6 +26,8 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   data_source <- subset_config$data_source
   data_owner <- subset_config$data_owner
   accountable_person <- subset_config$accountable_person
+  reviewed_at <- ifelse("reviewed_at" %in% colnames(subset_config), subset_config$reviewed_at, NA) # optional column
+  escalated_to <- ifelse("escalated_to" %in% colnames(subset_config), subset_config$escalated_to, NA) # optional column
   unit <- tolower(subset_config$unit)
   improvement_direction <- subset_config$improvement_direction
   target <- subset_config$target[1]
@@ -40,7 +42,7 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   last_data_point <- subset_measure_data$value |> utils::tail(n = 1)
 
   # throw a warning if the unit is "integer", but the data contains decimals
-  if (unit == "integer" & any(subset_measure_data$value %% 1 != 0)) {
+  if (unit == "integer" & any(na.omit(subset_measure_data$value) %% 1 != 0)) {
     warning("spcr_calculate_row: Measure ", ref_no, " is configured as an integer, but has been supplied with decimal data.")
   }
 
@@ -119,6 +121,8 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
     Data_Source = data_source,
     Data_Owner = data_owner,
     Accountable_Person = accountable_person,
+    Reviewed_At = reviewed_at,
+    Escalated_To = escalated_to,
     Unit = unit,
     Improvement_Direction = improvement_direction,
     Target = target,

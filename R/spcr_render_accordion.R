@@ -10,6 +10,8 @@
 #' @param Data_Source string. The name of the data origin
 #' @param Data_Owner string. The person/area who manage the reporting data
 #' @param Accountable_Person string. The person/area who is accountable for the measure
+#' @param Reviewed_At string. The meeting or activity where the measure is reviewed
+#' @param Escalated_To string. The meeting or activity where concerning trends are escalated
 #' @param Unit string. Integer, Decimal, or %
 #' @param Improvement_Direction string. Increase, Decrease, or Neutral
 #' @param Target numeric. The target (or NA)
@@ -41,6 +43,8 @@ spcr_render_accordion <- function(Ref,
                                   Data_Source,
                                   Data_Owner,
                                   Accountable_Person,
+                                  Reviewed_At,
+                                  Escalated_To,
                                   Unit,
                                   Improvement_Direction,
                                   Target,
@@ -121,6 +125,8 @@ spcr_render_accordion <- function(Ref,
       ),
       htmltools::p(if (!is.na(Rebase_Comment)) paste0("Rebase comments: ", Rebase_Comment)),
       htmltools::div(paste0("Accountable Person: ", Accountable_Person)),
+      htmltools::div(if (!is.na(Reviewed_At)) paste0("Reviewed At: ", Reviewed_At)),
+      htmltools::div(if (!is.na(Escalated_To)) paste0("Escalated (if needed) to: ", Escalated_To)),
       htmltools::div(paste0("Data owner: ", Data_Owner))
     ),
     style = glue::glue(
