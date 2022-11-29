@@ -40,7 +40,7 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   last_data_point <- subset_measure_data$value |> utils::tail(n = 1)
 
   # throw a warning if the unit is "integer", but the data contains decimals
-  if (unit == "integer" & any(subset_measure_data$value %% 1 != 0)) {
+  if (unit == "integer" & any(na.omit(subset_measure_data$value) %% 1 != 0)) {
     warning("spcr_calculate_row: Measure ", ref_no, " is configured as an integer, but has been supplied with decimal data.")
   }
 
