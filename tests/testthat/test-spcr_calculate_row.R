@@ -151,3 +151,21 @@ test_that({
   )
 
 })
+
+"it tolerates NAs in the measure_data" |>
+test_that({
+
+  # create the error condition
+  measure_data_long <- measure_data_long |>
+    dplyr::mutate(
+      value = dplyr::case_when(
+        ref == 1 & frequency == "week" & date == as.Date("2020-01-06") ~ NA_real_,
+        TRUE ~ value
+      )
+    )
+
+  expect_no_error(
+    spcr_calculate_row("1", "week", measure_data_long, measure_config, report_config)
+  )
+
+})
