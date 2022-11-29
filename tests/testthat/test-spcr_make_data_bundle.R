@@ -90,3 +90,27 @@ test_that("it works when no targets are set", {
     25
   )
 })
+
+"it accepts optional columns from measure_config" |>
+test_that({
+
+  # add optional columns
+  measure_config$reviewed_at <- "ABC Meeting"
+  measure_config$escalated_to <- "XYZ Meeting"
+
+  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
+
+  expect_equal(
+    ncol(r),
+    27
+  )
+  expect_equal(
+    "Reviewed_At" %in% names(r),
+    TRUE
+  )
+  expect_equal(
+    "Escalated_To" %in% names(r),
+    TRUE
+  )
+
+})
