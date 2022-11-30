@@ -114,3 +114,20 @@ test_that({
   )
 
 })
+
+"it throws errors for name mismatches in preference to other errors" |>
+test_that({
+
+  # create the name mismatches
+  report_config$measure_name[1] <- "M1 spelling 1"
+  measure_config$measure_name[1] <- "M1 spelling 2"
+  measure_data[["week"]]$measure_name <- "M1 spelling 3"
+
+  # this previously threw an error for missing data (based on a mis-spelled measure name)
+  # the correct behaviour is to complain about the name mismatch first
+  expect_error(
+    spcr_make_data_bundle(measure_data, report_config, measure_config),
+    "spcr_check_measure_names: There is a name mismatch for measure ref: 1. Check for typos or mismatching refs or data."
+  )
+
+})
