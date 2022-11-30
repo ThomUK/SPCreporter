@@ -8,6 +8,10 @@
 
 * Fixes an issue where if there are mismatches in measure_name across any of the 3 supplied dataframes (measure_data, report_config, measure_config) the error message throw reported missing data.  `Error: spcr_check_dataset_is_complete: Data is missing for 1 report items. The first is ref 1, M1, monthly.`  The correct and more helpful error in this case is to complain of the name mismatch: `Error: spcr_check_measure_names: There is a name mismatch for measure ref: 1. Check for typos or mismatching refs or data.`
 
+## Bugfix
+
+* Fix a bug relating to NAs in the dataset which was causing printed warnings in the final report, as well as blank space in the charts.  The new behaviour strips NAs from all data, meaning that the chart axis starts at the first data point, and ends at the last.  
+
 # SPCreporter 0.1.4
 
 ## Feature addition
