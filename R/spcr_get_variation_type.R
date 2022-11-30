@@ -35,5 +35,14 @@ spcr_get_variation_type <- function(spc, improvement_direction) {
     return("SC_HI_NEUTRAL")
   }
 
+
+  if (variation == "special_cause_neutral_low" && relative_to_mean == -1) {
+    return("SC_LO_NEUTRAL")
+  }
+  if (variation == "special_cause_neutral_high" && (relative_to_mean == 1 | relative_to_mean == 0)) {
+    return("SC_HI_NEUTRAL")
+  }
+
+
   stop("spcr_get_variation_type: Unable to determine SPC variation type.")
 }
