@@ -2,7 +2,8 @@
 
 ## Feature addition
 
-* Rebasing of SPC charts is now supported.  Pass in a date string in "YYYY-MM-DD" format, or multiple date strings.  `'"2020-01-01"'`, or `'"2020-01-01", "2021-05-01'`
+* Rebasing of SPC charts is now supported.  Pass in a date string in "YYYY-MM-DD" format, or multiple date strings.  `'"2020-01-01"'`, or `'"2020-01-01", "2021-05-01"'`
+* Stale data is now highlighted in the report.  By default data is highlighted as stale if the report cutoff is after the data update date (as defined by the `updated_to` argument for the data, and the `data_cutoff_dttm` for the report).  Optionally, a column called `allowable_days_lag` can be included in the measure_config.  This can be used to delay the flagging of stale data.  For example using a value of 31 in the `allowable_days_lag` column will enable a measure to be reported a month in arrears without being flagged as stale.  
 
 ## Useability
 
