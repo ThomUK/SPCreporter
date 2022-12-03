@@ -40,6 +40,17 @@ spcr_make_report <- function(data_bundle,
     exists
   )
 
+  # identify stale data and add a flag to the data bundle
+  data_bundle <- data_bundle |>
+    dplyr::mutate(
+      Allowable_Days_Lag = tidyr::replace_na(as.numeric(Allowable_Days_Lag), 0), # allow blanks to come in, but convert them to 0 here
+      Stale_Data = spcr_calculate_stale_data(
+        as.Date(Updated_To, format = "%d-%b-%Y"),
+        Allowable_Days_Lag,
+        data_cutoff_dttm)
+    ) |>
+    dplyr::relocate(Stale_Data, .before = "Needs_Domain_Heading")
+
   # create the output file name from the report title and a timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
   output_file_name <- paste0(
@@ -67,4 +78,7 @@ spcr_make_report <- function(data_bundle,
 
   # finished!!
   beepr::beep(1)
+
+  # return the data bundle, which now contains details on stale data
+  return(data_bundle)
 }
