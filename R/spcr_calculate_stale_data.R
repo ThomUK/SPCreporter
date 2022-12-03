@@ -25,9 +25,12 @@ spcr_calculate_stale_data <- function(updated_to_date, lag, cutoff_dttm){
     msg = "spcr_calculate_stale_data: The cutoff_dttm argument must be a POSIXct."
   )
 
+  # adjust from 00:00:00 to 23:59:59
   adjust_23hrs_59mins_59s <- lubridate::hours(23) +
     lubridate::minutes(59) +
     lubridate::seconds(59)
+
+  lag <- lubridate::days(lag) # conver to a period
 
   dplyr::if_else(updated_to_date + adjust_23hrs_59mins_59s + lag < cutoff_dttm, TRUE, FALSE)
 
