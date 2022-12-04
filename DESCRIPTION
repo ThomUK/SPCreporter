@@ -29,6 +29,7 @@ Imports:
     purrr,
     rlang,
     rmarkdown,
+    stringr,
     tidyr,
     utils
 Suggests: 
