@@ -1,7 +1,7 @@
 #' Check whether data is stale
 #'
 #' @param updated_to_date date. The date of the final day the data relates to
-#' @param lag integer. The number of days of update lag acceptable before the data is stale
+#' @param lag integer. The number of days of update lag allowable before the data is stale
 #' @param cutoff_dttm POSIXct. The datetime of the data cutoff, usually the end of the
 #' week or month.
 #'
