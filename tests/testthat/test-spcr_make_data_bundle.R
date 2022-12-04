@@ -69,7 +69,7 @@ test_that("it returns a dataframe of the expected size", {
 
   expect_equal(
     ncol(r),
-    27
+    28
   )
 })
 
@@ -87,7 +87,7 @@ test_that("it works when no targets are set", {
 
   expect_equal(
     ncol(r),
-    27
+    28
   )
 })
 
@@ -102,7 +102,7 @@ test_that({
 
   expect_equal(
     ncol(r),
-    27
+    28
   )
   expect_equal(
     "Reviewed_At" %in% names(r),
@@ -130,4 +130,22 @@ test_that({
     "spcr_check_measure_names: There is a name mismatch for measure ref: 1. Check for typos or mismatching refs or data."
   )
 
+})
+
+"it accepts optional columns for 'allowable_days_lag'" |>
+test_that({
+
+  # add optional column
+  measure_config$allowable_days_lag <- c(NA, 1, 2)
+
+  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
+
+  expect_equal(
+    ncol(r),
+    28
+  )
+  expect_equal(
+    "Allowable_Days_Lag" %in% names(r),
+    TRUE
+  )
 })
