@@ -17,6 +17,7 @@
 #' @param Target numeric. The target (or NA)
 #' @param Target_Text string. A formatted string, complete with rounding
 #' @param Target_Set_By string. The name of the person/organisation setting the target
+#' @param Allowable_Days_Lag numeric. The number of days reporting lag allowed before the measure is marked as stale
 #' @param Data_Quality string. The data quality rating
 #' @param Baseline_Period numeric. Number of points over which to set a baseline
 #' @param Rebase_Dates string. A list of dates representing rebase dates
@@ -26,6 +27,7 @@
 #' @param Last_Data_Point string. The most recent data point
 #' @param Variation_Type string. The variation logo name
 #' @param Assurance_Type string. The assurance logo name
+#' @param Stale_Data logical. Is the data stale (older than it's agreed lag)?
 #' @param Needs_Domain_Heading logical. True if the domain heading should be printed on the report
 #' @param accordion_colour string. A valid HTML Hex Colour Code
 #' @param include_dq_icon logical. Is the data quality icon required on the final report
@@ -50,6 +52,7 @@ spcr_render_accordion <- function(Ref,
                                   Target,
                                   Target_Text,
                                   Target_Set_By,
+                                  Allowable_Days_Lag,
                                   Data_Quality,
                                   Baseline_Period,
                                   Rebase_Dates,
@@ -59,10 +62,12 @@ spcr_render_accordion <- function(Ref,
                                   Last_Data_Point,
                                   Variation_Type,
                                   Assurance_Type,
+                                  Stale_Data,
                                   Needs_Domain_Heading,
                                   accordion_colour,
                                   include_dq_icon) {
-  highlight_colour <- "#FFFFFF" # TODO white for up to date, yellow for delayed updates
+
+  stale_data_highlight <- ifelse(Stale_Data, "#ffd1ad", "#ffffff") # orange for stale, white for fresh
 
   message("Knitting measure: ", Ref, " - ", Measure_Name)
 
@@ -104,7 +109,7 @@ spcr_render_accordion <- function(Ref,
         htmltools::h4(glue::glue("# {Ref} - {Measure_Name}"), class = "measure_title"),
         htmltools::div(
           class = "inner_flex",
-          htmltools::div(spcr_mini_card("Updated to", Updated_To, highlight_colour = highlight_colour, class = "wide_card")), # date of most recent data
+          htmltools::div(spcr_mini_card("Updated to", Updated_To, highlight_colour = stale_data_highlight, class = "wide_card")), # date of most recent data, and highlighted if stale
           htmltools::div(spcr_mini_card("Target", Target_Text)), # a text string representing the target
           htmltools::div(spcr_mini_card("Set by", Target_Set_By)), # who set the target
           htmltools::div(spcr_mini_card("Actual", Last_Data_Point)), # value for latest date
