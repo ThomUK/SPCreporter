@@ -46,7 +46,7 @@ spcr_make_data_bundle <- function(measure_data, report_config, measure_config) {
   ) |>
     # add a column to control whether Domain titles are printed
     dplyr::mutate(
-      Needs_Domain_Heading = dplyr::if_else("Domain" != dplyr::lag("Domain", default = "TRUE"), TRUE, FALSE)
+      Needs_Domain_Heading = dplyr::if_else(Domain != dplyr::lag(Domain, default = "TRUE"), TRUE, FALSE)
     )
 
   return(result)

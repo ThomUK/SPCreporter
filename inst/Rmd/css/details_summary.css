@@ -21,6 +21,8 @@ details:hover {
 
 details .details_content {
     padding: 1rem;
+    background-color: white;
+    border-radius: 0 0 10px 10px;
 }
 
 /* Replace standard summary marker with +- content*/
@@ -35,4 +37,9 @@ summary::marker {
 }
 details[open] .outer_flex:before {
     content: "-";
+}
+
+
+#icon-key {
+  background-color: white;
 }

@@ -14,6 +14,8 @@
 #' @noRd
 #'
 spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config, report_config) {
+
+  message(paste0("Calculating ref: ", ref_no))
   # subset down to the measure of interest
   subset_config <- measure_config |>
       dplyr::filter(ref == ref_no)
@@ -35,11 +37,12 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   target_set_by <- spcr_get_target_set_by(target, subset_config$target_set_by)
   data_quality <- subset_config$data_quality
   baseline_period <- subset_config$baseline_period
-  rebase_dates <- subset_config$rebase_dates
+  rebase_dates <- spcr_parse_rebase_dates(subset_config$rebase_dates)
   rebase_comment <- subset_config$rebase_comment
   first_date <- subset_measure_data$date |> min()
   last_date <- subset_measure_data$date |> max()
   last_data_point <- subset_measure_data$value |> utils::tail(n = 1)
+  allowable_days_lag <- ifelse("allowable_days_lag" %in% colnames(subset_config), subset_config$allowable_days_lag, NA) # optional column
 
   # throw a warning if the unit is "integer", but the data contains decimals
   if (unit == "integer" & any(na.omit(subset_measure_data$value) %% 1 != 0)) {
@@ -82,6 +85,7 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
     subset_measure_data,
     value_field = "value",
     date_field = "date",
+    rebase = rebase_dates,
     target = spc_target, # set to NULL in code if NA in source data
     #      fix_after_n_points = #TODO
     improvement_direction = tolower(improvement_direction)
@@ -109,6 +113,8 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   variation_type <- spcr_get_variation_type(spc, improvement_direction)
   assurance_type <- spcr_get_assurance_type(spc, improvement_direction)
 
+  message(paste0("                 ", ref_no, " complete"))
+
   # assemble the result
   result <- tibble::tibble(
     Ref = as.character(ref_no),
@@ -128,6 +134,7 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
     Target = target,
     Target_Text = target_text,
     Target_Set_By = target_set_by,
+    Allowable_Days_Lag = allowable_days_lag,
     Data_Quality = data_quality,
     Baseline_Period = baseline_period,
     Rebase_Dates = rebase_dates,

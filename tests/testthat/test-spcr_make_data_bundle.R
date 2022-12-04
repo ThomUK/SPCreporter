@@ -69,7 +69,7 @@ test_that("it returns a dataframe of the expected size", {
 
   expect_equal(
     ncol(r),
-    27
+    28
   )
 })
 
@@ -87,7 +87,7 @@ test_that("it works when no targets are set", {
 
   expect_equal(
     ncol(r),
-    27
+    28
   )
 })
 
@@ -102,7 +102,7 @@ test_that({
 
   expect_equal(
     ncol(r),
-    27
+    28
   )
   expect_equal(
     "Reviewed_At" %in% names(r),
@@ -113,4 +113,39 @@ test_that({
     TRUE
   )
 
+})
+
+"it throws errors for name mismatches in preference to other errors" |>
+test_that({
+
+  # create the name mismatches
+  report_config$measure_name[1] <- "M1 spelling 1"
+  measure_config$measure_name[1] <- "M1 spelling 2"
+  measure_data[["week"]]$measure_name <- "M1 spelling 3"
+
+  # this previously threw an error for missing data (based on a mis-spelled measure name)
+  # the correct behaviour is to complain about the name mismatch first
+  expect_error(
+    spcr_make_data_bundle(measure_data, report_config, measure_config),
+    "spcr_check_measure_names: There is a name mismatch for measure ref: 1. Check for typos or mismatching refs or data."
+  )
+
+})
+
+"it accepts optional columns for 'allowable_days_lag'" |>
+test_that({
+
+  # add optional column
+  measure_config$allowable_days_lag <- c(NA, 1, 2)
+
+  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
+
+  expect_equal(
+    ncol(r),
+    28
+  )
+  expect_equal(
+    "Allowable_Days_Lag" %in% names(r),
+    TRUE
+  )
 })

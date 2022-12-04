@@ -19,8 +19,8 @@ spcr_lengthen_measure_data <- function(.data, frequency) {
       names_to = "date", values_to = "value"
     ) |>
     dplyr::mutate(frequency = frequency) |>
-    dplyr::select(-"comment") |>
-    dplyr::filter(!is.na("value"))
+    dplyr::select(-comment) |>
+    dplyr::filter(!is.na(value))
 
   # handle varying date column heading formats
   suppressWarnings(

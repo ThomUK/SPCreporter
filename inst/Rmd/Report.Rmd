@@ -48,13 +48,13 @@ purrr::pwalk(
 ---
 
 <!-- HTML to render the dropdown containing the icon key -->
-<details>
+<details id="icon-key">
   <summary>
-    <h4 class = "outer_flex" id="icon-key" style = "justify-content: flex-start">
+    <h4 class="outer_flex" style="justify-content: flex-start;">
     How to read the icons used in this document
     </h4>
   </summary>
-  <div class = "details_content">
+  <div class="details_content">
     `r spcr_icon_key_explanation()`
   </div>
 </details>

@@ -15,7 +15,17 @@ spcr_check_dataset_is_complete <- function(report_config, measure_data) {
     dplyr::bind_rows(.id = "aggregation") |>
     dplyr::select(ref, measure_name, aggregation)
 
-  missing <- dplyr::setdiff(required_data, supplied_data)
+  missing <- dplyr::setdiff(
+    required_data[, c("ref", "aggregation")], # don't use the measure name for the missing check (it might not match and is checked later in another function
+    supplied_data[, c("ref", "aggregation")], # don't use the measure name for the missing check (it might not match and is checked later in another function
+    ) |>
+    dplyr::left_join(required_data, by = "ref") |> # join to get the measure name back for the error message
+    dplyr::select( #
+      ref,
+      measure_name,
+      aggregation = aggregation.x,
+    ) |>
+    unique() # remove duplicate left_join rows
 
   # build an error message if there are missing data items
   assertthat::assert_that(
