@@ -14,6 +14,8 @@
 #' @noRd
 #'
 spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config, report_config) {
+
+  message(paste0("Calculating ref: ", ref_no))
   # subset down to the measure of interest
   subset_config <- measure_config |>
       dplyr::filter(ref == ref_no)
@@ -110,6 +112,8 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   # add helper columns based on spc calculations
   variation_type <- spcr_get_variation_type(spc, improvement_direction)
   assurance_type <- spcr_get_assurance_type(spc, improvement_direction)
+
+  message(paste0("                 ", ref_no, " complete"))
 
   # assemble the result
   result <- tibble::tibble(
