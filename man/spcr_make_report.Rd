@@ -6,28 +6,32 @@
 \usage{
 spcr_make_report(
   data_bundle,
-  title,
+  title = "SPC Report",
   subtitle = NULL,
-  report_ref,
+  document_title = NULL,
+  report_ref = "",
   data_cutoff_dttm,
-  logo_path = NULL,
+  logo_path = "nhs",
   department = NULL,
   department_text_colour = "black",
   intro = NULL,
-  author_name,
-  author_email,
-  paper_colour = "#FFFFFF",
+  author_name = "Anne Author",
+  author_email = "a.author@example.com",
+  paper_colour = "white",
   accordion_colour = "#CCF2FF",
-  output_directory = "/",
+  output_directory = ".",
+  export_xlsx = TRUE,
   include_dq_icon = TRUE
 )
 }
 \arguments{
-\item{data_bundle}{list. The pre-processed bundle of information (made with spcr_make_data_bundle())}
+\item{data_bundle}{data frame. The pre-processed bundle of information (made with \code{spcr_make_data_bundle()})}
 
 \item{title}{string. The report title, printed at the top of the report}
 
 \item{subtitle}{string. The report subtitle, printed at the top of the report}
+
+\item{document_title}{string. A title for the document, as used in the HTML \verb{<title>} tag or as the PDF document title. If left as NULL (the default), this function will use the \code{title} parameter and the current date to construct a title}
 
 \item{report_ref}{string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)}
 
@@ -45,13 +49,15 @@ spcr_make_report(
 
 \item{author_email}{string. The author's contact email address}
 
-\item{paper_colour}{string. Customise the background colour using a valid HTML Hex Colour Code}
+\item{paper_colour}{string. Customise the background colour using a valid HTML hex colour code, or CSS colour name}
 
-\item{accordion_colour}{string. Customise the accordion colour using a valid HTML Hex Colour Code}
+\item{accordion_colour}{string. Customise the accordion colour using a valid HTML hex colour code, or CSS colour name}
 
 \item{output_directory}{string. The name of the directory to save the resulting report to}
 
-\item{include_dq_icon}{logical. Is the data quality icon required on the final report}
+\item{export_xlsx}{logical. Whether to export an .xlsx file of the data used in the report, as well as the report itself}
+
+\item{include_dq_icon}{logical. Is the data quality icon required on the final report?}
 }
 \description{
 Make the SPC Report

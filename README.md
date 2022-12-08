@@ -9,16 +9,16 @@ ensure your leadership are talking about signals that matter.
 
 The layout and method is heavily inspired by the NHS England &
 Improvement [“Making Data Count”
-programme](%22https://bmjleader.bmj.com/content/5/4/252%22), which
-encourages the use of SPC and time-series charts to replace “red, amber,
-green” threshold performance reporting. The SPC calculations are made
-using the {NHSRplotthedots} package, from the [NHS-R
-Community.](%22https://nhsrcommunity.com/%22)
+programme](https://bmjleader.bmj.com/content/5/4/252), which encourages
+the use of SPC and time-series charts to replace “red, amber, green”
+threshold performance reporting. The SPC calculations are made using the
+{NHSRplotthedots} package, from the [NHS-R
+Community](https://nhsrcommunity.com/).
 
 ## Installation
 
 You can install the development version of SPCreporter from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/ThomUK/SPCreporter) with:
 
 ``` r
 # install.packages("remotes")
@@ -53,9 +53,10 @@ spcr_make_report(
 #### Working example - using data included within the package
 
 This example uses three excel files which are included with the package
-in the “example_data” folder. After you have run this exaple and created
-your first report, you should copy these example files to your machine,
-and use them as templates for creating your own report information.
+in the “example_data” folder. After you have run this example and
+created your first report, you should copy these example files to your
+machine, and use them as templates for creating your own report
+information.
 
 ``` r
 library(SPCreporter)
@@ -107,22 +108,29 @@ spcr_make_report(
 # You should now have an example report in your working directory
 ```
 
-#### Advanced example - creating a suite of reports with purr::pwalk
+#### Advanced example - creating a suite of reports with `purrr::pwalk()`
 
 ``` r
 # example where we map over several reports, creating them in one go
 all_my_reports <- tibble::tibble(
   title = c("Report 1", "Report 2", "Report 3"),
-  report_ref = c("ID.3", "ID.2", "ID.3"),
-  author_name = rep("Anne Author", 3),
-  author_email = rep("a.author@example.com", 3),
-  data_cutoff_dttm = rep(as.POSIXct("2022-09-30 23:59:59"), 3),
-  paper_colour = c("red", "yellow", "green") # create reports with different paper colours
+  report_ref = c("ID.1", "ID.2", "ID.3"),
+  author_name = "Anne Author",
+  author_email = "a.author@example.com",
+  data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59"),
+  # create reports with different paper colours
+  paper_colour = c("seashell", "thistle", "#afcfaf")
 )
 
 # map over the dataframe, which will create 3 separate reports
-# in this case with the same dataset, but you may want to pass different data to each
+# in this case with the same dataset...
 purrr::pwalk(all_my_reports, spcr_make_report, data_bundle = data_bundle)
+
+# ... but you may want to pass different data to each:
+
+all_my_reports |>
+  dplyr::mutate(data_bundle = list(data_bundle1, data_bundle2, data_bundle3)) |>
+  purrr::pwalk(spcr_make_report)
 ```
 
 END

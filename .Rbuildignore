@@ -4,3 +4,4 @@
 ^README\.Rmd$
 
 ^local_development_files/
+^data-raw$
