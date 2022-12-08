@@ -19,18 +19,21 @@ spcr_check_measure_data <- function(.data) {
     msg = "spcr_check_measure_data: Data for either 'week' or 'month' is required."
   )
 
-  # check for column names, and provide a helpful error message if needed
+
+  ### check for column names, and provide a helpful error message if needed
   required_columns <- c("ref", "measure_name", "comment")
 
-  # check required cols are present
-  if("week" %in% names(.data)) spcr_check_for_required_columns(.data[["week"]], "measure_data", required_columns)
-  if("month" %in% names(.data)) spcr_check_for_required_columns(.data[["month"]], "measure_data", required_columns)
 
-  # convert refs to character vectors
-  if("week" %in% names(.data)) .data[["week"]]$ref <- as.character(.data[["week"]]$ref)
-  if("month" %in% names(.data)) .data[["month"]]$ref <- as.character(.data[["month"]]$ref)
+  .data |>
+    # reduce data down to only desired elements
+    purrr::keep(~ names(.) %in% c("week", "month")) %>%
 
-  return(.data)
+    # and check required cols are present
+    purrr::walk2(names(.), spcr_check_for_required_columns,
+                required_columns = required_columns) |>
+
+    # and convert ref column to character
+    purrr::map(~ dplyr::mutate(., across(ref, as.character)))
 }
 
 
@@ -43,10 +46,10 @@ spcr_check_measure_data <- function(.data) {
 #' @return logical. TRUE if all are present, or error if not
 #' @noRd
 #'
-spcr_check_for_required_columns <- function(dtf, name_of_dataframe_being_checked, required_columns){
-  missing_columns <- required_columns[!required_columns %in% names(dtf)]
+spcr_check_for_required_columns <- function(.data, name_of_df_being_checked, required_columns) {
+  missing_columns <- required_columns[!required_columns %in% names(.data)]
 
-  if(length(missing_columns)){
+  if (length(missing_columns)) {
 
     # find the name of the first missing col for the error message
     first_missing_column <- missing_columns[1]
@@ -55,11 +58,9 @@ spcr_check_for_required_columns <- function(dtf, name_of_dataframe_being_checked
     stop(
       "spcr_check_for_required_columns: Column '",
       first_missing_column,
-      "' is missing from the ",
-      name_of_dataframe_being_checked,
-      ". Check for typos in the column names."
+      "' is missing from the '",
+      name_of_df_being_checked,
+      "' data frame. Check for typos in the column names."
     )
-  }
-
-  return(TRUE)
+  } else invisible(TRUE)
 }

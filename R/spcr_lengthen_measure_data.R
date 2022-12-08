@@ -12,13 +12,14 @@ spcr_lengthen_measure_data <- function(.data, frequency) {
     msg = "spcr_lengthen_measure_data: The data must be a data frame."
   )
 
-  assertthat::assert_that(is.character(frequency),
-                          msg = usethis::ui_oops(
-                            "spcr_lengthen_measure_data: frequency variable (taken from measure_data
-        list name) is not a string."
-                          ))
+  assertthat::assert_that(
+    is.character(frequency),
+    msg = usethis::ui_oops(
+    "spcr_lengthen_measure_data: frequency variable (taken from measure_data
+    list name) is not a string."))
 
-  ymd_regex <- "^[0-9]{2,}-[:alnum:]+-[0-9]+$"
+
+  ymd_regex <- "^20[0-9]{2}-[:alnum:]{1,2}-[0-9]{1,2}$"
 
 
   assertthat::assert_that(
