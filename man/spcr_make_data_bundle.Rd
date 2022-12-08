@@ -4,7 +4,11 @@
 \alias{spcr_make_data_bundle}
 \title{Make a bundle of data including all SPC calcs}
 \usage{
-spcr_make_data_bundle(measure_data, report_config, measure_config)
+spcr_make_data_bundle(
+  measure_data = test_measure_data,
+  report_config = test_report_config,
+  measure_config = test_measure_config
+)
 }
 \arguments{
 \item{measure_data}{list. List containing dataframes of data in wide format}

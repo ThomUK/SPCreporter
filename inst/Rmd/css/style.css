@@ -1,3 +1,50 @@
+body {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+#notes > * + * {
+  margin-top: 1.25rem;
+}
+
+
+h1, h2, h3, h4, h5 {
+  font-weight: 500;
+}
+
+/* hide default title header. We use a custom h1 to display `r title` instead */
+#header {
+  display: none;
+}
+
+
+#header_bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 3rem 0 2rem 0;
+}
+
+
+#title_data {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+#logo_block {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  font-weight: 700;
+}
+
+#logo_block p.caption {
+  visibility: hidden;
+}
+
+
 .outer_flex {
   display: flex;
   justify-content: space-between;
@@ -31,10 +78,6 @@
   text-align: center;
 }
 
-/* htmltools insists on wrapping with p tag.  this removes margin */
-  .spc_logo p {
-    margin: 0;
-  }
 
 .spc_logo img {
   border-radius: 5px;
@@ -63,7 +106,4 @@
 
 .table {
   max-width: 500px;
-}
-.icon {
-  width: 45px;
 }
