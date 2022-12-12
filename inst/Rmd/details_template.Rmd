@@ -1,0 +1,92 @@
+### `r ifelse({{Needs_Domain_Heading}}, paste0("{{Domain}}", ":"), "")`
+
+<details>
+<summary>
+
+<div class="outer_flex">
+
+<h4 class="measure_title"># {{Ref}} - {{Measure_Name}}</h4>
+
+<div class="inner_flex">
+
+<div>
+<div class="mini_card wide_card">
+<div class="mini_card_key">
+Updated to
+</div>
+<div class="mini_card_value `r ifelse({{Stale_Data}}, ".stale", ".fresh")`">
+{{Updated_To}}
+</div>
+</div>
+</div>
+
+
+<div>
+<div class="mini_card">
+<div class="mini_card_key">
+Target:
+</div>
+<div class="mini_card_value">
+{{Target_Text}}
+</div>
+</div>
+</div>
+
+<div>
+<div class="mini_card">
+<div class="mini_card_key">
+Set by
+</div>
+<div class="mini_card_value">
+{{Target_Set_By}}
+</div>
+</div>
+</div>
+
+
+<div>
+<div class="mini_card">
+<div class="mini_card_key">
+Actual
+</div>
+<div class="mini_card_value">
+{{Last_Data_Point}}
+</div>
+</div>
+</div>
+
+
+<div class="spc_logo">
+![{{Variation_Type}}](`r v_paths[["{{Variation_Type}}"]]`)
+</div>
+
+
+<div class="spc_logo">
+![{{Assurance_Type}}](`r a_paths[["{{Assurance_Type}}"]]`)
+</div>
+
+<div class="spc_logo">
+![{{Data_Quality}}](`r stringr::str_glue("../img/dq_icons/star_{{Data_Quality}}.png")`)
+</div>
+
+</div>
+</div>
+
+</summary>
+
+<div class="details_content">
+
+![{{Measure_Name}} plot]({{SPC_Plot_URI}})
+
+`r if (!is.na({{Rebase_Comment}})) paste0("Rebase comments: ", "{{Rebase_Comment}}")`
+
+Accountable Person: {{Accountable_Person}}
+
+`r if (!is.na({{Reviewed_At}})) paste0("Reviewed at: ", "{{Reviewed_At}}")`
+
+`r if (!is.na({{Escalated_To}})) paste0("Escalated (if needed) to: ", "{{Escalated_To}}")`
+
+Data Owner: {{Data_Owner}}
+
+</div>
+</details>
