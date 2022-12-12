@@ -66,7 +66,7 @@ spcr_make_report <- function(measure_data,
 
 
   tmp_files |>
-    purrr::walk2(spc_plots, ggplot2::ggsave, device = ragg::agg_png, width = 1800, height = 900, units = "px", dpi = 144)
+    purrr::walk2(spc_plots, ggplot2::ggsave, width = 1800, height = 900, units = "px", dpi = 144)
 
   spc_plot_uris <- tmp_files |>
     purrr::map(knitr::image_uri)
@@ -123,8 +123,7 @@ spcr_make_report <- function(measure_data,
   # render the html output
   usethis::ui_info("Making HTML output...")
   rmarkdown::render(
-    here::here("inst", "Rmd", "Report.Rmd"),
-    # system.file("Rmd", "Report.Rmd", package = "SPCreporter"),
+    system.file("Rmd", "Report.Rmd", package = "SPCreporter"),
     output_dir = file.path(getwd(), output_directory),
     output_file = output_file_name
   )

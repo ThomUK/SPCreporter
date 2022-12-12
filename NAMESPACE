@@ -3,4 +3,3 @@
 export(spcr_check_dataset_is_complete)
 export(spcr_make_data_bundle)
 export(spcr_make_report)
-importFrom(utils,browseURL)

@@ -7,12 +7,12 @@
 spcr_check_dataset_is_complete(report_config, measure_data)
 }
 \arguments{
-\item{report_config}{dataframe. The report config detailing required report items}
+\item{report_config}{A data frame. The report config detailing required report items}
 
-\item{measure_data}{list. The data items to check}
+\item{measure_data}{Data frame in either wide format}
 }
 \value{
-logical
+logical TRUE if check is successful, else an error message
 }
 \description{
 Check all required data items are provided

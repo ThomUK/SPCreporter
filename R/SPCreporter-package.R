@@ -2,6 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom utils browseURL
+#' @importFrom dplyr across last_col
+#' @importFrom utils head tail
 ## usethis namespace: end
 NULL

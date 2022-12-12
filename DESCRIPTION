@@ -1,6 +1,6 @@
 Package: SPCreporter
 Title: Creates Metric Reports using Statistical Process Control in the NHS style
-Version: 0.1.5.3
+Version: 0.1.5.4
 Authors@R: 
     person("Tom", "Smith", , "tomsmith_uk@hotmail.com", role = c("aut", "cre"))
 Description: Takes a dataset file and a configuration file to produce an HTML
@@ -20,20 +20,22 @@ BugReports: https://github.com/ThomUK/SPCreporter/issues
 Imports: 
     assertthat,
     beepr,
-    dplyr,
+    dplyr (>= 1.0.0),
     ggplot2,
-    glue,
-    htmltools,
+    knitr,
     lubridate,
     NHSRplotthedots (== 0.1.0),
     purrr,
+    readr,
     rlang,
     rmarkdown,
-    stringr,
+    snakecase,
+    stringr (>= 1.5.0),
+    tibble,
     tidyr,
+    usethis,
     utils
 Suggests: 
     readxl,
-    testthat (>= 3.0.0),
-    tibble
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3

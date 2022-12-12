@@ -5,8 +5,10 @@
 \title{Make the SPC Report}
 \usage{
 spcr_make_report(
-  data_bundle,
-  title = "SPC Report",
+  measure_data,
+  report_config,
+  measure_config,
+  report_title = "SPC Report",
   subtitle = NULL,
   document_title = NULL,
   report_ref = "",
@@ -19,15 +21,15 @@ spcr_make_report(
   author_email = "a.author@example.com",
   paper_colour = "white",
   accordion_colour = "#CCF2FF",
+  stale_colour = "#FFD1AD",
+  fresh_colour = "white",
   output_directory = ".",
-  export_xlsx = TRUE,
+  export_csv = FALSE,
   include_dq_icon = TRUE
 )
 }
 \arguments{
-\item{data_bundle}{data frame. The pre-processed bundle of information (made with \code{spcr_make_data_bundle()})}
-
-\item{title}{string. The report title, printed at the top of the report}
+\item{report_title}{string. The report title, printed at the top of the report}
 
 \item{subtitle}{string. The report subtitle, printed at the top of the report}
 
@@ -55,9 +57,11 @@ spcr_make_report(
 
 \item{output_directory}{string. The name of the directory to save the resulting report to}
 
-\item{export_xlsx}{logical. Whether to export an .xlsx file of the data used in the report, as well as the report itself}
+\item{export_csv}{logical. Whether to export to disk a CSV file of the data used in the report, as well as the report itself}
 
 \item{include_dq_icon}{logical. Is the data quality icon required on the final report?}
+
+\item{data_bundle}{data frame. The pre-processed bundle of information (made with \code{spcr_make_data_bundle()})}
 }
 \description{
 Make the SPC Report

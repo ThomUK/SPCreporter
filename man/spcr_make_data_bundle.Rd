@@ -7,18 +7,19 @@
 spcr_make_data_bundle(
   measure_data = test_measure_data,
   report_config = test_report_config,
-  measure_config = test_measure_config
+  measure_config = test_measure_config,
+  data_cutoff_dttm
 )
 }
 \arguments{
-\item{measure_data}{list. List containing dataframes of data in wide format}
+\item{measure_data}{list. List containing data frames of data in wide format}
 
-\item{report_config}{dataframe. Config information for the report}
+\item{report_config}{data frame. Config information for the report}
 
-\item{measure_config}{dataframe. Config information for the measures}
+\item{measure_config}{data frame. Config information for the measures}
 }
 \value{
-dataframe. A nested dataframe containing calculated charts and parsed text
+data frame. A nested data frame containing calculated charts and parsed text
 }
 \description{
 Make a bundle of data including all SPC calcs
