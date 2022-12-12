@@ -14,8 +14,9 @@ details summary {
     cursor: pointer;
 }
 
-.details_content img,
-.spc_logo img {
+
+.spc_logo img,
+#icon-key img {
   width: 45px;
 }
 

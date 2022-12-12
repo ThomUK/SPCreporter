@@ -1,6 +1,6 @@
 body {
   font-weight: 400;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 #notes > * + * {
@@ -40,10 +40,15 @@ h1, h2, h3, h4, h5 {
   font-weight: 700;
 }
 
-#logo_block p.caption {
-  visibility: hidden;
+#logo_block .dpartment h5 {
+  text-align: right;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
+details {
+  margin-bottom: 1.8rem;
+}
 
 .outer_flex {
   display: flex;
@@ -54,11 +59,21 @@ h1, h2, h3, h4, h5 {
 .inner_flex {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .px-10{
   padding: 0 10px 0 10px;
+}
+
+.details-content img {
+  width: 900px;
+  height: 450px;
+}
+
+img[src:empty],
+img[src*=""]{
+  content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOPPix38ACNwDrH4oIdIAAAAASUVORK5CYII=');
 }
 
 .measure_title {
@@ -80,7 +95,7 @@ h1, h2, h3, h4, h5 {
 
 
 .spc_logo img {
-  border-radius: 5px;
+  border-radius: 2px;
 }
 
 .mini_card {
@@ -102,6 +117,10 @@ h1, h2, h3, h4, h5 {
   text-align: center;
   background-color: white;
   border-radius: 5px;
+}
+
+.mini_card_value li::marker {
+    content: ' - ';
 }
 
 .table {
