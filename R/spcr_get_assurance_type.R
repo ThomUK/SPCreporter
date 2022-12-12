@@ -1,6 +1,6 @@
 #' Find the name of the assurance type
 #'
-#' @param spc dataframe. As returned from the {NHSRplothedots} SPC package
+#' @param spc data frame. As returned from the {NHSRplotthedots} SPC package
 #' @param improvement_direction string.  "Increase", "Decrease", or "Neutral"
 #'
 #' @return string. Name of the assurance type

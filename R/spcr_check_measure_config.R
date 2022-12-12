@@ -1,14 +1,14 @@
 #' (internal function) Check the measure config info
 #'
-#' @param .data Dataframe of measure config
+#' @param .data Data frame of measure config
 #'
-#' @return dataframe after checking
+#' @return data frame after checking
 #' @noRd
 #'
 spcr_check_measure_config <- function(.data) {
   assertthat::assert_that(
     inherits(.data, "data.frame"),
-    msg = "spcr_check_measure_config: config_data must be a data.frame"
+    msg = "spcr_check_measure_config: config_data must be a data frame"
   )
 
   # check for column names, and provide a helpful error message if needed
@@ -28,17 +28,23 @@ spcr_check_measure_config <- function(.data) {
     "rebase_comment"
   )
 
-  # check required cols are present
-  spcr_check_for_required_columns(.data, "measure_config", required_columns)
-
-  # convert refs to character vectors
-  .data$ref <- as.character(.data$ref)
-
-  # convert target to numeric
-  # warnings for coercing "-" to NA are surpressed
-  suppressWarnings(
-    .data$target <- as.numeric(.data$target)
+  optional_columns <- c(
+    "allowable_days_lag",
+    "reviewed_at",
+    "escalated_to"
   )
 
-  return(.data)
+  .data |>
+
+    # check required cols are present
+    spcr_check_for_required_columns("measure_config", required_columns) |>
+
+    spcr_check_for_optional_columns(optional_columns) |>
+
+    # convert refs to character vectors
+    dplyr::mutate(across(ref, as.character)) |>
+
+    # convert target to numeric
+    dplyr::mutate(across(target, ~ dplyr::na_if(., "-")),
+                  across(target, as.numeric))
 }

@@ -7,23 +7,23 @@
 #'
 #' @return A vector of dates
 #' @noRd
+spcr_parse_rebase_dates <- function(input) {
 
-spcr_parse_rebase_dates <- function(input){
+  if (is.na(input)) NULL
 
-  # parse into individual character strings
-  vector <- input |>
-    stringr::str_replace_all("\\\"", "") |> # replace internal quotes
-    stringr::str_split(",") |>
-    unlist() |> # unlist into a vector
-    stringr::str_trim() # trim white space
+  else {
+    # parse into individual character strings
+    vector <- input |>
+      stringr::str_split_1("\\s*,\\s*") |>
+      stringr::str_remove_all("\\\"") |> # replace internal quotes
+      stringr::str_trim() # trim white space
 
-  # wrap the date parsing in trycatch to stop() if excel dates are not perfectly formed.
-  tryCatch(
-    result <- lubridate::ymd(vector),
-    error = function(c) stop("error in spcr_parse_rebase_dates: ", c),
-    warning = function(c) stop("spcr_parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format.")
-  )
-
-  return(result)
-
+    # wrap the date parsing in tryCatch() to stop()
+    # if excel dates are not perfectly formed.
+    tryCatch(
+      lubridate::ymd(vector),
+      error = function(c) stop("error in spcr_parse_rebase_dates: ", c),
+      warning = function(c) stop("spcr_parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format.")
+    )
+  }
 }

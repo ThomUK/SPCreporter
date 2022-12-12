@@ -8,11 +8,14 @@
 #' @return logical. TRUE if the data is stale.
 #' @noRd
 #'
-spcr_calculate_stale_data <- function(updated_to_date, lag, cutoff_dttm){
+spcr_calculate_stale_data <- function(updated_to_date_text, lag, cutoff_dttm) {
+
+  updated_to_date <- lubridate::as_date(
+    updated_to_date_text, format = "%d-%b-%Y")
 
   assertthat::assert_that(
     inherits(updated_to_date, "Date"),
-    msg = "spcr_calculate_stale_data: The updated_to argument must be a date."
+    msg = "spcr_calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
   )
 
   assertthat::assert_that(
@@ -25,13 +28,8 @@ spcr_calculate_stale_data <- function(updated_to_date, lag, cutoff_dttm){
     msg = "spcr_calculate_stale_data: The cutoff_dttm argument must be a POSIXct."
   )
 
+  lag <- lubridate::days(lag) # convert to a period
+
   # adjust from 00:00:00 to 23:59:59
-  adjust_23hrs_59mins_59s <- lubridate::hours(23) +
-    lubridate::minutes(59) +
-    lubridate::seconds(59)
-
-  lag <- lubridate::days(lag) # conver to a period
-
-  dplyr::if_else(updated_to_date + adjust_23hrs_59mins_59s + lag < cutoff_dttm, TRUE, FALSE)
-
+  (updated_to_date + lag + lubridate::hms("23:59:59")) < cutoff_dttm
 }
