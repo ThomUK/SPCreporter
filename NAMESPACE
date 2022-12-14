@@ -3,3 +3,7 @@
 export(spcr_check_dataset_is_complete)
 export(spcr_make_data_bundle)
 export(spcr_make_report)
+importFrom(dplyr,across)
+importFrom(dplyr,last_col)
+importFrom(utils,head)
+importFrom(utils,tail)

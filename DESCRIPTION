@@ -1,6 +1,6 @@
 Package: SPCreporter
 Title: Creates Metric Reports using Statistical Process Control in the NHS style
-Version: 0.1.5.4
+Version: 0.1.5.5
 Authors@R: 
     person("Tom", "Smith", , "tomsmith_uk@hotmail.com", role = c("aut", "cre"))
 Description: Takes a dataset file and a configuration file to produce an HTML
@@ -14,9 +14,11 @@ Description: Takes a dataset file and a configuration file to produce an HTML
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 URL: https://github.com/ThomUK/SPCreporter
 BugReports: https://github.com/ThomUK/SPCreporter/issues
+Depends: 
+    R (>= 4.1.0)
 Imports: 
     assertthat,
     beepr,
