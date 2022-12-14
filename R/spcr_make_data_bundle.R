@@ -74,7 +74,7 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   # or formatting variables ready for reporting
   report_config |>
     # specifying columns to join by here risks creating suffixed duplicates
-    # of any columns with names shared by reprt_config and measure_config
+    # of any columns with names shared by report_config and measure_config
     # so we will allow left_join() to join naturally with whatever common
     # variables it finds
     dplyr::left_join(measure_config) |>

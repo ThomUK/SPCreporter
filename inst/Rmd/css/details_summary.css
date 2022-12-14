@@ -14,9 +14,8 @@ details summary {
     cursor: pointer;
 }
 
-
 #icon-key img,
-spc_logo img {
+.spc_logo img {
   width: 45px;
 }
 
@@ -50,7 +49,6 @@ details summary::marker {
 details[open] .outer_flex:before {
     content: "-";
 }
-
 
 #session-info summary {
   background-color: #dde;

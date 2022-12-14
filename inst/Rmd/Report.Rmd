@@ -17,7 +17,6 @@ if (logo_path == "nhs") {
 }
 ```
 
-
 ```{r fun}
 v_icon_path <- function(x) glue::glue("../img/variation_icons/{x}.png")
 v_labs <- c(paste(paste("SC", rep(c("HI", "LO"), 3), sep = "_"),
@@ -39,8 +38,6 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
   .fresh { background-color: `r fresh_colour`; }
   .stale { background-color: `r stale_colour`; }
 </style>
-
-
 
 <div id="header_bar">
 <div id="title_data">
@@ -65,14 +62,11 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
 </div>
 </div>
 
-
-
 ### Notes:
 
 `r intro`
 
 A key explaining how to read the icons for Variation, Assurance, and Data Quality is at the [bottom of this document](#icon-key).
-
 
 <div class="px-10">
 <div class="inner_flex">
@@ -89,23 +83,13 @@ Assur-ance
 </div>
 
 
-
 ```{r map-over-data}
 #| include: false
-expand_template <- function(file, ...) {
-  p <- rlang::list2(...)
-  usethis::ui_info(stringr::str_glue(
-    "Processing data for ref {p$Ref}..."
-  ))
-  knitr::knit_expand(file, ...)
-}
-
 knit_out_list <- data_bundle_full |>
   dplyr::mutate(SPC_Plot_URI = spc_plot_uris) |>
-  purrr::pmap(expand_template, file = "details_template.Rmd")
+  purrr::pmap(knitr::knit_expand, file = "details_template.Rmd")
 
 knit_out <- knitr::knit_child(text = knit_out_list, quiet = TRUE)
-
 ```
 
 <div id="main_content">
@@ -118,7 +102,6 @@ cat(knit_out, sep = "  \n")
 </div>
 
 ---
-
 
 <div id="icon-key">
 
@@ -135,7 +118,6 @@ cat(knit_out, sep = "  \n")
 
 Used to summarise the type of variation seen in the most recent data point of a given measure.
 
-
 | Icons | Variation Type |
 |:-----:|:---------------|
 ![SC_HI_CON icon](../img/variation_icons/SC_HI_CON.png) ![SC_LO_CON icon](../img/variation_icons/SC_LO_CON.png) | The most recent data point exhibits special cause variation (in a concerning direction).  H is high, L is Low.
@@ -146,7 +128,6 @@ Used to summarise the type of variation seen in the most recent data point of a 
 #### SPC Assurance Icons
 
 Used to summarise whether a measure is assured to meet a target.
-
 
 | Icons | Assurance Type |
 |:-----:|:---------------|

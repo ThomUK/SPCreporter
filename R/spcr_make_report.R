@@ -136,7 +136,6 @@ spcr_make_report <- function(data_bundle,
   path <- file.path("file://", wd, output_directory, output_file_name)
   usethis::ui_info(paste0("Full path: ", path))
 
-
   process_duration <- lubridate::as.period(Sys.time() - start_time) |>
     round() |>
     tolower()
@@ -144,7 +143,6 @@ spcr_make_report <- function(data_bundle,
   usethis::ui_done(
     stringr::str_glue("Process completed in {process_duration}.")
   )
-
 
   # open the result in the browser
   utils::browseURL(path)

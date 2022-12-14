@@ -57,11 +57,6 @@ spcr_lengthen_measure_data <- function(.data) {
       names_to = "date"
     ) |>
 
-    # there was a filter(!is.na(value)) step here, but actually we want to keep
-    # *valid* NAs in the data (see also comment in `spcr_make_data_bundle()`)
-
-    # reintroducing the filter because NAs break the SPC special cause process
-
     dplyr::filter(!is.na(value)) |>
 
     # need to do this rowwise otherwise grepl() throws an error
