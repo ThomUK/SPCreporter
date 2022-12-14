@@ -1,11 +1,11 @@
 #' Make the SPC Report
 #'
 #' @param data_bundle data frame. The pre-processed bundle of information (made with `spcr_make_data_bundle()`)
+#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param report_title string. The report title, printed at the top of the report
 #' @param subtitle string. The report subtitle, printed at the top of the report
 #' @param document_title string. A title for the document, as used in the HTML `<title>` tag or as the PDF document title. If left as NULL (the default), this function will use the `title` parameter and the current date to construct a title
 #' @param report_ref string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)
-#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param logo_path string. Filepath of the logo to be used on the report
 #' @param department string. A text suffix positioned underneath the logo, for eg. department name
 #' @param department_text_colour string. The colour of the department text
@@ -20,14 +20,12 @@
 #'
 #' @export
 #'
-spcr_make_report <- function(measure_data,
-                             report_config,
-                             measure_config,
+spcr_make_report <- function(data_bundle,
+                             data_cutoff_dttm,
                              report_title = "SPC Report",
                              subtitle = NULL,
                              document_title = NULL,
                              report_ref = "",
-                             data_cutoff_dttm,
                              logo_path = "nhs",
                              department = NULL,
                              department_text_colour = "black",
@@ -41,19 +39,10 @@ spcr_make_report <- function(measure_data,
                              output_directory = ".",
                              export_csv = FALSE,
                              include_dq_icon = TRUE) {
-
   start_time <- Sys.time()
-
-  data_bundle <- spcr_make_data_bundle(
-    measure_data,
-    report_config,
-    measure_config,
-    data_cutoff_dttm
-  )
 
   # create a list of spc data frames (data for charts)
   spc_tables <- data_bundle |>
-    # dplyr::mutate(across(target, ~ tidyr::replace_na(., NULL))) |>
     purrr::pmap(make_spc_table)
 
   spc_plots <- data_bundle |>
@@ -86,12 +75,14 @@ spcr_make_report <- function(measure_data,
     dplyr::mutate(variation_type = purrr::map2_chr(
       spc_tables,
       improvement_direction,
-      spcr_get_variation_type)) |>
+      spcr_get_variation_type
+    )) |>
     dplyr::mutate(assurance_type = purrr::map2_chr(
       spc_tables,
       improvement_direction,
-      spcr_get_assurance_type)) |>
-    dplyr::rename_with( ~ snakecase::to_mixed_case(toupper(.))) |>
+      spcr_get_assurance_type
+    )) |>
+    dplyr::rename_with(~ snakecase::to_mixed_case(toupper(.))) |>
     dplyr::mutate(sort_order = dplyr::row_number()) |>
     dplyr::group_by(Domain) |>
     dplyr::group_modify(spcr_add_domain_heading) |>
@@ -112,6 +103,8 @@ spcr_make_report <- function(measure_data,
   )
 
   # create a document title (HTML <title>), unless already supplied
+  # `pagetitle` in YAML/Pandoc
+  # https://community.rstudio.com/t/r-markdown-html-output-title/47294
   if (is.null(document_title)) {
     document_title <- paste0(
       report_title,
@@ -122,11 +115,19 @@ spcr_make_report <- function(measure_data,
 
   # render the html output
   usethis::ui_info("Making HTML output...")
+
   rmarkdown::render(
     system.file("Rmd", "Report.Rmd", package = "SPCreporter"),
+    output_options = list(
+      toc = FALSE,
+      self_contained = TRUE,
+      fig_caption = FALSE,
+      mathjax = NULL
+    ),
     output_dir = file.path(getwd(), output_directory),
     output_file = output_file_name
   )
+
   usethis::ui_done("HTML output complete.")
 
   # print the full path to the console
@@ -141,7 +142,8 @@ spcr_make_report <- function(measure_data,
     tolower()
 
   usethis::ui_done(
-    stringr::str_glue("Process completed in {process_duration}."))
+    stringr::str_glue("Process completed in {process_duration}.")
+  )
 
 
   # open the result in the browser
@@ -156,7 +158,8 @@ spcr_make_report <- function(measure_data,
     )
 
     usethis::ui_info(
-      stringr::str_glue("Exporting data CSV file to {csv_filename}"))
+      stringr::str_glue("Exporting data CSV file to {csv_filename}")
+    )
 
     data_bundle_full |>
       tidyr::unnest(Measure_Data) |>

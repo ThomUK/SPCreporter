@@ -5,14 +5,12 @@
 \title{Make the SPC Report}
 \usage{
 spcr_make_report(
-  measure_data,
-  report_config,
-  measure_config,
+  data_bundle,
+  data_cutoff_dttm,
   report_title = "SPC Report",
   subtitle = NULL,
   document_title = NULL,
   report_ref = "",
-  data_cutoff_dttm,
   logo_path = "nhs",
   department = NULL,
   department_text_colour = "black",
@@ -29,6 +27,10 @@ spcr_make_report(
 )
 }
 \arguments{
+\item{data_bundle}{data frame. The pre-processed bundle of information (made with \code{spcr_make_data_bundle()})}
+
+\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
+
 \item{report_title}{string. The report title, printed at the top of the report}
 
 \item{subtitle}{string. The report subtitle, printed at the top of the report}
@@ -36,8 +38,6 @@ spcr_make_report(
 \item{document_title}{string. A title for the document, as used in the HTML \verb{<title>} tag or as the PDF document title. If left as NULL (the default), this function will use the \code{title} parameter and the current date to construct a title}
 
 \item{report_ref}{string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)}
-
-\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
 
 \item{logo_path}{string. Filepath of the logo to be used on the report}
 
@@ -60,8 +60,6 @@ spcr_make_report(
 \item{export_csv}{logical. Whether to export to disk a CSV file of the data used in the report, as well as the report itself}
 
 \item{include_dq_icon}{logical. Is the data quality icon required on the final report?}
-
-\item{data_bundle}{data frame. The pre-processed bundle of information (made with \code{spcr_make_data_bundle()})}
 }
 \description{
 Make the SPC Report
