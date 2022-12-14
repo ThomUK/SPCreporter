@@ -1,92 +1,80 @@
-### `r ifelse({{Needs_Domain_Heading}}, paste0("{{Domain}}", ":"), "")`
+`r ifelse({{Needs_Domain_Heading}}, "### {{Domain}}:", "")`
 
 <details>
 <summary>
 
 <div class="outer_flex">
-
 <h4 class="measure_title"># {{Ref}} - {{Measure_Name}}</h4>
 
 <div class="inner_flex">
 
-<div>
 <div class="mini_card wide_card">
 <div class="mini_card_key">
-Updated to
+  Updated to
 </div>
-<div class="mini_card_value `r ifelse({{Stale_Data}}, ".stale", ".fresh")`">
-{{Updated_To}}
-</div>
+<div class="mini_card_value `r ifelse({{Stale_Data}}, "stale", "fresh")`">
+  {{Updated_To}}
 </div>
 </div>
 
 
-<div>
 <div class="mini_card">
 <div class="mini_card_key">
-Target:
+  Target
 </div>
 <div class="mini_card_value">
-{{Target_Text}}
-</div>
+  `r ifelse("{{Target_Text}}" != "NA", "{{Target_Text}}", "-")`
 </div>
 </div>
 
-<div>
 <div class="mini_card">
 <div class="mini_card_key">
-Set by
+  Set by
 </div>
 <div class="mini_card_value">
-{{Target_Set_By}}
-</div>
+  `r ifelse("{{Target_Set_By}}" != "NA", "{{Target_Set_By}}", "-")`
 </div>
 </div>
 
-
-<div>
 <div class="mini_card">
 <div class="mini_card_key">
-Actual
+  Actual
 </div>
 <div class="mini_card_value">
-{{Last_Data_Point}}
-</div>
+  {{Last_Data_Point}}
 </div>
 </div>
 
 
 <div class="spc_logo">
-![{{Variation_Type}}](`r v_paths[["{{Variation_Type}}"]]`)
-</div>
-
-
-<div class="spc_logo">
-![{{Assurance_Type}}](`r a_paths[["{{Assurance_Type}}"]]`)
+  `r ifelse("{{Variation_Type}}" %in% v_labs, paste0("![{{Variation_Type}} icon](", v_paths[["{{Variation_Type}}"]], ")"), "{{Variation_Type}}")`
 </div>
 
 <div class="spc_logo">
-![{{Data_Quality}}](`r stringr::str_glue("../img/dq_icons/star_{{Data_Quality}}.png")`)
+  `r ifelse("{{Assurance_Type}}" %in% a_labs, paste0("![{{Assurance_Type}} icon](", a_paths[["{{Assurance_Type}}"]], ")"), "{{Assurance_Type}}")`
+</div>
+
+<div class="spc_logo">
+  `r if ("{{Data_Quality}}" != "NA") "![{{Data_Quality}}](../img/dq_icons/star_{{Data_Quality}}.png)"`
 </div>
 
 </div>
 </div>
-
 </summary>
 
 <div class="details_content">
-
-![{{Measure_Name}} plot]({{SPC_Plot_URI}})
-
-`r if (!is.na({{Rebase_Comment}})) paste0("Rebase comments: ", "{{Rebase_Comment}}")`
-
-Accountable Person: {{Accountable_Person}}
-
-`r if (!is.na({{Reviewed_At}})) paste0("Reviewed at: ", "{{Reviewed_At}}")`
-
-`r if (!is.na({{Escalated_To}})) paste0("Escalated (if needed) to: ", "{{Escalated_To}}")`
-
-Data Owner: {{Data_Owner}}
+  
+  ![{{Measure_Name}} plot]({{SPC_Plot_URI}})
+  
+  `r if ("{{Rebase_Comment}}" != "NA") "Rebase comments: {{Rebase_Comment}}"`
+  
+  Accountable Person: `r ifelse("{{Accountable_Person}}" != "NA",     "{{Accountable_Person}}", "-")`
+  
+  `r if ("{{Reviewed_At}}" != "NA") "Reviewed at: {{Reviewed_At}}"`
+  
+  `r if ("{{Escalated_To}}" != "NA") "Escalated (if needed) to: {Escalated_To}}"`
+  
+  Data Owner: `r ifelse("{{Data_Owner}}" != "NA", "{{Data_Owner}}", "-")`
 
 </div>
 </details>

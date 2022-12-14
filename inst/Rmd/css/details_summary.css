@@ -15,8 +15,8 @@ details summary {
 }
 
 
-.spc_logo img,
-#icon-key img {
+#icon-key img,
+spc_logo img {
   width: 45px;
 }
 
@@ -52,4 +52,6 @@ details[open] .outer_flex:before {
 }
 
 
-
+#session-info summary {
+  background-color: #dde;
+}

@@ -40,7 +40,7 @@ h1, h2, h3, h4, h5 {
   font-weight: 700;
 }
 
-#logo_block .dpartment h5 {
+#logo_block .department h5 {
   text-align: right;
   text-transform: uppercase;
   font-weight: 700;
@@ -59,21 +59,16 @@ details {
 .inner_flex {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-start;
+  align-items: center;
 }
 
-.px-10{
+.px-10 {
   padding: 0 10px 0 10px;
 }
 
 .details-content img {
   width: 900px;
   height: 450px;
-}
-
-img[src:empty],
-img[src*=""]{
-  content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOPPix38ACNwDrH4oIdIAAAAASUVORK5CYII=');
 }
 
 .measure_title {
@@ -120,7 +115,7 @@ img[src*=""]{
 }
 
 .mini_card_value li::marker {
-    content: ' - ';
+    content: ' -   ';
 }
 
 .table {

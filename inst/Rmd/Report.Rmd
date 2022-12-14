@@ -3,35 +3,27 @@ output:
   html_document:
     css: ["css/details_summary.css", "css/style.css"]
     theme: cosmo
-    mathjax: null
-    fig_caption: false
-    toc: true
-    toc_float:
-      collapsed: false
-    toc_depth: 3
-title: "`r document_title`"
+title: "`r report_title`"
+pagetitle: "`r document_title`"
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+knitr::opts_chunk$set(echo = FALSE)
 
 # default NHS logo
 if (logo_path == "nhs") {
-  # logo_path <- system.file("img/NHS_logo.jpg", package = "SPCreporter")
   logo_path <- "../img/NHS_logo.jpg"
 }
-
 ```
 
 
 ```{r fun}
-
-transparent_png_1px <- "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOPPix38ACNwDrH4oIdIAAAAASUVORK5CYII="
-
 v_icon_path <- function(x) glue::glue("../img/variation_icons/{x}.png")
 v_labs <- c(paste(paste("SC", rep(c("HI", "LO"), 3), sep = "_"),
-                  c("CON", "IMP", "NEUTRAL"), sep = "_"), "CC")
+  c("CON", "IMP", "NEUTRAL"),
+  sep = "_"
+), "CC")
 v_paths <- purrr::map(v_labs, v_icon_path) |>
   purrr::set_names(v_labs)
 a_icon_path <- function(x) glue::glue("../img/assurance_icons/{x}.png")
@@ -97,19 +89,28 @@ Assur-ance
 </div>
 
 
-<div id="main_content">
-
 
 ```{r map-over-data}
+#| include: false
+expand_template <- function(file, ...) {
+  p <- rlang::list2(...)
+  usethis::ui_info(stringr::str_glue(
+    "Processing data for ref {p$Ref}..."
+  ))
+  knitr::knit_expand(file, ...)
+}
+
 knit_out_list <- data_bundle_full |>
   dplyr::mutate(SPC_Plot_URI = spc_plot_uris) |>
-  purrr::pmap(knitr::knit_expand, file = "details_template.Rmd")
+  purrr::pmap(expand_template, file = "details_template.Rmd")
 
 knit_out <- knitr::knit_child(text = knit_out_list, quiet = TRUE)
+
 ```
 
+<div id="main_content">
 
-```{r main-content}
+```{r main-content, results='asis'}
 cat(knit_out, sep = "  \n")
 
 ```
@@ -176,10 +177,10 @@ END
 
 <p>&nbsp;</p>
 
-<details>
-<summary>Session info</summary>
+<details id="session-info">
+<summary>Session info (metadata for Analyst Team)</summary>
 
-```{r, results='markup'}
+```{r session-info}
 utils::sessionInfo()
 ```
 
