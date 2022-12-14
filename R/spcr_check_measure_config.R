@@ -35,16 +35,11 @@ spcr_check_measure_config <- function(.data) {
   )
 
   .data |>
-
     # check required cols are present
     spcr_check_for_required_columns("measure_config", required_columns) |>
 
     spcr_check_for_optional_columns(optional_columns) |>
 
     # convert refs to character vectors
-    dplyr::mutate(across(ref, as.character)) |>
-
-    # convert target to numeric
-    dplyr::mutate(across(target, ~ dplyr::na_if(., "-")),
-                  across(target, as.numeric))
+    dplyr::mutate(across(ref, as.character))
 }

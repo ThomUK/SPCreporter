@@ -13,7 +13,7 @@ spcr_lengthen_measure_data <- function(.data) {
 
   # should match date strings of the form 2022-06-01
   ymd_regex <- "^20[0-9]{2}-[:alnum:]{1,2}-[0-9]{1,2}$"
-  init_cols <- c("ref", "measure_name", "comment", "aggregation")
+  init_cols <- c("ref", "measure_name", "comment")
 
   assertthat::assert_that(
     all(purrr::map_lgl(names(.data),
@@ -56,6 +56,12 @@ spcr_lengthen_measure_data <- function(.data) {
       cols = !any_of(init_cols),
       names_to = "date"
     ) |>
+
+    # there was a filter(!is.na(value)) step here, but actually we want to keep
+    # *valid* NAs in the data (see also comment in `spcr_make_data_bundle()`)
+
+    # reintroducing the filter because NAs break the SPC special cause process
+
     dplyr::filter(!is.na(value)) |>
 
     # need to do this rowwise otherwise grepl() throws an error
@@ -63,6 +69,7 @@ spcr_lengthen_measure_data <- function(.data) {
     # https://community.rstudio.com/t/why-am-i-getting-warnings-in-my-case-when-process/154418
     dplyr::rowwise() |>
     dplyr::mutate(across(date, convert_date)) |>
+    # why can't we do `all_of(init_cols)` in group_by yet?
     dplyr::group_by(!!!rlang::syms(init_cols)) |>
 
     # try to ensure that data is sorted from oldest to latest -

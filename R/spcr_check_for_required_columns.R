@@ -41,6 +41,7 @@ spcr_check_for_optional_columns <- function(.data, optional_columns) {
   missing_columns <- setdiff(optional_columns, names(.data))
 
   if (length(missing_columns)) {
+    usethis::ui_info("spcr_check_for_optional_columns: Adding in blank missing (optional) columns.")
     .data |>
       dplyr::bind_cols(
         purrr::map_dfc(missing_columns, ~ tibble::tibble(.x = NA)) |>

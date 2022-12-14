@@ -42,8 +42,18 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
     dplyr::bind_rows(.id = "aggregation")
 
   # lengthen measure_data
-  measure_data_long <- measure_data_wide |>
-    spcr_lengthen_measure_data() |>
+  measure_data_long <- measure_data |>
+
+    # Lengthen each element of measure_data separately before binding, rather
+    # than bind and then lengthen everything, in order to avoid introducing
+    # unnecessary NAs in the value column of the long data.
+    # For example, weekly wide data will have lots of date columns that don't
+    # match monthly date columns. Row binding will introduce lots of NAs that
+    # *could* be filtered out as part of the pivot_longer, but in many cases we
+    # want to *keep* those NAs, but only where they are validly part of the
+    # source data, rather than introduced via row binding.
+    purrr::map(spcr_lengthen_measure_data) |>
+    dplyr::bind_rows(.id = "aggregation") |>
     dplyr::filter(.data$date <= .env$data_cutoff_dttm)
 
 
@@ -63,33 +73,44 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   # then mutate the data frame row by row, adding new variables and tidying up
   # or formatting variables ready for reporting
   report_config |>
-    dplyr::left_join(measure_config, by = c("ref", "measure_name")) |>
+    # specifying columns to join by here risks creating suffixed duplicates
+    # of any columns with names shared by reprt_config and measure_config
+    # so we will allow left_join() to join naturally with whatever common
+    # variables it finds
+    dplyr::left_join(measure_config) |>
     dplyr::nest_join(measure_data_long,
                      by = c("ref", "aggregation"),
                      name = "measure_data") |>
     dplyr::rowwise() |>
-    dplyr::mutate(across(unit, tolower)) |>
-    dplyr::mutate(across(improvement_direction, tolower)) |>
-    dplyr::mutate(
-      target_text = spcr_get_target_text(target, improvement_direction, unit),
-      .after = target) |>
-    dplyr::mutate(across(target_set_by, ~ tidyr::replace_na(., "-"))) |>
-    dplyr::mutate(across(accountable_person, ~ tidyr::replace_na(., "-"))) |>
-    dplyr::mutate(across(data_owner, ~ tidyr::replace_na(., "-"))) |>
-    dplyr::mutate(across(allowable_days_lag, ~ tidyr::replace_na(., 0))) |>
-    dplyr::mutate(across(allowable_days_lag, round)) |>
     dplyr::mutate(first_date = min(measure_data$date), .after = aggregation) |>
     dplyr::mutate(last_date = max(measure_data$date), .after = first_date) |>
-    dplyr::mutate(across(c(first_date, last_date), ~ as.Date(., origin = "1970-01-01"))) |>
-    dplyr::mutate(last_data_point = dplyr::slice_max(measure_data, date) |> dplyr::pull(value)) |>
-    dplyr::mutate(across(last_data_point, ~ dplyr::case_when(
-      unit == "%" ~ paste0(round(. * 100, 1), "%"),
-      unit == "decimal" ~ as.character(round(., 2)),
-      TRUE ~ as.character(round(.))))) |>
-    dplyr::mutate(updated_to = spcr_get_updatedto_text(last_date, aggregation)) |>
-    dplyr::mutate(stale_data = spcr_calculate_stale_data(
-      updated_to, allowable_days_lag, .env$data_cutoff_dttm)) |>
-    dplyr::ungroup()
+    dplyr::mutate(last_data_point = dplyr::slice_max(measure_data, date) |>
+                    dplyr::pull(value)) |>
+    dplyr::mutate(
+      across(unit, tolower),
+      across(improvement_direction, tolower),
+      # " marks in the comment mess up the render process later
+      across(rebase_comment, ~ stringr::str_replace_all(., "\\\"", "'")),
+      across(target, ~ dplyr::na_if(., "-")),
+      across(target, as.numeric),
+      across(allowable_days_lag, ~ tidyr::replace_na(., 0)),
+      across(allowable_days_lag, round),
+      across(c(first_date, last_date), ~ as.Date(., origin = "1970-01-01")),
+      across(last_data_point, ~ dplyr::case_when(
+        is.na(.) ~ NA_character_,
+        unit == "%" ~ paste0(round(. * 100, 1), "%"),
+        unit == "decimal" ~ as.character(round(., 2)),
+        TRUE ~ as.character(round(.))))) |>
+    dplyr::mutate(
+      target_text = spcr_get_target_text(target, improvement_direction, unit),
+                  .after = target) |>
+    dplyr::mutate(
+      updated_to = spcr_get_updatedto_text(last_date, aggregation),
+      stale_data = spcr_calculate_stale_data(
+        updated_to, allowable_days_lag, .env$data_cutoff_dttm)
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::relocate(measure_data, .after = last_col())
 }
 
 
@@ -107,7 +128,7 @@ make_spc_table <- function(...) {
 
   NHSRplotthedots::ptd_spc(
     .data = p$measure_data,
-    rebase = spcr_parse_rebase_dates(p$rebase_dates),
+    rebase = spcr_align_rebase_dates(p$rebase_dates, p$measure_data),
     value_field = "value",
     date_field = "date",
     target = p$target,

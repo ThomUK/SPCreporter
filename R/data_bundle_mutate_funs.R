@@ -19,8 +19,10 @@ spcr_get_target_text <- function(target, improvement_direction, unit) {
   )
 
   dplyr::case_when(
-    imp_dir == "decrease" ~ paste0("\u2264 ", string), # \u2264 is: ≤
-    imp_dir == "increase" ~ paste0("\u2265 ", string), # \u2265 is: ≥
+    # \u2264 is: ≤
+    !is.na(target) & imp_dir == "decrease" ~ paste0("\u2264 ", string),
+    # \u2265 is: ≥
+    !is.na(target) & imp_dir == "increase" ~ paste0("\u2265 ", string),
     TRUE ~ string
   )
 }

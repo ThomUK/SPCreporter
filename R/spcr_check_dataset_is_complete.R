@@ -23,10 +23,10 @@ spcr_check_dataset_is_complete <- function(report_config, measure_data) {
     nrow(missing_data) == 0,
     msg = usethis::ui_stop(
       dplyr::slice(missing_data, 1) |>
-        stringr::str_glue(
+        stringr::str_glue_data(
           "spcr_check_dataset_is_complete: Data is missing for
           {nrow(missing_data)} report items. The first is ref {ref},
-          {measure_name}, {aggregation}ly.")))
+          '{measure_name}', {aggregation}ly.")))
 
   invisible(TRUE)
 }

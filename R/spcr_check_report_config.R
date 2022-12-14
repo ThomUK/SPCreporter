@@ -16,5 +16,7 @@ spcr_check_report_config <- function(report_config) {
   report_config |>
     spcr_check_for_required_columns("report_config", required_columns) |>
     dplyr::distinct() |>
+
+    # convert refs to character vectors
     dplyr::mutate(across(ref, as.character))
 }
