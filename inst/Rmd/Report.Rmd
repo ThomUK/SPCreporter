@@ -53,6 +53,7 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
 #### Data cutoff date-time: `r format.Date(data_cutoff_dttm, "%d/%m/%Y, %H:%M %p")`
 
 </div>
+
 <div id="logo_block">
 
 ![Logo](`r logo_path`)\
