@@ -121,6 +121,7 @@ make_spc_table <- function(...) {
     stringr::str_glue("Creating SPC data for ref {p$ref}...")
   )
 
+  # an attempt to work around https://github.com/ThomUK/SPCreporter/issues/30 - # but not effective (plotthedots overrides)
   if (p$unit == "integer") {
     p$measure_data <- p$measure_data |>
       dplyr::mutate(across(value, round))

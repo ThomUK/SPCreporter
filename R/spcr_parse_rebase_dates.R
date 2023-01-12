@@ -5,7 +5,7 @@
 #' @param input character.  A vector of length 1, containing quoted dates in ymd format, separated with commas
 #' eg '"2020-01-01", "2020-03-05"'
 #'
-#' @return A vector of dates
+#' @returns A vector of dates
 #' @noRd
 spcr_parse_rebase_dates <- function(input) {
 
@@ -15,7 +15,7 @@ spcr_parse_rebase_dates <- function(input) {
     # parse into individual character strings
     vector <- input |>
       stringr::str_split_1("\\s*,\\s*") |>
-      stringr::str_remove_all("\\\"") |> # replace internal quotes
+      stringr::str_remove_all("\\\"") |> # remove internal quotes
       stringr::str_trim() # trim white space
 
     # wrap the date parsing in tryCatch() to stop()
