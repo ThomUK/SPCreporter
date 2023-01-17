@@ -17,12 +17,12 @@ Community](https://nhsrcommunity.com/).
 
 ## Installation
 
-You can install the development version of SPCreporter from
-[GitHub](https://github.com/ThomUK/SPCreporter) with:
+You can install this development fork of SPCreporter from
+[GitHub](https://github.com/francisbarton/SPCreporter) with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("ThomUK/SPCreporter")
+remotes::install_github("francisbarton/SPCreporter")
 ```
 
 ## Examples of Use
