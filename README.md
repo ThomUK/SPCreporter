@@ -12,7 +12,7 @@ Improvement [“Making Data Count”
 programme](https://bmjleader.bmj.com/content/5/4/252), which encourages
 the use of SPC and time-series charts to replace “red, amber, green”
 threshold performance reporting. The SPC calculations are made using the
-{NHSRplotthedots} package, from the [NHS-R
+{[NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots)} package, from the [NHS-R
 Community](https://nhsrcommunity.com/).
 
 ## Installation
