@@ -17,8 +17,8 @@ spcr_get_variation_type <- function(spc, improvement_direction) {
     if (imp_dir == "increase") v <- "SC_HI_IMP"
     if (imp_dir == "decrease") v <- "SC_LO_IMP"
   } else if (variation == "special_cause_concern") {
-    if (imp_dir == "increase") v <- "SC_HI_CON"
-    if (imp_dir == "decrease") v <- "SC_LO_CON"
+    if (imp_dir == "increase") v <- "SC_LO_CON"
+    if (imp_dir == "decrease") v <- "SC_HI_CON"
   } else if (variation == "special_cause_neutral") {
     if (relative_to_mean == -1) v <- "SC_LO_NEUTRAL"
     if (relative_to_mean %in% c(1, 0)) v <- "SC_HI_NEUTRAL"
