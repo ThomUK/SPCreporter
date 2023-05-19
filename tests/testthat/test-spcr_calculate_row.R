@@ -186,3 +186,23 @@ test_that({
     )
   )
 })
+
+"it produces a single row when there are multiple rebase dates" |>
+  test_that({
+
+    # add optional column
+    measure_config$rebase_dates <- c('"2020-04-01", "2020-07-01"', NA, NA)
+
+    suppressMessages(
+      suppressWarnings( # the warning is related to n<12 observations due to the rebase dates
+        r <- spcr_calculate_row("1", "month", measure_data_long, measure_config, report_config)
+      )
+    )
+
+    expect_equal(
+      nrow(r),
+      1
+    )
+
+  })
+
