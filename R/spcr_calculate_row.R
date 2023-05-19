@@ -37,7 +37,8 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
   target_set_by <- spcr_get_target_set_by(target, subset_config$target_set_by)
   data_quality <- subset_config$data_quality
   baseline_period <- subset_config$baseline_period
-  rebase_dates <- spcr_parse_rebase_dates(subset_config$rebase_dates)
+  rebase_dates <- subset_config$rebase_dates
+  rebase_dates_vec <- spcr_parse_rebase_dates(subset_config$rebase_dates)
   rebase_comment <- subset_config$rebase_comment
   first_date <- subset_measure_data$date |> min()
   last_date <- subset_measure_data$date |> max()
@@ -85,7 +86,7 @@ spcr_calculate_row <- function(ref_no, aggregation, measure_data, measure_config
     subset_measure_data,
     value_field = "value",
     date_field = "date",
-    rebase = rebase_dates,
+    rebase = rebase_dates_vec,
     target = spc_target, # set to NULL in code if NA in source data
     #      fix_after_n_points = #TODO
     improvement_direction = tolower(improvement_direction)
