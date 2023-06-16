@@ -8,13 +8,25 @@ pagetitle: "`r document_title`"
 ---
 
 
-```{r setup, include=FALSE}
+```{r setup}
+#| include: false
+
 knitr::opts_chunk$set(echo = FALSE)
 
 # default NHS logo
 if (logo_path == "nhs") {
   logo_path <- "../img/NHS_logo.jpg"
 }
+
+cols_header_text <- paste0(
+  "<div class='px-10'>
+  <div class='inner_flex'>
+  <div class='spc_logo'>Varia-tion</div>
+  <div class='spc_logo'>Assur-ance</div>",
+  if (include_dq_icon) "<div class='spc_logo'>Data Quality</div>",
+  "</div>
+  </div>")
+
 ```
 
 ```{r fun}
@@ -39,8 +51,8 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
   .stale { background-color: `r stale_colour`; }
 </style>
 
-<div id="header_bar">
-<div id="title_data">
+:::: {#header_bar}
+::: {#title_data}
 
 # `r report_title`
 
@@ -52,16 +64,15 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
 
 #### Data cutoff date-time: `r format.Date(data_cutoff_dttm, "%d/%m/%Y, %H:%M %p")`
 
-</div>
+:::
 
-<div id="logo_block">
-
+::: {#logo_block}
 ![Logo](`r logo_path`)\
 
 ##### `r department` {.department}
+:::
 
-</div>
-</div>
+::::
 
 ### Notes:
 
@@ -69,51 +80,39 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
 
 A key explaining how to read the icons for Variation, Assurance, and Data Quality is at the [bottom of this document](#icon-key).
 
-<div class="px-10">
-<div class="inner_flex">
-<div class="spc_logo">
-Varia-tion
-</div>
-<div class="spc_logo">
-Assur-ance
-</div>
-<div class="spc_logo">
-`r if (include_dq_icon) "Data Quality"`
-</div>
-</div>
-</div>
-
 
 ```{r map-over-data}
-#| include: false
 knit_out_list <- data_bundle_full |>
-  dplyr::mutate(SPC_Plot_URI = spc_plot_uris) |>
-  purrr::pmap(knitr::knit_expand, file = "details_template.Rmd")
+  purrr::pmap(knitr::knit_expand, file = "details_template.Rmd", .progress = "HTML charts")
 
 knit_out <- knitr::knit_child(text = knit_out_list, quiet = TRUE)
 ```
 
-<div id="main_content">
+::: {#main_content}
 
-```{r main-content, results='asis'}
+```{r main-content}
+#| results: asis
+
 cat(knit_out, sep = "  \n")
 
 ```
 
-</div>
+:::
 
 ---
 
-<div id="icon-key">
+:::: {#icon-key}
 
 <details>
   <summary>
-    <h4 class="outer_flex" style="justify-content: flex-start;">
-    How to read the icons used in this document
+    <h4 class="outer_flex";>
+      How to read the icons used in this document
     </h4>
   </summary>
 
-<div class="details_content">
+
+::: {.details_content}
+
 
 #### SPC Variation Icons
 
@@ -137,34 +136,30 @@ Used to summarise whether a measure is assured to meet a target.
 ![FAIL_TARG icon](../img/assurance_icons/FAIL_TARG.png) | The process is not assured, and is likely to consistently fail to meet the target set.
 
 
-</div>
+:::
+
 </details>
-</div>
+
+::::
 
 ---
 
-<!-- Footer -->
-
-<div id="footer">
+::: {#footer}
 
 Report reference: `r report_ref`
 
-Report author:  `r author_name` [`r author_email`](`r paste0("mailto:", author_email, "?subject=Report ", report_ref, "...")`)
+Report author:  `r author_name` [`r author_email`](`r paste0("mailto:", author_email, "?subject=Report ", report_ref)`)
 
 END
 
----
-
-<p>&nbsp;</p>
-
-<p>&nbsp;</p>
-
 <details id="session-info">
-<summary>Session info (metadata for Analyst Team)</summary>
+
+<summary>Session info (metadata for analyst team)</summary>
 
 ```{r session-info}
 utils::sessionInfo()
 ```
 
 </details>
-</div>
+
+:::

@@ -1,10 +1,13 @@
-`r ifelse({{Needs_Domain_Heading}}, "### {{Domain}}:", "")`
+`r ifelse({{domain_heading}}, "::: {#domain_header}", "")`
+`r ifelse({{domain_heading}}, "### {{domain}}", "")`
+`r ifelse({{domain_heading}}, cols_header_text, "")`
+`r ifelse({{domain_heading}}, ":::", "")`
 
 <details>
 <summary>
 
 <div class="outer_flex">
-<h4 class="measure_title"># {{Ref}} - {{Measure_Name}}</h4>
+<h4 class="measure_title"># {{ref}} - {{measure_name}}</h4>
 
 <div class="inner_flex">
 
@@ -12,8 +15,8 @@
 <div class="mini_card_key">
   Updated to
 </div>
-<div class="mini_card_value `r ifelse({{Stale_Data}}, "stale", "fresh")`">
-  {{Updated_To}}
+<div class="mini_card_value `r ifelse({{stale_data}}, "stale", "fresh")`">
+  {{updated_to}}
 </div>
 </div>
 
@@ -23,7 +26,7 @@
   Target
 </div>
 <div class="mini_card_value">
-  `r ifelse("{{Target_Text}}" != "NA", "{{Target_Text}}", "-")`
+  `r ifelse("{{target_text}}" != "NA", "{{target_text}}", "-")`
 </div>
 </div>
 
@@ -32,7 +35,7 @@
   Set by
 </div>
 <div class="mini_card_value">
-  `r ifelse("{{Target_Set_By}}" != "NA", "{{Target_Set_By}}", "-")`
+  `r ifelse("{{target_set_by}}" != "NA", "{{target_set_by}}", "-")`
 </div>
 </div>
 
@@ -41,21 +44,21 @@
   Actual
 </div>
 <div class="mini_card_value">
-  {{Last_Data_Point}}
+  {{last_data_point}}
 </div>
 </div>
 
 
 <div class="spc_logo">
-  `r ifelse("{{Variation_Type}}" %in% v_labs, paste0("![{{Variation_Type}} icon](", v_paths[["{{Variation_Type}}"]], ")"), "{{Variation_Type}}")`
+  `r ifelse("{{variation_type}}" %in% v_labs, paste0("![{{variation_type}} icon](", v_paths[["{{variation_type}}"]], ")"), "{{variation_type}}")`
 </div>
 
 <div class="spc_logo">
-  `r ifelse("{{Assurance_Type}}" %in% a_labs, paste0("![{{Assurance_Type}} icon](", a_paths[["{{Assurance_Type}}"]], ")"), "{{Assurance_Type}}")`
+  `r ifelse("{{assurance_type}}" %in% a_labs, paste0("![{{assurance_type}} icon](", a_paths[["{{assurance_type}}"]], ")"), "{{assurance_type}}")`
 </div>
 
 <div class="spc_logo">
-  `r if ("{{Data_Quality}}" != "NA") "![{{Data_Quality}}](../img/dq_icons/star_{{Data_Quality}}.png)"`
+  `r if ("{{data_quality}}" != "NA") "![{{data_quality}}](../img/dq_icons/star_{{data_quality}}.png)"`
 </div>
 
 </div>
@@ -63,18 +66,20 @@
 </summary>
 
 <div class="details_content">
+
+  `r if ("{{report_comment}}" != "NA") "<span class='report_comment'>{{report_comment}}</span>"`
   
-  ![{{Measure_Name}} plot]({{SPC_Plot_URI}})
+  ![{{measure_name}} plot]({{spc_plot_uri}})
   
-  `r if ("{{Rebase_Comment}}" != "NA") "Rebase comments: {{Rebase_Comment}}"`
+  `r if ("{{rebase_comment}}" != "NA") "Rebase comments: {{rebase_comment}}"`
   
-  Accountable Person: `r ifelse("{{Accountable_Person}}" != "NA",     "{{Accountable_Person}}", "-")`
+  Accountable Person: `r ifelse("{{accountable_person}}" != "NA", "{{accountable_person}}", "-")`
   
-  `r if ("{{Reviewed_At}}" != "NA") "Reviewed at: {{Reviewed_At}}"`
+  `r if ("{{reviewed_at}}" != "NA") "Reviewed at: {{reviewed_at}}"`
   
-  `r if ("{{Escalated_To}}" != "NA") "Escalated (if needed) to: {Escalated_To}}"`
+  `r if ("{{escalated_to}}" != "NA") "Escalated (if needed) to: {escalated_to}}"`
   
-  Data Owner: `r ifelse("{{Data_Owner}}" != "NA", "{{Data_Owner}}", "-")`
+  Data Owner: `r ifelse("{{data_owner}}" != "NA", "{{data_owner}}", "-")`
 
 </div>
 </details>

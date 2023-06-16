@@ -46,13 +46,20 @@ h1, h2, h3, h4, h5 {
   font-weight: 700;
 }
 
+#domain_header .level3 {
+  display: flex;
+}
+
+#domain_header .level3 h3 {
+  flex: 1;
+}
+
 details {
   margin-bottom: 1.8rem;
 }
 
 .outer_flex {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -72,9 +79,14 @@ details {
 }
 
 .measure_title {
-  flex-grow: 1;
+  flex: 1;
   padding: 0 0.5rem 0 0.5rem;
   width: 30%;
+}
+
+.report_comment {
+  font-size: 18px;
+  background-color: #eee;
 }
 
 .spc_logo {
