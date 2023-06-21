@@ -1,151 +1,192 @@
+# TODO: Use {withr} package to set usethis.quiet option for tests so that
+# optional columns info messages don't clutter the output
 
-measure_data <- list(
-  week = tibble::tibble(
-    ref = c("1", "2", "3"),
-    measure_name = c("M1", "M2", "M3"),
-    comment = c("comment", "comment", "comment"),
-    `43836` = c(1, 3.2, 0.5),
-    `43843` = c(2, 4.2, 0.6),
-    `43850` = c(1, 3.2, 0.5),
-    `43857` = c(2, 4.2, 0.6),
-    `43864` = c(1, 3.2, 0.5),
-    `43871` = c(2, 4.2, 0.6),
-    `43878` = c(1, 3.2, 0.5),
-    `43885` = c(2, 4.2, 0.6),
-    `43892` = c(1, 3.2, 0.5),
-    `43899` = c(2, 4.2, 0.6),
-    `43906` = c(1, 3.2, 0.5),
-    `43913` = c(2, 4.2, 0.6)
-  ),
-  month = tibble::tibble(
-    ref = c("1", "2", "3"),
-    measure_name = c("M1", "M2", "M3"),
-    comment = c("comment", "comment", "comment"),
-    `43831` = c(1, 3.2, 0.5),
-    `43862` = c(2, 4.2, 0.6),
-    `43891` = c(1, 3.2, 0.5),
-    `43922` = c(2, 4.2, 0.6),
-    `43952` = c(1, 3.2, 0.5),
-    `43983` = c(2, 4.2, 0.6),
-    `44013` = c(1, 3.2, 0.5),
-    `44044` = c(2, 4.2, 0.6),
-    `44075` = c(1, 3.2, 0.5),
-    `44105` = c(2, 4.2, 0.6),
-    `44136` = c(1, 3.2, 0.5),
-    `44166` = c(2, 4.2, 0.6)
-  )
-)
 
-measure_config <- tibble::tibble(
-  ref = c("1", "2", "3"),
-  measure_name = c("M1", "M2", "M3"),
-  data_source = c("S1", "S2", "S3"),
-  data_owner = c("O1", "O2", "O3"),
-  accountable_person = c("L1", "L2", "L3"),
-  unit = c("Integer", "Decimal", "%"),
-  improvement_direction = c("Neutral", "Increase", "Decrease"),
-  target = c(NA, 10, 0.2),
-  target_set_by = c(NA, "T2", "T3"),
-  data_quality = c("RRRR", "AAAA", "GGGG"),
-  baseline_period = c(12L, 12L, 12L),
-  rebase_dates = c(NA, NA, NA),
-  rebase_comment = c(NA, NA, NA)
-)
+"test checked and lengthened data step" |>
+  test_that({
+    measure_data <- test_measure_data |>
+      check_measure_data()
+    report_config <- test_report_config |>
+      check_report_config()
+    measure_config <- test_measure_config |>
+      check_measure_config()
 
-report_config <- tibble::tibble(
-  ref = c("1", "2", "3", "1", "2", "3"),
-  measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
-  domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
-  aggregation = c("week", "week", "week", "month", "month", "month")
-)
+    expect_type(measure_data[[1]][["ref"]], "character")
+    expect_type(report_config[["ref"]], "character")
+    expect_type(measure_config[["ref"]], "character")
+    expect_type(measure_config[["target"]], "double")
+    expect_type(measure_config[["allowable_days_lag"]], "integer")
 
-test_that("it returns a dataframe of the expected size", {
-  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
+    measure_data_long <- measure_data |>
+      purrr::map(lengthen_measure_data) |>
+      dplyr::bind_rows(.id = "aggregation")
 
-  expect_equal(
-    nrow(r),
-    6
-  )
+    expect_type(measure_data_long[["ref"]], "character")
+    expect_s3_class(measure_data_long[["date"]], "Date")
 
-  expect_equal(
-    ncol(r),
-    28
-  )
-})
+    test_names <- c("aggregation", "ref", "measure_name",
+                    "comment", "date", "value")
 
-test_that("it works when no targets are set", {
+    expect_named(measure_data, unique(measure_data_long[["aggregation"]]))
+    expect_named(measure_data_long, test_names)
+    expect_equal(nrow(measure_data_long), 378)
+  })
 
-  # replace all targets with NA, as if not set
-  measure_config$target <- NA
 
-  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
 
-  expect_equal(
-    nrow(r),
-    6
-  )
+"test nested data step" |>
+  test_that({
+    measure_data <- test_measure_data |>
+      check_measure_data()
+    report_config <- test_report_config |>
+      check_report_config()
+    measure_config <- test_measure_config |>
+      check_measure_config()
 
-  expect_equal(
-    ncol(r),
-    28
-  )
-})
 
-"it accepts optional columns from measure_config" |>
-test_that({
+    measure_data_long <- measure_data |>
+      purrr::map(lengthen_measure_data) |>
+      dplyr::bind_rows(.id = "aggregation")
 
-  # add optional columns
-  measure_config$reviewed_at <- "ABC Meeting"
-  measure_config$escalated_to <- "XYZ Meeting"
+    nested_data <- report_config |>
+      dplyr::left_join(measure_config, by = c("ref", "measure_name")) |>
+      dplyr::nest_join(measure_data_long,
+                       by = c("ref", "aggregation"),
+                       name = "measure_data")
 
-  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
+    test_names <- c(union(names(report_config), names(measure_config)), "measure_data")
 
-  expect_equal(
-    ncol(r),
-    28
-  )
-  expect_equal(
-    "Reviewed_At" %in% names(r),
-    TRUE
-  )
-  expect_equal(
-    "Escalated_To" %in% names(r),
-    TRUE
-  )
+    expect_equal(nrow(nested_data), nrow(report_config))
+    expect_type(nested_data[["measure_data"]], "list")
+    expect_type(nested_data[["measure_data"]], "list")
+    expect_s3_class(nested_data[["measure_data"]][[1]], "data.frame")
+    expect_s3_class(nested_data[["measure_data"]][[1]], "tbl_df")
+    expect_named(nested_data, test_names)
+  })
 
-})
 
-"it throws errors for name mismatches in preference to other errors" |>
-test_that({
 
-  # create the name mismatches
-  report_config$measure_name[1] <- "M1 spelling 1"
-  measure_config$measure_name[1] <- "M1 spelling 2"
-  measure_data[["week"]]$measure_name <- "M1 spelling 3"
 
-  # this previously threw an error for missing data (based on a mis-spelled measure name)
-  # the correct behaviour is to complain about the name mismatch first
-  expect_error(
-    spcr_make_data_bundle(measure_data, report_config, measure_config),
-    "spcr_check_measure_names: There is a name mismatch for measure ref: 1. Check for typos or mismatching refs or data."
-  )
 
-})
+"test data bundle process" |>
+  test_that({
+    measure_data <- test_measure_data |>
+      check_measure_data()
+    report_config <- test_report_config |>
+      check_report_config()
+    measure_config <- test_measure_config |>
+      check_measure_config()
 
-"it accepts optional columns for 'allowable_days_lag'" |>
-test_that({
+    measure_data_long <- measure_data |>
+      purrr::map(lengthen_measure_data) |>
+      dplyr::bind_rows(.id = "aggregation")
 
-  # add optional column
-  measure_config$allowable_days_lag <- c(NA, 1, 2)
+    data_bundle1 <- report_config |>
+      dplyr::left_join(measure_config, by = c("ref", "measure_name")) |>
+      dplyr::nest_join(measure_data_long,
+                       by = c("ref", "aggregation"),
+                       name = "measure_data") |>
+      dplyr::rowwise() |>
+      dplyr::mutate(
+        last_date = max(measure_data[["date"]], na.rm = TRUE),
+        last_data_point = dplyr::pull(dplyr::slice_max(measure_data, date), "value")) |>
+      dplyr::ungroup()
 
-  r <- spcr_make_data_bundle(measure_data, report_config, measure_config)
+    expect_s3_class(data_bundle1[["last_date"]], "Date")
 
-  expect_equal(
-    ncol(r),
-    28
-  )
-  expect_equal(
-    "Allowable_Days_Lag" %in% names(r),
-    TRUE
-  )
-})
+    data_bundle2 <- data_bundle1 |>
+      dplyr::mutate(
+        across("last_data_point", \(x) dplyr::case_when(
+          is.na(x) ~ NA_character_,
+          x == Inf ~ NA_character_,
+          unit == "%" ~ paste0(round(x * 100, 1), "%"),
+          unit == "decimal" ~ as.character(round(x, 2)),
+          TRUE ~ as.character(round(x))
+        )))
+
+    # some spot checks on the above conversion of the last_data_point to the
+    # appropriate character format
+    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 222 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "222", FALSE))
+
+    expect_true(ifelse(round(data_bundle1[["last_data_point"]][[2]], 2) == 0.73 & data_bundle1[["unit"]][[2]] == "%", data_bundle2[["last_data_point"]][[2]] == "73%", FALSE))
+
+    expect_true(ifelse(round(data_bundle1[["last_data_point"]][[3]], 2) == 0.46 & data_bundle1[["unit"]][[3]] == "decimal", data_bundle2[["last_data_point"]][[3]] == "0.46", FALSE))
+  })
+
+
+"test the whole thing" |>
+  test_that({
+    out <- spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config,
+      measure_config = test_measure_config)
+
+    expect_length(out, 24)
+    expect_equal(nrow(out), nrow(test_report_config))
+    expect_type(out[["ref"]], "character")
+    expect_type(out[["target"]], "double")
+    expect_type(out[["allowable_days_lag"]], "integer")
+    expect_type(out[["measure_data"]], "list")
+    expect_s3_class(out[["last_date"]], "Date")
+    expect_type(out[["updated_to"]], "character")
+    expect_type(out[["domain_heading"]], "logical")
+
+    # set all targets to NA
+    test_measure_config2 <- test_measure_config |>
+      dplyr::mutate(across("target", \(x) NA_real_))
+
+    expect_no_error(spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config,
+      measure_config = test_measure_config2))
+
+    out2 <- spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config,
+      measure_config = test_measure_config2)
+
+    expect_length(out2, 24)
+    expect_equal(nrow(out2), nrow(test_report_config))
+
+  })
+
+# this is more properly a test for the check_measure_names() function
+# but it's good to test it as part of the make_bundle() workflow too
+"error for name mismatches before other errors" |>
+  test_that({
+
+    # a measure_name mismatch in the measure config must throw an error
+    test_measure_config2 <- test_measure_config |>
+      dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Attendances", "Attendance")))
+
+    expect_error(spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config,
+      measure_config = test_measure_config2),
+      "check_measure_names: There is a name mismatch"
+      )
+
+
+    # a measure_name mismatch in the measure data must throw an error
+    test_measure_data2 <- test_measure_data |>
+      purrr::modify_at("month", \(x)
+      dplyr::mutate(x, across("measure_name", \(x) stringr::str_replace(x, "Widgets", "widgets"))))
+
+    expect_error(spcr_make_data_bundle(
+      measure_data = test_measure_data2,
+      report_config = test_report_config,
+      measure_config = test_measure_config),
+      "check_measure_names: There is a name mismatch"
+    )
+
+    # but a measure_name change in the report config should not throw an error
+    test_report_config2 <- test_report_config |>
+      dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Widgets", "widgets")))
+
+    expect_no_error(spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config2,
+      measure_config = test_measure_config)
+    )
+
+  })
