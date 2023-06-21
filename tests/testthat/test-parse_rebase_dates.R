@@ -2,12 +2,12 @@
   test_that({
 
     expect_equal(
-      spcr_parse_rebase_dates("2020-01-01"),
+      parse_rebase_dates("2020-01-01"),
       as.Date("2020-01-01")
     )
 
     expect_equal(
-      spcr_parse_rebase_dates('"2020-01-01", "2020-02-01"'),
+      parse_rebase_dates('"2020-01-01", "2020-02-01"'),
       as.Date(c("2020-01-01", "2020-02-01"))
     )
   })
@@ -16,13 +16,13 @@
   test_that({
 
     expect_error(
-      spcr_parse_rebase_dates("01-01-2020"),
-      "spcr_parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format."
+      parse_rebase_dates("01-01-2020"),
+      "parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format."
     )
 
     expect_error(
-      spcr_parse_rebase_dates('"2020-01-01", "01-05-2020"'),
-      "spcr_parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format."
+      parse_rebase_dates('"2020-01-01", "01-05-2020"'),
+      "parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format."
     )
   })
 
@@ -34,7 +34,7 @@
       date = lubridate::ymd(paste0("2022-0", 1:6, "-01"))
     )
 
-    dates <- spcr_parse_rebase_dates('"2022-03-17", "2022-05-01", "2022-06-02"')
+    dates <- parse_rebase_dates('"2022-03-17", "2022-05-01", "2022-06-02"')
 
     expect_length(dates, 3)
 
@@ -59,12 +59,7 @@
     expect_equal(pull_closest_date(dates[3], dates_list), as.Date("2022-06-02"))
 
     out <- dates |>
-      # forthcoming versions of {purrr} should contain functions that enable
-      # output of a date vector directly (maybe called map_vec() or even
-      # map_date()) but for now we have to map to a character vector and then
-      # reformat. (purrr::map() followed by unlist() did not work, somehow.)
-      purrr::map_dbl(pull_closest_date, dates_list = dates_list) |>
-      lubridate::as_date()
+      purrr::map_vec(pull_closest_date, dates_list = dates_list)
 
     expect_length(out, 3)
 
