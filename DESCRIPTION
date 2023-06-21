@@ -1,16 +1,17 @@
 Package: SPCreporter
 Title: Creates Metric Reports using Statistical Process Control in the NHS style
-Version: 0.1.6
-Authors@R: 
-    person("Tom", "Smith", , "tomsmith_uk@hotmail.com", role = c("aut", "cre"))
+Version: 0.1.16
+Authors@R: c(
+    person("Tom", "Smith",, "tomsmith_uk@hotmail.com", role = c("aut", "cre")),
+    person("Fran", "Barton",, "fbarton@alwaysdata.net", role = "ctb"))
 Description: Takes a dataset file and a configuration file to produce an HTML
     report with each metric presented as an SPC chart. The initial rendering of
     the report contains the charts folded to enable quick scanning of
     "variation" and "assurance" status. Each metric can be unfolded to reveal
     the SPC chart to support clinical and management planning. 
-    The NHSRplotthedots package is used for SPC calculations, and the "variation"
-    and "assurance" is in line with the popular standard within the UK's
-    National Health Service (NHS).
+    The NHSRplotthedots package is used for SPC calculations, and the
+    "variation" and "assurance" is in line with the popular standard within the
+    UK's National Health Service (NHS).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -21,23 +22,22 @@ Depends:
     R (>= 4.1.0)
 Imports: 
     assertthat,
-    beepr,
     dplyr (>= 1.0.0),
+    glue,
     ggplot2,
     knitr,
     lubridate,
     NHSRplotthedots (== 0.1.0),
     purrr,
-    readr,
     rlang,
     rmarkdown,
-    snakecase,
     stringr (>= 1.5.0),
     tibble,
     tidyr,
+    tidyselect,
     usethis,
     utils
-Suggests: 
+Suggests:
     readxl,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

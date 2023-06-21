@@ -19,5 +19,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Tom Smith \email{tomsmith_uk@hotmail.com}
 
+Other contributors:
+\itemize{
+  \item Fran Barton \email{fbarton@alwaysdata.net} [contributor]
+}
+
 }
 \keyword{internal}
