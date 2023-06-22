@@ -69,7 +69,7 @@
 
   `r if ("{{report_comment}}" != "NA") "<span class='report_comment'>{{report_comment}}</span>"`
   
-  ![{{measure_name}} plot]({{spc_plot_uri}})
+  ![{{measure_name}} plot]({{spc_chart_uri}})
   
   `r if ("{{rebase_comment}}" != "NA") "Rebase comments: {{rebase_comment}}"`
   

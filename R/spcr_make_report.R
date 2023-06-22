@@ -75,12 +75,12 @@ spcr_make_report <- function(
   tmp_files |>
     purrr::walk2(spc_charts, ggplot2::ggsave, width = 1800, height = 900, units = "px", dpi = 144)
 
-  spc_plot_uris <- tmp_files |>
+  spc_chart_uris <- tmp_files |>
     purrr::map_chr(knitr::image_uri)
 
   data_bundle_full <- data_bundle |>
     dplyr::mutate(spc_data = spc_data) |>
-    dplyr::mutate(spc_plot_uri = spc_plot_uris) |>
+    dplyr::mutate(spc_chart_uri = spc_chart_uris) |>
     dplyr::rowwise() |>
     dplyr::mutate(
       variation_type = get_variation_type(spc_data, .data[["improvement_direction"]]),
@@ -91,9 +91,7 @@ spcr_make_report <- function(
 
 
 
-  # create the output file name from the report title and a timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
-
 
   if (export_csv) {
     csv_filename <- paste0(
@@ -113,6 +111,7 @@ spcr_make_report <- function(
   }
 
 
+  # create the report output file name from the report title and the timestamp
   output_file_name <- paste0(
     sub(" ", "_", report_title), "_", time_stamp, ".html"
   )
