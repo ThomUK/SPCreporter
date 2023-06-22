@@ -29,6 +29,7 @@ Imports:
     lubridate,
     NHSRplotthedots (== 0.1.0),
     purrr,
+    readr,
     rlang,
     rmarkdown,
     stringr (>= 1.5.0),

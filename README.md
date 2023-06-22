@@ -3,26 +3,28 @@
 
 # {SPCreporter}
 
-{SPCreporter} is a simple way to add value to your performance reporting
-using statistical process control. Help sort signals from noise, and
-ensure your leadership are talking about signals that matter.
+**{SPCreporter}** is a simple way to add value to your performance
+reporting using statistical process control.
 
-The layout and method is heavily inspired by the NHS England &
+**Help sort signals from noise, and ensure your leadership are talking
+about signals that matter.**
+
+The layout and method are heavily inspired by the NHS England &
 Improvement [“Making Data Count”
 programme](https://bmjleader.bmj.com/content/5/4/252), which encourages
 the use of SPC and time-series charts to replace “red, amber, green”
 threshold performance reporting. The SPC calculations are made using the
-{[NHSRplotthedots](https://github.com/nhs-r-community/NHSRplotthedots)} package, from the [NHS-R
+{NHSRplotthedots} package, from the [NHS-R
 Community](https://nhsrcommunity.com/).
 
 ## Installation
 
-You can install this development fork of SPCreporter from
-[GitHub](https://github.com/francisbarton/SPCreporter) with:
+You can install the development version of SPCreporter from
+[GitHub](https://github.com/ThomUK/SPCreporter) with:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("francisbarton/SPCreporter")
+remotes::install_github("ThomUK/SPCreporter")
 ```
 
 ## Examples of Use
@@ -52,7 +54,7 @@ spcr_make_report(
 
 #### Working example - using data included within the package
 
-This example uses three excel files which are included with the package
+This example uses three *xlsx* files which are included with the package
 in the “example_data” folder. After you have run this example and
 created your first report, you should copy these example files to your
 machine, and use them as templates for creating your own report
@@ -61,7 +63,7 @@ information.
 ``` r
 library(SPCreporter)
 
-# set up to read the package files.  You will not need to do this to read your own data.
+# set up to read the package files. You will not need to do this to read your own data.
 example_files <- system.file("example_data", package="SPCreporter")
 
 ####
@@ -112,6 +114,7 @@ spcr_make_report(
 
 ``` r
 # example where we map over several reports, creating them in one go
+
 all_my_reports <- tibble::tibble(
   title = c("Report 1", "Report 2", "Report 3"),
   report_ref = c("ID.1", "ID.2", "ID.3"),
