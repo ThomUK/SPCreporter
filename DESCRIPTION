@@ -1,6 +1,6 @@
 Package: SPCreporter
 Title: Creates Metric Reports using Statistical Process Control in the NHS style
-Version: 0.1.16
+Version: 0.1.5.6
 Authors@R: c(
     person("Tom", "Smith",, "tomsmith_uk@hotmail.com", role = c("aut", "cre")),
     person("Fran", "Barton",, "fbarton@alwaysdata.net", role = "ctb"))
