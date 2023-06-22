@@ -22,7 +22,8 @@ spcr_make_report(
   stale_colour = "#FFD1AD",
   fresh_colour = "white",
   output_directory = ".",
-  include_dq_icon = TRUE
+  include_dq_icon = TRUE,
+  export_csv = TRUE
 )
 }
 \arguments{
@@ -61,6 +62,8 @@ spcr_make_report(
 \item{output_directory}{string. The name of the directory in which to save the resulting report}
 
 \item{include_dq_icon}{logical. Whether to include the data quality icon on the final report}
+
+\item{export_csv}{logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.}
 }
 \description{
 Make the SPC Report

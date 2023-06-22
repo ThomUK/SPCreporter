@@ -1,4 +1,4 @@
-#' Check the measure data and transform
+#' Check the measure data and transform as needed
 #'
 #' @param measure_data list. A list of data frames (in wide format).
 #'
@@ -30,7 +30,7 @@ check_measure_data <- function(measure_data) {
 
 
 
-#' Check the report config and transform
+#' Check the report config and transform as needed
 #'
 #' @param report_config Report config data frame
 #'
@@ -64,7 +64,7 @@ check_report_config <- function(report_config) {
 
 
 
-#' Check the measure config info
+#' Check the measure config and transform as needed
 #'
 #' @param measure_config Measure config data frame
 #'
@@ -117,6 +117,8 @@ check_measure_config <- function(measure_config) {
       across("allowable_days_lag", \(x) as.integer(tidyr::replace_na(x, "0")))
     )
 }
+
+
 
 
 
@@ -183,6 +185,9 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
 }
 
 
+
+
+
 #' Certain variables are optional in measure_config. If supplied, we want to
 #' keep them, but if not supplied we want to add them with contents = `NA`.
 #'
@@ -214,7 +219,6 @@ check_for_optional_columns <- function(.data, optional_columns) {
 #' @param measure_data Data frame in wide format
 #'
 #' @returns logical TRUE if check is successful, else an error message
-#' @export
 check_dataset_is_complete <- function(report_config, measure_data) {
 
   missing_data <- report_config |>

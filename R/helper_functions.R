@@ -119,7 +119,8 @@ quietly_convert_date <- function(...) {
 
 #' Parse rebase dates
 #' Parse dates from the config spreadsheet into a format suitable for use in
-#' the SPC calculation function.
+#' the SPC calculation function. Only needed as a helper function for
+#' `align_rebase_dates()`
 #'
 #' @param input character. A vector of length 1, containing quoted dates in ymd
 #' format, separated with commas eg '"2020-01-01", "2020-03-05"'
@@ -154,7 +155,7 @@ parse_rebase_dates <- function(input) {
 #' did not match a date in the data for that measure.
 #' https://github.com/ThomUK/SPCreporter/issues/35
 #'
-#' @inheritParams spcr_parse_rebase_dates
+#' @inheritParams parse_rebase_dates
 #' @param measure_data data frame containing a column of date values
 #'
 #' @returns a vector of dates, amended as necessary, or NULL if no dates were present initially
