@@ -1,105 +1,120 @@
 #' Make the SPC Report
 #'
-#' @param data_bundle data frame. The pre-processed bundle of information (made with `spcr_make_data_bundle()`)
+#' @param data_bundle data frame. The pre-processed bundle of information (ideally made with `spcr_make_data_bundle()`)
 #' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param report_title string. The report title, printed at the top of the report
 #' @param subtitle string. The report subtitle, printed at the top of the report
-#' @param document_title string. A title for the document, as used in the HTML `<title>` tag or as the PDF document title. If left as NULL (the default), this function will use the `title` parameter and the current date to construct a title
-#' @param report_ref string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)
-#' @param logo_path string. Filepath of the logo to be used on the report
+#' @param document_title string. A title for the document, as used in the HTML `<title>` tag or as the PDF document title. If left as NULL (the default), this function will use the `report_title` parameter and the current date to construct a title
+#' @param report_ref string. A unique reference for the report
+#' @param logo_path string. File path of the logo to be used on the report
 #' @param department string. A text suffix positioned underneath the logo, for eg. department name
 #' @param department_text_colour string. The colour of the department text
 #' @param intro string. Intro text printed at the head of the report
 #' @param author_name string. The author's name
 #' @param author_email string. The author's contact email address
-#' @param paper_colour string. Customise the background colour using a valid HTML hex colour code, or CSS colour name
-#' @param accordion_colour string. Customise the accordion colour using a valid HTML hex colour code, or CSS colour name
-#' @param output_directory string. The name of the directory to save the resulting report to
-#' @param export_csv logical. Whether to export to disk a CSV file of the data used in the report, as well as the report itself
-#' @param include_dq_icon logical. Is the data quality icon required on the final report?
+#' @param paper_colour string. Customise the background colour using a hex code, or CSS colour name
+#' @param accordion_colour string. Customise the accordion colour using a hex code, or CSS colour name
+#' @param stale_colour string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name
+#' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
+#' @param output_directory string. The name of the directory in which to save the resulting report
+#' @param include_dq_icon logical. Whether to include the data quality icon on the final report
+#' @param export_csv logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.
 #'
 #' @export
-#'
-spcr_make_report <- function(data_bundle,
-                             data_cutoff_dttm,
-                             report_title = "SPC Report",
-                             subtitle = NULL,
-                             document_title = NULL,
-                             report_ref = "",
-                             logo_path = "nhs",
-                             department = NULL,
-                             department_text_colour = "black",
-                             intro = NULL,
-                             author_name = "Anne Author",
-                             author_email = "a.author@example.com",
-                             paper_colour = "white",
-                             accordion_colour = "#CCF2FF", # pale blue
-                             stale_colour = "#FFD1AD", # light orange
-                             fresh_colour = "white",
-                             output_directory = ".",
-                             export_csv = FALSE,
-                             include_dq_icon = TRUE) {
+spcr_make_report <- function(
+    data_bundle,
+    data_cutoff_dttm,
+    report_title = "SPC Report",
+    subtitle = NULL,
+    document_title = NULL,
+    report_ref = "",
+    logo_path = "nhs",
+    department = NULL,
+    department_text_colour = "black",
+    intro = NULL,
+    author_name = "Anne Author",
+    author_email = "a.author@example.com",
+    paper_colour = "white",
+    accordion_colour = "#CCF2FF", # pale blue
+    stale_colour = "#FFD1AD", # light orange
+    fresh_colour = "white",
+    output_directory = ".",
+    include_dq_icon = TRUE,
+    export_csv = TRUE) {
   start_time <- Sys.time()
 
-  # create a list of spc data frames (data for charts)
-  spc_tables <- data_bundle |>
-    purrr::pmap(make_spc_table)
+  # Create list of source data for SPC charts
+  spc_data <- data_bundle |>
+    dplyr::select(all_of(c(
+      "target",
+      "rebase_dates",
+      "improvement_direction",
+      "measure_data"
+    ))) |>
+    purrr::pmap(make_spc_data, .progress = "SPC data")
 
-  spc_plots <- data_bundle |>
-    dplyr::mutate(spc = spc_tables) |>
-    purrr::pmap(make_spc_plot)
+  # Create list of SPC charts
+  spc_charts <- data_bundle |>
+    dplyr::select(all_of(c(
+      "ref",
+      "measure_name",
+      "data_source",
+      "unit",
+      "aggregation"
+    ))) |>
+    dplyr::mutate(spc_data = spc_data) |>
+    purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
-  tmp_files <- paste0("tmp_", data_bundle$ref, "_", data_bundle$aggregation, "_") |>
+  tmp_files <- data_bundle |>
+    dplyr::select(all_of(c(x = "ref", y = "aggregation"))) |>
+    purrr::pmap_chr(\(x, y) paste0("tmp_", x, "_", y, "_")) |>
     tempfile(fileext = ".png")
 
 
   tmp_files |>
-    purrr::walk2(spc_plots, ggplot2::ggsave, width = 1800, height = 900, units = "px", dpi = 144)
+    purrr::walk2(spc_charts, ggplot2::ggsave, width = 1800, height = 900, units = "px", dpi = 144)
 
   spc_plot_uris <- tmp_files |>
-    purrr::map(knitr::image_uri)
+    purrr::map_chr(knitr::image_uri)
 
-
-
-  spcr_add_domain_heading <- function(dtf, sort_col = "sort_order") {
-    dtf |>
-      dplyr::arrange({{ sort_col }}) |>
-      dplyr::mutate(Needs_Domain_Heading = c(TRUE, rep(FALSE, nrow(dtf) - 1)))
-  }
-
-
-
-  # add helper columns based on spc calculations
   data_bundle_full <- data_bundle |>
-    dplyr::mutate(variation_type = purrr::map2_chr(
-      spc_tables,
-      improvement_direction,
-      spcr_get_variation_type
-    )) |>
-    dplyr::mutate(assurance_type = purrr::map2_chr(
-      spc_tables,
-      improvement_direction,
-      spcr_get_assurance_type
-    )) |>
-    dplyr::rename_with(~ snakecase::to_mixed_case(toupper(.))) |>
-    dplyr::mutate(sort_order = dplyr::row_number()) |>
-    dplyr::group_by(Domain) |>
-    dplyr::group_modify(spcr_add_domain_heading) |>
+    dplyr::mutate(spc_data = spc_data) |>
+    dplyr::mutate(spc_plot_uri = spc_plot_uris) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      variation_type = get_variation_type(spc_data, .data[["improvement_direction"]]),
+      assurance_type = get_assurance_type(spc_data, .data[["improvement_direction"]])
+    ) |>
     dplyr::ungroup() |>
-    dplyr::arrange(sort_order) |>
-    dplyr::select(!sort_order) |>
-    dplyr::relocate(Measure_Data, .after = last_col())
+    dplyr::mutate(stale_data = calculate_stale_data(.data[["updated_to"]], .data[["allowable_days_lag"]], data_cutoff_dttm))
 
 
 
   # create the output file name from the report title and a timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
+
+
+  if (export_csv) {
+    csv_filename <- paste0(
+      sub(" ", "_", report_title), "_data_", time_stamp, ".csv"
+    )
+    usethis::ui_info(
+      stringr::str_glue("Exporting data CSV file to {csv_filename}")
+    )
+    data_bundle |>
+      tidyr::hoist("measure_data", "comment", .transform = \(x) head(x, 1)) |>
+      tidyr::hoist("measure_data", "date") |>
+      tidyr::hoist("measure_data", "value") |>
+      dplyr::select(!"measure_data") |>
+      tidyr::unnest_longer(c("date", "value")) |>
+      tidyr::pivot_wider(names_from = "date") |>
+      readr::write_csv(csv_filename)
+  }
+
+
   output_file_name <- paste0(
-    sub(" ", "_", report_title), # replace spaces with underscores
-    "_",
-    time_stamp,
-    ".html"
+    sub(" ", "_", report_title), "_", time_stamp, ".html"
   )
 
   # create a document title (HTML <title>), unless already supplied
@@ -107,9 +122,7 @@ spcr_make_report <- function(data_bundle,
   # https://community.rstudio.com/t/r-markdown-html-output-title/47294
   if (is.null(document_title)) {
     document_title <- paste0(
-      report_title,
-      " ",
-      format(Sys.Date(), "%d %b %Y")
+      report_title, " ", format(Sys.Date(), "%d %b %Y")
     )
   }
 
@@ -140,29 +153,58 @@ spcr_make_report <- function(data_bundle,
     round() |>
     tolower()
 
-  usethis::ui_done(
-    stringr::str_glue("Process completed in {process_duration}.")
-  )
+  usethis::ui_done("Process completed in {process_duration}.")
 
-  # open the result in the browser
-  utils::browseURL(path)
+  invisible(TRUE)
+}
 
-  # finished!!
-  # beepr::beep(1)
 
-  if (export_csv) {
-    csv_filename <- paste0(
-      sub(" ", "_", report_title), "_", time_stamp, "_data.csv"
+
+
+
+
+#' Create a 'plot the dots' SPC data parcel from data bundle columns
+#' @noRd
+make_spc_data <- function(
+    target,
+    rebase_dates,
+    improvement_direction,
+    measure_data) {
+  measure_data |>
+    NHSRplotthedots::ptd_spc(
+      rebase = align_rebase_dates(rebase_dates, measure_data),
+      value_field = "value",
+      date_field = "date",
+      target = target,
+      improvement_direction = improvement_direction)
+}
+
+#' Create an SPC chart from an SPC data parcel and some data bundle columns
+#' @noRd
+make_spc_chart <- function(
+    ref,
+    measure_name,
+    data_source,
+    unit,
+    aggregation,
+    spc_data) {
+  spc_data |>
+    NHSRplotthedots::ptd_create_ggplot(
+      point_size = 4, # default is 2.5, orig in this package was 5
+      percentage_y_axis = unit == "%",
+      main_title = paste0("#", ref, " - ", measure_name),
+      x_axis_label = NULL,
+      y_axis_label = NULL,
+      x_axis_date_format = dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
+      icons_position = "none",
+      break_lines = "limits"
+    ) +
+    ggplot2::labs(
+      caption = paste0("Data source: ", data_source)
+    ) +
+    ggplot2::theme(
+      text = ggplot2::element_text(size = 16),
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+      legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
-
-    usethis::ui_info(
-      stringr::str_glue("Exporting data CSV file to {csv_filename}")
-    )
-
-    data_bundle_full |>
-      tidyr::unnest(Measure_Data) |>
-      tidyr::pivot_wider(names_from = date) |>
-      dplyr::rename(Comment = comment) |>
-      readr::write_csv(csv_filename)
-  }
 }
