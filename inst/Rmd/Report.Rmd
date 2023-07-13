@@ -120,8 +120,8 @@ Used to summarise the type of variation seen in the most recent data point of a 
 
 | Icons | Variation Type |
 |:-----:|:---------------|
-![SC_HI_CON icon](../img/variation_icons/SC_HI_CON.png) ![SC_LO_CON icon](../img/variation_icons/SC_LO_CON.png) | The most recent data point exhibits special cause variation (in a concerning direction).  H is high, L is Low.
-![SC_HI_IMP icon](../img/variation_icons/SC_HI_IMP.png) ![SC_LO_IMP icon](../img/variation_icons/SC_LO_IMP.png) | The most recent data point exhibits special cause variation (in an improving direction).  H is high, L is Low.
+![SC_HI_CON icon](../img/variation_icons/SC_HI_CON.png) ![SC_LO_CON icon](../img/variation_icons/SC_LO_CON.png) | The most recent data point exhibits special cause variation (in a concerning direction).  H is high, L is low.
+![SC_HI_IMP icon](../img/variation_icons/SC_HI_IMP.png) ![SC_LO_IMP icon](../img/variation_icons/SC_LO_IMP.png) | The most recent data point exhibits special cause variation (in an improving direction).  H is high, L is low.
 ![SC_HI_NEUTRAL icon](../img/variation_icons/SC_HI_NEUTRAL.png) ![SC_LO_NEUTRAL icon](../img/variation_icons/SC_LO_NEUTRAL.png) | The most recent data point exhibits special cause variation, but neither direction represents concern or improvement (ie. the measure is neutral).  H is high, L is low.
 ![CC icon](../img/variation_icons/CC.png) | The most recent data point exhibits common cause variation (ie. naturally-occurring variation, that is not statistically significant).
 
