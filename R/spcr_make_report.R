@@ -86,8 +86,8 @@ spcr_make_report <- function(
       variation_type = get_variation_type(spc_data, .data[["improvement_direction"]]),
       assurance_type = get_assurance_type(spc_data, .data[["improvement_direction"]])
     ) |>
-    dplyr::ungroup() |>
-    dplyr::mutate(stale_data = calculate_stale_data(.data[["updated_to"]], .data[["allowable_days_lag"]], data_cutoff_dttm))
+    dplyr::mutate(stale_data = calculate_stale_data(.data[["updated_to"]], .data[["allowable_days_lag"]], data_cutoff_dttm)) |>
+    dplyr::ungroup()
 
 
 
@@ -139,7 +139,6 @@ spcr_make_report <- function(
     output_dir = file.path(getwd(), output_directory),
     output_file = output_file_name
   )
-
   usethis::ui_done("HTML output complete.")
 
   # print the full path to the console
@@ -153,6 +152,7 @@ spcr_make_report <- function(
     tolower()
 
   usethis::ui_done("Process completed in {process_duration}.")
+  beepr::beep()
 
   invisible(TRUE)
 }
