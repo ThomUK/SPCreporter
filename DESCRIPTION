@@ -22,6 +22,7 @@ Depends:
     R (>= 4.1.0)
 Imports: 
     assertthat,
+    beepr,
     dplyr (>= 1.0.0),
     glue,
     ggplot2,
