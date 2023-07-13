@@ -146,11 +146,14 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
     dplyr::pull("measure_name") |>
     unique()
 
-  # check that the titles match
-  assertthat::assert_that(
-    isTRUE(m_title == c_title),
-    msg = usethis::ui_stop("check_measure_names: There is a name mismatch for measure ref: {ref_no}. Check for typos or mismatching refs or data."
-    ))
+  # warn when the titles don't match
+  if (m_title != c_title) {
+    usethis::ui_warn(c(
+      "check_measure_names: There is a name mismatch for measure ref: {ref_no}.",
+      "The title in the data bundle is {m_title}.",
+      "The title in the measure config is {c_title}."
+      ))
+  }
 
   invisible(TRUE)
 }
