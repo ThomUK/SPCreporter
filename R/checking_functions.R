@@ -137,7 +137,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
                           msg = usethis::ui_stop("check_measure_names: Config data for ref {ref_no} is missing from the measure_config data frame."))
 
   # find the titles to compare
-  m_title <- measure_data |>
+  m_titles <- measure_data |>
     dplyr::filter(if_any("ref", \(x) x == ref_no)) |>
     dplyr::pull("measure_name") |>
     unique()
@@ -146,14 +146,16 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
     dplyr::pull("measure_name") |>
     unique()
 
+  assertthat::assert_that(length(c_title) == 1, msg = glue::glue("check_measure_names: There is more than 1 name for measure {ref_no} in the measure config."))
+
   # warn when the titles don't match
-  if (m_title != c_title) {
-    usethis::ui_warn(c(
-      "check_measure_names: There is a name mismatch for measure ref: {ref_no}.",
-      "The title in the data bundle is {m_title}.",
-      "The title in the measure config is {c_title}."
-      ))
-  }
+  m_titles |>
+    purrr::walk(\(x) ifelse(x == c_title, usethis::ui_silence(TRUE), usethis::ui_warn(
+      c(
+        "check_measure_names: There is a name mismatch for measure ref: {ref_no}.",
+        "The title in the data bundle is '{x}'.",
+        "The title in the measure config is '{c_title}'."
+        ))))
 
   invisible(TRUE)
 }

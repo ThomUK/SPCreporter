@@ -265,14 +265,13 @@ get_variation_type <- function(spc, improvement_direction) {
 #' @noRd
 calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
 
-  updated_to <- lubridate::dmy(updated_to)
-
-  assertthat::assert_that(
-    !is.na(updated_to),
-    msg = "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
+  updated_to <- tryCatch(
+    lubridate::dmy(updated_to),
+    warning = \(w) "calculate_stale_data: The updated_to date is not in the required '%d-%b-%Y' format."
   )
 
   assertthat::assert_that(
+    !is.na(updated_to),
     inherits(updated_to, "Date"),
     msg = "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
   )

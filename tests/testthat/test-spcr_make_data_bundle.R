@@ -155,28 +155,28 @@
 "error for name mismatches before other errors" |>
   test_that({
 
-    # a measure_name mismatch in the measure config must throw an error
+    # a measure_name mismatch in the measure config will throw a warning
     test_measure_config2 <- test_measure_config |>
       dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Attendances", "Attendance")))
 
-    expect_error(spcr_make_data_bundle(
+    expect_warning(spcr_make_data_bundle(
       measure_data = test_measure_data,
       report_config = test_report_config,
       measure_config = test_measure_config2),
-      "check_measure_names: There is a name mismatch"
+      "check_measure_names: There is a name mismatch for measure ref: 1.\nThe title in the data bundle is 'Attendances'.\nThe title in the measure config is 'Attendance'."
       )
 
 
-    # a measure_name mismatch in the measure data must throw an error
+    # a measure_name mismatch in the measure data will throw a warning
     test_measure_data2 <- test_measure_data |>
       purrr::modify_at("month", \(x)
       dplyr::mutate(x, across("measure_name", \(x) stringr::str_replace(x, "Widgets", "widgets"))))
 
-    expect_error(spcr_make_data_bundle(
+    expect_warning(spcr_make_data_bundle(
       measure_data = test_measure_data2,
       report_config = test_report_config,
       measure_config = test_measure_config),
-      "check_measure_names: There is a name mismatch"
+      "check_measure_names: There is a name mismatch for measure ref: 11.\nThe title in the data bundle is 'widgets'.\nThe title in the measure config is 'Widgets'."
     )
 
     # but a measure_name change in the report config should not throw an error

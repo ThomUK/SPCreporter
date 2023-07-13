@@ -118,7 +118,7 @@
     )
   })
 
-"check measure names: errors when names do not match" |>
+"check measure names: warns when names do not match" |>
   test_that({
 
     measure_data <- tibble::tibble(
@@ -132,9 +132,9 @@
       measure_name = "A different name"
     )
 
-    expect_error(
+    expect_warning(
       check_measure_names(10, measure_data, measure_config),
-      "check_measure_names: There is a name mismatch for measure ref: 10. Check for typos or mismatching refs or data."
+      "check_measure_names: There is a name mismatch for measure ref: 10.\nThe title in the data bundle is 'Measure 10'.\nThe title in the measure config is 'A different name'."
     )
   })
 
