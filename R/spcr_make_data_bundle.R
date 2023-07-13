@@ -43,7 +43,8 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   # column. Then we mutate the data frame row by row, adding new variables and
   # tidying up / formatting variables ready for reporting
   nested_data <- report_config |>
-    dplyr::left_join(measure_config, by = c("ref", "measure_name")) |>
+    dplyr::left_join(
+      dplyr::select(measure_config, !"measure_name"), "ref") |>
     dplyr::nest_join(measure_data_long,
                     by = c("ref", "aggregation"),
                     name = "measure_data") |>
