@@ -1,6 +1,65 @@
-.outer_flex {
+body {
+  font-weight: 400;
+  font-size: 15px;
+}
+
+#notes > * + * {
+  margin-top: 1.25rem;
+}
+
+
+h1, h2, h3, h4, h5 {
+  font-weight: 500;
+}
+
+/* hide default title header. We use a custom h1 to display `r title` instead */
+#header {
+  display: none;
+}
+
+
+#header_bar {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  margin: 3rem 0 2rem 0;
+}
+
+
+#title_data {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+#logo_block {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  font-weight: 700;
+}
+
+#logo_block .department h5 {
+  text-align: right;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+#domain_header .level3 {
+  display: flex;
+}
+
+#domain_header .level3 h3 {
+  flex: 1;
+}
+
+details {
+  margin-bottom: 1.8rem;
+}
+
+.outer_flex {
+  display: flex;
   align-items: center;
 }
 
@@ -10,14 +69,24 @@
   align-items: center;
 }
 
-.px-10{
+.px-10 {
   padding: 0 10px 0 10px;
 }
 
+.details-content img {
+  width: 900px;
+  height: 450px;
+}
+
 .measure_title {
-  flex-grow: 1;
+  flex: 1;
   padding: 0 0.5rem 0 0.5rem;
   width: 30%;
+}
+
+.report_comment {
+  font-size: 18px;
+  background-color: #eee;
 }
 
 .spc_logo {
@@ -31,13 +100,9 @@
   text-align: center;
 }
 
-/* htmltools insists on wrapping with p tag.  this removes margin */
-  .spc_logo p {
-    margin: 0;
-  }
 
 .spc_logo img {
-  border-radius: 5px;
+  border-radius: 2px;
 }
 
 .mini_card {
@@ -61,9 +126,10 @@
   border-radius: 5px;
 }
 
+.mini_card_value li::marker {
+    content: ' -   ';
+}
+
 .table {
   max-width: 500px;
-}
-.icon {
-  width: 45px;
 }

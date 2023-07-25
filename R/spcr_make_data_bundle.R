@@ -1,53 +1,78 @@
-#' Make a bundle of data including all SPC calcs
+#' Make a bundle of data
 #'
-#' @param measure_data list. List containing dataframes of data in wide format
-#' @param report_config dataframe. Config information for the report
-#' @param measure_config dataframe. Config information for the measures
+#' @param measure_data list. List containing data frames of data in wide format
+#' @param report_config data frame. Config information for the report
+#' @param measure_config data frame. Config information for the measures
 #'
-#' @return dataframe. A nested dataframe containing calculated charts and parsed text
+#' @returns data frame. A nested data frame containing source data for the report
 #' @export
-#'
-spcr_make_data_bundle <- function(measure_data, report_config, measure_config) {
-  # check report_config
-  report_config <- spcr_check_report_config(report_config)
+spcr_make_data_bundle <- function(measure_data = test_measure_data,
+                                  report_config = test_report_config,
+                                  measure_config = test_measure_config) {
 
-  # check measure_data
-  measure_data <- spcr_check_measure_data(measure_data)
+  # check measure_data (list) columns and set `ref` column to character
+  measure_data <- check_measure_data(measure_data)
 
-  # check measure_config
-  measure_config <- spcr_check_measure_config(measure_config)
+  # check report_config columns and set `ref` column to character
+  report_config <- check_report_config(report_config)
+
+  # check measure_config columns and set `ref` column to character
+  measure_config <- check_measure_config(measure_config)
+
+
+  # reduce measure_data list to a single data frame
+  measure_data_wide <- measure_data |>
+    dplyr::bind_rows(.id = "aggregation")
 
   # check all required data is supplied
-  spcr_check_dataset_is_complete(report_config, measure_data)
+  check_dataset_is_complete(report_config, measure_data_wide)
 
-  # lengthen the measure data aggregation levels into a single long dataframe
-  # adding the frequency in as a column
-  measure_data <- measure_data |>
-    purrr::map2_df(.y = names(measure_data), .f = spcr_lengthen_measure_data)
-
-  # make a vector of the ref numbers to create charts for
-  refs <- report_config |>
+  # Check reference numbers and measure names agree across both data frames.
+  # This is to guard against typos and errors in reported figures
+  # by ensuring a typo in one place (ref or title) will raise an error.
+  report_config |>
     dplyr::pull("ref") |>
-    unique()
+    purrr::walk(\(x) check_measure_names(x, measure_data = measure_data_wide, measure_config = measure_config))
 
-  # check reference numbers and measure names agree across both data frames
-  # this is to guard against typos and errors in reported figures
-  # by ensuring a typo in one place (ref or title) will create an error
-  purrr::walk(refs, spcr_check_measure_names, measure_data = measure_data, measure_config = measure_config)
+  # create long version of measure_data, combined to a single data frame
+  measure_data_long <- measure_data |>
+    purrr::map(lengthen_measure_data) |>
+    dplyr::bind_rows(.id = "aggregation")
 
-  # map over each measure to do the calculations
-  result <- purrr::map2_df(
-    .x = report_config$ref,
-    .y = report_config$aggregation,
-    .f = spcr_calculate_row,
-    measure_data = measure_data,
-    measure_config = measure_config,
-    report_config = report_config
-  ) |>
-    # add a column to control whether Domain titles are printed
+  # measure_data in long format is joined on to the config files as a nested df
+  # column. Then we mutate the data frame row by row, adding new variables and
+  # tidying up / formatting variables ready for reporting
+  nested_data <- report_config |>
+    dplyr::left_join(
+      dplyr::select(measure_config, !"measure_name"), "ref") |>
+    dplyr::nest_join(measure_data_long,
+                    by = c("ref", "aggregation"),
+                    name = "measure_data") |>
+    dplyr::rowwise() |>
     dplyr::mutate(
-      Needs_Domain_Heading = dplyr::if_else(Domain != dplyr::lag(Domain, default = "TRUE"), TRUE, FALSE)
-    )
+      last_date = max(measure_data[["date"]], na.rm = TRUE),
+      last_data_point = dplyr::pull(dplyr::slice_max(measure_data, date), "value")) |>
+    dplyr::ungroup()
 
-  return(result)
+  # Check that measure data that is supposed to be integer data is supplied as
+  # such, or raise a warning message
+  nested_data |>
+    dplyr::filter(if_any("unit", \(x) x == "integer")) |>
+    tidyr::hoist("measure_data", "value") |>
+    dplyr::select(all_of(c(x = "value", y = "ref"))) |>
+    purrr::pwalk(\(x, y) if (any(round(x) != x)) warning(glue::glue("spcr_make_data_bundle: Measure {y} is configured as an integer, but has been supplied with decimal data.")))
+
+  nested_data |>
+    dplyr::mutate(
+      across("last_data_point", \(x) dplyr::case_when(
+        is.na(x) ~ NA_character_,
+        x == Inf ~ NA_character_,
+        unit == "%" ~ paste0(round(x * 100, 1), "%"),
+        unit == "decimal" ~ as.character(round(x, 2)),
+        TRUE ~ as.character(round(x))
+      ))) |>
+    dplyr::mutate(
+      target_text = get_target_text(.data[["target"]], .data[["improvement_direction"]], .data[["unit"]]),
+      updated_to = get_updatedto_text(.data[["last_date"]], .data[["aggregation"]])) |>
+    dplyr::mutate(domain_heading = dplyr::row_number() == 1, .by = "domain")
 }

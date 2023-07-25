@@ -6,7 +6,7 @@
 \alias{SPCreporter-package}
 \title{SPCreporter: Creates Metric Reports using Statistical Process Control in the NHS style}
 \description{
-Takes a dataset file and a configuration file to produce an html report with each metric presented as an SPC chart. The initial rendering of the report contains the charts folded to enable quick scanning of "variation" and "assurance" status. Each metric can be unfolded to reveal the SPC chart to support clinical and management planning. The NHSRplothtedots package is used for SPC calcuations, and the "variation" and "assurance" is in line with the popular standard within the UK's National Health Service (NHS).
+Takes a dataset file and a configuration file to produce an HTML report with each metric presented as an SPC chart. The initial rendering of the report contains the charts folded to enable quick scanning of "variation" and "assurance" status. Each metric can be unfolded to reveal the SPC chart to support clinical and management planning. The NHSRplotthedots package is used for SPC calculations, and the "variation" and "assurance" is in line with the popular standard within the UK's National Health Service (NHS).
 }
 \seealso{
 Useful links:
@@ -18,6 +18,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Tom Smith \email{tomsmith_uk@hotmail.com}
+
+Other contributors:
+\itemize{
+  \item Fran Barton \email{fbarton@alwaysdata.net} [contributor]
+}
 
 }
 \keyword{internal}

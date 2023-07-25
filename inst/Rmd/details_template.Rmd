@@ -1,0 +1,85 @@
+`r ifelse({{domain_heading}}, "::: {#domain_header}", "")`
+`r ifelse({{domain_heading}}, "### {{domain}}", "")`
+`r ifelse({{domain_heading}}, cols_header_text, "")`
+`r ifelse({{domain_heading}}, ":::", "")`
+
+<details>
+<summary>
+
+<div class="outer_flex">
+<h4 class="measure_title"># {{ref}} - {{measure_name}}</h4>
+
+<div class="inner_flex">
+
+<div class="mini_card wide_card">
+<div class="mini_card_key">
+  Updated to
+</div>
+<div class="mini_card_value `r ifelse({{stale_data}}, "stale", "fresh")`">
+  {{updated_to}}
+</div>
+</div>
+
+
+<div class="mini_card">
+<div class="mini_card_key">
+  Target
+</div>
+<div class="mini_card_value">
+  `r ifelse("{{target_text}}" != "NA", "{{target_text}}", "-")`
+</div>
+</div>
+
+<div class="mini_card">
+<div class="mini_card_key">
+  Set by
+</div>
+<div class="mini_card_value">
+  `r ifelse("{{target_set_by}}" != "NA", "{{target_set_by}}", "-")`
+</div>
+</div>
+
+<div class="mini_card">
+<div class="mini_card_key">
+  Actual
+</div>
+<div class="mini_card_value">
+  {{last_data_point}}
+</div>
+</div>
+
+
+<div class="spc_logo">
+  `r ifelse("{{variation_type}}" %in% v_labs, paste0("![{{variation_type}} icon](", v_paths[["{{variation_type}}"]], ")"), "{{variation_type}}")`
+</div>
+
+<div class="spc_logo">
+  `r ifelse("{{assurance_type}}" %in% a_labs, paste0("![{{assurance_type}} icon](", a_paths[["{{assurance_type}}"]], ")"), "{{assurance_type}}")`
+</div>
+
+<div class="spc_logo">
+  `r if ("{{data_quality}}" != "NA") "![{{data_quality}}](../img/dq_icons/star_{{data_quality}}.png)"`
+</div>
+
+</div>
+</div>
+</summary>
+
+<div class="details_content">
+
+  `r if ("{{report_comment}}" != "NA") "<span class='report_comment'>{{report_comment}}</span>"`
+  
+  ![{{measure_name}} plot]({{spc_chart_uri}})
+  
+  `r if ("{{rebase_comment}}" != "NA") "Rebase comments: {{rebase_comment}}"`
+  
+  Accountable Person: `r ifelse("{{accountable_person}}" != "NA", "{{accountable_person}}", "-")`
+  
+  `r if ("{{reviewed_at}}" != "NA") "Reviewed at: {{reviewed_at}}"`
+  
+  `r if ("{{escalated_to}}" != "NA") "Escalated (if needed) to: {escalated_to}}"`
+  
+  Data Owner: `r ifelse("{{data_owner}}" != "NA", "{{data_owner}}", "-")`
+
+</div>
+</details>

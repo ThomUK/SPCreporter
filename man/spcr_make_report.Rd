@@ -6,34 +6,40 @@
 \usage{
 spcr_make_report(
   data_bundle,
-  title,
-  subtitle = NULL,
-  report_ref,
   data_cutoff_dttm,
-  logo_path = NULL,
+  report_title = "SPC Report",
+  subtitle = NULL,
+  document_title = NULL,
+  report_ref = "",
+  logo_path = "nhs",
   department = NULL,
   department_text_colour = "black",
   intro = NULL,
-  author_name,
-  author_email,
-  paper_colour = "#FFFFFF",
+  author_name = "Anne Author",
+  author_email = "a.author@example.com",
+  paper_colour = "white",
   accordion_colour = "#CCF2FF",
-  output_directory = "/",
-  include_dq_icon = TRUE
+  stale_colour = "#FFD1AD",
+  fresh_colour = "white",
+  output_directory = ".",
+  include_dq_icon = TRUE,
+  export_csv = TRUE
 )
 }
 \arguments{
-\item{data_bundle}{list. The pre-processed bundle of information (made with spcr_make_data_bundle())}
-
-\item{title}{string. The report title, printed at the top of the report}
-
-\item{subtitle}{string. The report subtitle, printed at the top of the report}
-
-\item{report_ref}{string. A unique reference for the report, to make finding it later easier (perhaps the repo name?)}
+\item{data_bundle}{data frame. The pre-processed bundle of information (ideally made with \code{spcr_make_data_bundle()})}
 
 \item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
 
-\item{logo_path}{string. Filepath of the logo to be used on the report}
+\item{report_title}{string. The report title, printed at the top of the report}
+
+\item{subtitle}{string. The report subtitle, printed at the top of the report}
+
+\item{document_title}{string. A title for the document, as used in the HTML \verb{<title>} tag or as the PDF document title. If left as NULL (the default), this function will use the \code{report_title} parameter and the current date to construct a title}
+
+\item{report_ref}{string. A unique reference for the report}
+
+\item{logo_path}{string. File path of the logo to be used on the report}
 
 \item{department}{string. A text suffix positioned underneath the logo, for eg. department name}
 
@@ -45,13 +51,19 @@ spcr_make_report(
 
 \item{author_email}{string. The author's contact email address}
 
-\item{paper_colour}{string. Customise the background colour using a valid HTML Hex Colour Code}
+\item{paper_colour}{string. Customise the background colour using a hex code, or CSS colour name}
 
-\item{accordion_colour}{string. Customise the accordion colour using a valid HTML Hex Colour Code}
+\item{accordion_colour}{string. Customise the accordion colour using a hex code, or CSS colour name}
 
-\item{output_directory}{string. The name of the directory to save the resulting report to}
+\item{stale_colour}{string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name}
 
-\item{include_dq_icon}{logical. Is the data quality icon required on the final report}
+\item{fresh_colour}{string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name}
+
+\item{output_directory}{string. The name of the directory in which to save the resulting report}
+
+\item{include_dq_icon}{logical. Whether to include the data quality icon on the final report}
+
+\item{export_csv}{logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.}
 }
 \description{
 Make the SPC Report

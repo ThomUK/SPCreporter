@@ -3,66 +3,163 @@ output:
   html_document:
     css: ["css/details_summary.css", "css/style.css"]
     theme: cosmo
+title: "`r report_title`"
+pagetitle: "`r document_title`"
 ---
-<body style="background-color:`r paper_colour`;">
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+
+```{r setup}
+#| include: false
+
+knitr::opts_chunk$set(echo = FALSE)
+
+# default NHS logo
+if (logo_path == "nhs") {
+  logo_path <- "../img/NHS_logo.jpg"
+}
+
+cols_header_text <- paste0(
+  "<div class='px-10'>
+  <div class='inner_flex'>
+  <div class='spc_logo'>Varia-tion</div>
+  <div class='spc_logo'>Assur-ance</div>",
+  if (include_dq_icon) "<div class='spc_logo'>Data Quality</div>",
+  "</div>
+  </div>")
+
 ```
 
-```{r echo=FALSE, results='asis'}
-
-spcr_make_report_title_block(
-  title = title,
-  report_ref = report_ref,
-  data_cutoff_dttm = data_cutoff_dttm,
-  subtitle = subtitle,
-  logo_path = logo_path,
-  department = department,
-  department_text_colour = department_text_colour
-)
-
+```{r fun}
+v_icon_path <- function(x) glue::glue("../img/variation_icons/{x}.png")
+v_labs <- c(paste(paste("SC", rep(c("HI", "LO"), 3), sep = "_"),
+  c("CON", "IMP", "NEUTRAL"),
+  sep = "_"
+), "CC")
+v_paths <- purrr::map(v_labs, v_icon_path) |>
+  purrr::set_names(v_labs)
+a_icon_path <- function(x) glue::glue("../img/assurance_icons/{x}.png")
+a_labs <- paste0(c("PASS", "RND", "FAIL"), "_TARG")
+a_paths <- purrr::map(a_labs, a_icon_path) |>
+  purrr::set_names(a_labs)
 ```
+
+<style type="text/css">
+  body { background-color: `r paper_colour`; }
+  #logo_block .department h5 { color: `r department_text_colour`; }
+  #main_content summary { background-color: `r accordion_colour`; }
+  .fresh { background-color: `r fresh_colour`; }
+  .stale { background-color: `r stale_colour`; }
+</style>
+
+:::: {#header_bar}
+::: {#title_data}
+
+# `r report_title`
+
+## `r subtitle`
+
+#### Report reference: `r report_ref`
+
+#### Report creation date-time: `r format.Date(Sys.time(), "%d/%m/%Y, %H:%M %p")`
+
+#### Data cutoff date-time: `r format.Date(data_cutoff_dttm, "%d/%m/%Y, %H:%M %p")`
+
+:::
+
+::: {#logo_block}
+![Logo](`r logo_path`)\
+
+##### `r department` {.department}
+:::
+
+::::
+
+### Notes:
 
 `r intro`
 
-**Notes:**  
-A key explaining how to read the icons for Variation, Assurance, and Data Quality is at the [bottom of this document.](#icon-key)
+A key explaining how to read the icons for Variation, Assurance, and Data Quality is at the [bottom of this document](#icon-key).
 
-```{r echo=FALSE, fig.height=4, fig.width=7, message=FALSE, results='asis'}
 
-# add the header bar
-spcr_add_header_bar(
-  include_dq_icon = include_dq_icon
-)
+```{r map-over-data}
+knit_out_list <- data_bundle_full |>
+  purrr::pmap(knitr::knit_expand, file = "details_template.Rmd", .progress = "HTML charts")
 
-# build the report accordions row by row
-purrr::pwalk(
-  data_bundle, 
-  spcr_render_accordion, 
-  accordion_colour = accordion_colour,
-  include_dq_icon = include_dq_icon
-)
+knit_out <- knitr::knit_child(text = knit_out_list, quiet = TRUE)
+```
+
+::: {#main_content}
+
+```{r main-content}
+#| results: asis
+
+cat(knit_out, sep = "  \n")
 
 ```
 
+:::
+
 ---
 
-<!-- HTML to render the dropdown containing the icon key -->
-<details id="icon-key">
+:::: {#icon-key}
+
+<details>
   <summary>
-    <h4 class="outer_flex" style="justify-content: flex-start;">
-    How to read the icons used in this document
+    <h4 class="outer_flex";>
+      How to read the icons used in this document
     </h4>
   </summary>
-  <div class="details_content">
-    `r spcr_icon_key_explanation()`
-  </div>
+
+
+::: {.details_content}
+
+
+#### SPC Variation Icons
+
+Used to summarise the type of variation seen in the most recent data point of a given measure.
+
+| Icons | Variation Type |
+|:-----:|:---------------|
+![SC_HI_CON icon](../img/variation_icons/SC_HI_CON.png) ![SC_LO_CON icon](../img/variation_icons/SC_LO_CON.png) | The most recent data point exhibits special cause variation (in a concerning direction).  H is high, L is low.
+![SC_HI_IMP icon](../img/variation_icons/SC_HI_IMP.png) ![SC_LO_IMP icon](../img/variation_icons/SC_LO_IMP.png) | The most recent data point exhibits special cause variation (in an improving direction).  H is high, L is low.
+![SC_HI_NEUTRAL icon](../img/variation_icons/SC_HI_NEUTRAL.png) ![SC_LO_NEUTRAL icon](../img/variation_icons/SC_LO_NEUTRAL.png) | The most recent data point exhibits special cause variation, but neither direction represents concern or improvement (ie. the measure is neutral).  H is high, L is low.
+![CC icon](../img/variation_icons/CC.png) | The most recent data point exhibits common cause variation (ie. naturally-occurring variation, that is not statistically significant).
+
+#### SPC Assurance Icons
+
+Used to summarise whether a measure is assured to meet a target.
+
+| Icons | Assurance Type |
+|:-----:|:---------------|
+![PASS_TARG icon](../img/assurance_icons/PASS_TARG.png) | The process is assured, and is likely to consistently pass the target set.
+![RND_TARG icon](../img/assurance_icons/RND_TARG.png) | The process is not assured, and will pass and fail the target based on variation in the process.
+![FAIL_TARG icon](../img/assurance_icons/FAIL_TARG.png) | The process is not assured, and is likely to consistently fail to meet the target set.
+
+
+:::
+
 </details>
+
+::::
 
 ---
 
-<!-- Footer -->
-Report reference:  `r report_ref`  
-Report author:  `r author_name` [`r author_email`](`r paste0("mailto:", author_email, "?subject=Report ", report_ref, "...")`)  
+::: {#footer}
 
-END  
+Report reference: `r report_ref`
+
+Report author:  `r author_name` [`r author_email`](`r paste0("mailto:", author_email, "?subject=Report ", report_ref)`)
+
+END
+
+<details id="session-info">
+
+<summary>Session info (metadata for analyst team)</summary>
+
+```{r session-info}
+utils::sessionInfo()
+```
+
+</details>
+
+:::

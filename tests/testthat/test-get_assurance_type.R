@@ -7,7 +7,7 @@ test_that("it returns correct string when improvement direction is neutral", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "neutral"),
+    get_assurance_type(spc, "neutral"),
     "Neutral"
   )
 })
@@ -20,7 +20,7 @@ test_that("it returns correct string when no target is set", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "increase"),
+    get_assurance_type(spc, "increase"),
     "No target"
   )
 })
@@ -34,7 +34,7 @@ test_that("it returns correct string in pass/fail conditions", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "increase"),
+    get_assurance_type(spc, "increase"),
     "RND_TARG"
   )
 
@@ -46,7 +46,7 @@ test_that("it returns correct string in pass/fail conditions", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "decrease"),
+    get_assurance_type(spc, "decrease"),
     "RND_TARG"
   )
 })
@@ -60,7 +60,7 @@ test_that("it returns correct string in failing conditions", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "increase"),
+    get_assurance_type(spc, "increase"),
     "FAIL_TARG"
   )
 
@@ -73,7 +73,7 @@ test_that("it returns correct string in failing conditions", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "decrease"),
+    get_assurance_type(spc, "decrease"),
     "FAIL_TARG"
   )
 })
@@ -87,7 +87,7 @@ test_that("it returns correct string in passing conditions", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "increase"),
+    get_assurance_type(spc, "increase"),
     "PASS_TARG"
   )
 
@@ -99,7 +99,7 @@ test_that("it returns correct string in passing conditions", {
   )
 
   expect_equal(
-    spcr_get_assurance_type(spc, "decrease"),
+    get_assurance_type(spc, "decrease"),
     "PASS_TARG"
   )
 })

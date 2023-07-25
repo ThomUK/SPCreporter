@@ -6,7 +6,7 @@ test_that("it returns correct string when last point is common cause", {
   )
 
   expect_equal(
-    spcr_get_variation_type(spc, "neutral"),
+    get_variation_type(spc, "neutral"),
     "CC"
   )
 })
@@ -18,7 +18,7 @@ test_that("it returns correct strings when improvement direction is neutral", {
   )
 
   expect_equal(
-    spcr_get_variation_type(spc, "neutral"),
+    get_variation_type(spc, "neutral"),
     "SC_LO_NEUTRAL"
   )
 
@@ -28,7 +28,7 @@ test_that("it returns correct strings when improvement direction is neutral", {
   )
 
   expect_equal(
-    spcr_get_variation_type(spc, "neutral"),
+    get_variation_type(spc, "neutral"),
     "SC_HI_NEUTRAL"
   )
 })
@@ -39,7 +39,7 @@ test_that("it returns correct strings when improvement direction is increase", {
   )
 
   expect_equal(
-    spcr_get_variation_type(spc, "increase"),
+    get_variation_type(spc, "increase"),
     "SC_LO_CON"
   )
 
@@ -48,7 +48,7 @@ test_that("it returns correct strings when improvement direction is increase", {
   )
 
   expect_equal(
-    spcr_get_variation_type(spc, "increase"),
+    get_variation_type(spc, "increase"),
     "SC_HI_IMP"
   )
 })
@@ -59,7 +59,7 @@ test_that("it returns correct strings when improvement direction is decrease", {
   )
 
   expect_equal(
-    spcr_get_variation_type(spc, "decrease"),
+    get_variation_type(spc, "decrease"),
     "SC_HI_CON"
   )
 
@@ -68,7 +68,7 @@ test_that("it returns correct strings when improvement direction is decrease", {
   )
 
   expect_equal(
-    spcr_get_variation_type(spc, "decrease"),
+    get_variation_type(spc, "decrease"),
     "SC_LO_IMP"
   )
 })

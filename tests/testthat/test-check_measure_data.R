@@ -1,16 +1,16 @@
 "it errors if the data is not a list" |>
   test_that({
     expect_error(
-      spcr_check_measure_data(tibble::tibble(this_is = "not a list")),
-      "spcr_check_measure_data: The data must be a list."
+      check_measure_data(tibble::tibble(this_is = "not a list")),
+      "check_measure_data: The data must be a list."
     )
   })
 
 "list contains at least one of the required items" |>
   test_that({
     expect_error(
-      spcr_check_measure_data(list("Once in a blue moon" = 1)),
-      "spcr_check_measure_data: Data for either 'week' or 'month' is required."
+      check_measure_data(list(`Once in a blue moon` = 1)),
+      "check_measure_data: One element of measure_data must be named 'week' or 'month'"
     )
   })
 
@@ -22,7 +22,7 @@
         month = data.frame(ref = 2, measure_name = "M2", comment = NA),
         asdf = data.frame(some = "other data") # extra element
       ) |>
-        spcr_check_measure_data()
+        check_measure_data()
     )
   })
 
@@ -34,7 +34,7 @@
         week = data.frame(ref = 1, measure_name = "M1", comment = NA)
         # month list item is not provided
       ) |>
-        spcr_check_measure_data()
+        check_measure_data()
     )
 
     expect_no_error(
@@ -42,7 +42,7 @@
         # week list item is not provided
         month = data.frame(ref = 2, measure_name = "M2", comment = NA)
       ) |>
-        spcr_check_measure_data()
+        check_measure_data()
     )
   })
 
@@ -52,7 +52,7 @@
       list(
         Week = data.frame(ref = 1, measure_name = "M1", comment = NA) # Week not week
       ) |>
-        spcr_check_measure_data()
+        check_measure_data()
     )
   })
 
@@ -99,7 +99,7 @@ measure_data <- list(
     measure_data[["week"]]$ref <- c(1, 2, 3)
     measure_data[["month"]]$ref <- c(1, 2, 3)
 
-    r <- spcr_check_measure_data(measure_data)
+    r <- check_measure_data(measure_data)
 
     expect_equal(
       r[["week"]]$ref,
@@ -113,15 +113,15 @@ measure_data <- list(
     measure_data[["week"]]$ref <- NULL
 
     expect_error(
-      spcr_check_measure_data(measure_data),
-      "spcr_check_for_required_columns: Column 'ref' is missing from the measure_data. Check for typos in the column names."
+      check_measure_data(measure_data),
+      "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
     )
 
     # error persists when the column is mis-spelled
     measure_data[["week"]]$Reference <- c(1, 2, 3)
 
     expect_error(
-      spcr_check_measure_data(measure_data),
-      "spcr_check_for_required_columns: Column 'ref' is missing from the measure_data. Check for typos in the column names."
+      check_measure_data(measure_data),
+      "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
     )
   })
