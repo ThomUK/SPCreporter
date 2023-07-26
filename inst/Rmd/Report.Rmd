@@ -11,7 +11,7 @@ pagetitle: "`r document_title`"
 ```{r setup}
 #| include: false
 
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
 # default NHS logo
 if (logo_path == "nhs") {
