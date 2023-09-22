@@ -18,6 +18,7 @@
 #' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
 #' @param output_directory string. The name of the directory in which to save the resulting report
 #' @param include_dq_icon logical. Whether to include the data quality icon on the final report
+#' @param annotate_spc logical. Whether to add annotations to a secondary y axis for
 #' @param export_csv logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.
 #'
 #' @export
@@ -40,6 +41,7 @@ spcr_make_report <- function(
     fresh_colour = "white",
     output_directory = ".",
     include_dq_icon = TRUE,
+    annotate_spc = TRUE,
     export_csv = TRUE) {
   start_time <- Sys.time()
 
@@ -63,6 +65,7 @@ spcr_make_report <- function(
       "aggregation"
     ))) |>
     dplyr::mutate(spc_data = spc_data) |>
+    dplyr::mutate(label_limits = annotate_spc) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
@@ -71,9 +74,8 @@ spcr_make_report <- function(
     purrr::pmap_chr(\(x, y) paste0("tmp_", x, "_", y, "_")) |>
     tempfile(fileext = ".png")
 
-
   tmp_files |>
-    purrr::walk2(spc_charts, ggplot2::ggsave, width = 1800, height = 900, units = "px", dpi = 144)
+    purrr::walk2(spc_charts, write_chart_to_img)
 
   spc_chart_uris <- tmp_files |>
     purrr::map_chr(knitr::image_uri)
@@ -134,6 +136,7 @@ spcr_make_report <- function(
       toc = FALSE,
       self_contained = TRUE,
       fig_caption = FALSE,
+      highlight = NULL,
       mathjax = NULL
     ),
     output_dir = file.path(getwd(), output_directory),
@@ -147,19 +150,34 @@ spcr_make_report <- function(
   path <- file.path("file://", wd, output_directory, output_file_name)
   usethis::ui_info(paste0("Full path: ", path))
 
+  # open the result in the browser
+  utils::browseURL(path)
+  beepr::beep()
+
   process_duration <- lubridate::as.period(Sys.time() - start_time) |>
     round() |>
     tolower()
 
-  usethis::ui_done("Process completed in {process_duration}.")
-  beepr::beep()
+  usethis::ui_done("Report generated in {process_duration}.")
 
   invisible(TRUE)
 }
 
 
 
-
+#' Write a ggplot2 chart to a temporary png file (wrapper round `ggsave()`)
+#' @noRd
+write_chart_to_img <- function(img_file, chart) {
+  ggplot2::ggsave(
+    filename = img_file,
+    plot = chart,
+    device = ragg::agg_png,
+    width = 1500,
+    height = 750,
+    units = "px",
+    dpi = 125
+    )
+}
 
 
 #' Create a 'plot the dots' SPC data parcel from data bundle columns
@@ -186,7 +204,8 @@ make_spc_chart <- function(
     data_source,
     unit,
     aggregation,
-    spc_data) {
+    spc_data,
+    label_limits = TRUE) {
   spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
@@ -196,7 +215,8 @@ make_spc_chart <- function(
       y_axis_label = NULL,
       x_axis_date_format = dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       icons_position = "none",
-      break_lines = "limits"
+      break_lines = "limits",
+      label_limits = label_limits
     ) +
     ggplot2::labs(
       caption = paste0("Data source: ", data_source)
