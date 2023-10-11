@@ -3,6 +3,7 @@
 "check dataset is complete" |>
   test_that({
     test_measure_data_wide <- test_measure_data |>
+      purrr::discard_at("none") |>
       check_measure_data() |>
       dplyr::bind_rows(.id = "aggregation")
 
