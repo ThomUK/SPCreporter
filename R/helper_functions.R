@@ -53,7 +53,8 @@ lengthen_measure_data <- function(.data) {
 #' Get the character representation of the target
 #'
 #' @param target string/numeric. The target (probably a numeric)
-#' @param improvement_direction string. One of "increase", "decrease", or "neutral"
+#' @param improvement_direction string. One of "increase", "decrease", or
+#'  "neutral"
 #' @param unit string. One of "integer", "decimal", or "%"
 #'
 #' @returns A character string suitable for inclusion in the report
@@ -72,6 +73,7 @@ get_target_text <- function(target, improvement_direction, unit) {
   dplyr::case_when(
     target == 0 & imp_dir == "decrease" ~ string,
     target == 1 & unit == "%" & imp_dir == "increase" ~ string,
+    target == Inf ~ "inf",
     # \u2264 is: ≤
     !is.na(target) & imp_dir == "decrease" ~ paste0("\u2264 ", string),
     # \u2265 is: ≥
@@ -93,6 +95,8 @@ get_target_text <- function(target, improvement_direction, unit) {
 #' @noRd
 get_updatedto_text <- function(last_date, aggregation) {
   dplyr::case_when(
+    aggregation == "none" ~ lubridate::ceiling_date(last_date, "month") - 1,
+    aggregation == "day" ~ lubridate::as_date(last_date),
     aggregation == "week" ~ lubridate::ceiling_date(last_date, "week", week_start = "Mon") - 1,
     aggregation == "month" ~ lubridate::ceiling_date(last_date, "month") - 1,
     TRUE ~ as.Date(NA_character_)) |>
@@ -158,7 +162,8 @@ parse_rebase_dates <- function(input) {
 #' @inheritParams parse_rebase_dates
 #' @param measure_data data frame containing a column of date values
 #'
-#' @returns a vector of dates, amended as necessary, or NULL if no dates were present initially
+#' @returns a vector of dates, amended as necessary, or NULL if no dates were
+#'  present initially
 #' @noRd
 align_rebase_dates <- function(input, measure_data) {
 
@@ -171,7 +176,7 @@ align_rebase_dates <- function(input, measure_data) {
 
   if (is.null(dates)) NULL
   else dates |>
-    purrr::map_dbl(pull_closest_date, dates_list = measure_data$date) |>
+    purrr::map_dbl(pull_closest_date, dates_list = measure_data[["date"]]) |>
     lubridate::as_date()
 }
 
