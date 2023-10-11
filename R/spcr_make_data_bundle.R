@@ -48,11 +48,12 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
     dplyr::nest_join(measure_data_long,
                     by = c("ref", "aggregation"),
                     name = "measure_data") |>
+    dplyr::mutate(across("measure_data", \(x) purrr::map(x, \(x) janitor::remove_empty(x, "rows")))) |>
     dplyr::rowwise() |>
-    dplyr::mutate(
-      last_date = max(measure_data[["date"]], na.rm = TRUE),
-      last_data_point = dplyr::pull(dplyr::slice_max(measure_data, date), "value")) |>
-    dplyr::ungroup()
+    dplyr::group_split() |>
+    purrr::map(\(x) dplyr::mutate(x, last_date = max(measure_data[[1]][["date"]], na.rm = TRUE))) |>
+    purrr::map(\(x) dplyr::mutate(x, last_data_point = dplyr::pull(dplyr::slice_max(measure_data[[1]], date), "value"))) |>
+    dplyr::bind_rows()
 
   # Check that measure data that is supposed to be integer data is supplied as
   # such, or raise a warning message
@@ -60,15 +61,26 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
     dplyr::filter(if_any("unit", \(x) x == "integer")) |>
     tidyr::hoist("measure_data", "value") |>
     dplyr::select(all_of(c(x = "value", y = "ref"))) |>
-    purrr::pwalk(\(x, y) if (any(round(x) != x)) warning(glue::glue("spcr_make_data_bundle: Measure {y} is configured as an integer, but has been supplied with decimal data.")))
+    purrr::pwalk(\(x, y) if (any(round(x) != x)) {
+      warning(
+        glue(
+          "spcr_make_data_bundle: ",
+          "Measure {y} is configured as an integer, ",
+          "but has been supplied with decimal data."))
+    }
+  )
 
   nested_data |>
+    dplyr::mutate(across("improvement_direction", \(x) dplyr::if_else(rare_event_chart == "Y" & aggregation == "none", "increase", x))) |>
+    dplyr::mutate(across("unit", \(x) dplyr::if_else(rare_event_chart == "Y" & aggregation == "none", "days", x))) |>
+    dplyr::mutate(across("target", \(x) dplyr::if_else(rare_event_chart == "Y" & aggregation == "none" & x == 0, Inf, x))) |>
     dplyr::mutate(
       across("last_data_point", \(x) dplyr::case_when(
         is.na(x) ~ NA_character_,
         x == Inf ~ NA_character_,
         unit == "%" ~ paste0(round(x * 100, 1), "%"),
         unit == "decimal" ~ as.character(round(x, 2)),
+        unit == "days" ~ paste0(x, "d"),
         TRUE ~ as.character(round(x))
       ))) |>
     dplyr::mutate(

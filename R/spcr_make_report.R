@@ -60,6 +60,7 @@ spcr_make_report <- function(
       "measure_name",
       "data_source",
       "unit",
+      "rare_event_chart",
       "aggregation"
     ))) |>
     dplyr::mutate(spc_data = spc_data) |>
@@ -91,27 +92,11 @@ spcr_make_report <- function(
 
 
 
-  time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
 
-  if (export_csv) {
-    csv_filename <- paste0(
-      sub(" ", "_", report_title), "_data_", time_stamp, ".csv"
-    )
-    usethis::ui_info(
-      stringr::str_glue("Exporting data CSV file to {csv_filename}")
-    )
-    data_bundle |>
-      tidyr::hoist("measure_data", "comment", .transform = \(x) head(x, 1)) |>
-      tidyr::hoist("measure_data", "date") |>
-      tidyr::hoist("measure_data", "value") |>
-      dplyr::select(!"measure_data") |>
-      tidyr::unnest_longer(c("date", "value")) |>
-      tidyr::pivot_wider(names_from = "date") |>
-      readr::write_csv(csv_filename)
-  }
 
 
   # create the report output file name from the report title and the timestamp
+  time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
   output_file_name <- paste0(
     sub(" ", "_", report_title), "_", time_stamp, ".html"
   )
@@ -175,7 +160,8 @@ make_spc_data <- function(
       value_field = "value",
       date_field = "date",
       target = target,
-      improvement_direction = improvement_direction)
+      improvement_direction = improvement_direction
+    )
 }
 
 #' Create an SPC chart from an SPC data parcel and some data bundle columns
@@ -185,16 +171,19 @@ make_spc_chart <- function(
     measure_name,
     data_source,
     unit,
+    rare_event_chart,
     aggregation,
     spc_data) {
-  spc_data |>
+  p <- spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
       y_axis_label = NULL,
+      x_axis_breaks = "1 month",
       x_axis_date_format = dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
+      label_limits = TRUE,
       icons_position = "none",
       break_lines = "limits"
     ) +
@@ -206,4 +195,13 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
+
+  if (rare_event_chart == "Y" & aggregation == "none") {
+    p +
+      ggplot2::labs(y = "Days since previous occurrence") +
+      ggplot2::scale_x_datetime(
+        breaks = unique(head(tail(sort(spc_data[["x"]]), -1), -1)),
+        labels = \(x) format(x, "%b '%y")
+      )
+  } else p
 }
