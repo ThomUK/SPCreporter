@@ -109,7 +109,7 @@ data_bundle <- spcr_make_data_bundle(
 # make the report, including information for the six mandatory arguments.
 spcr_make_report(
   data_bundle = data_bundle,
-  title = "My Example Report",
+  report_title = "My Example Report",
   report_ref = "EG.001",
   data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59"),
   author_name = "Anne Author",
@@ -128,7 +128,7 @@ spcr_make_report(
 # example where we map over several reports, creating them in one go
 
 all_my_reports <- tibble::tibble(
-  title = c("Report 1", "Report 2", "Report 3"),
+  report_title = c("Report 1", "Report 2", "Report 3"),
   report_ref = c("ID.1", "ID.2", "ID.3"),
   author_name = "Anne Author",
   author_email = "a.author@example.com",
@@ -142,7 +142,6 @@ all_my_reports <- tibble::tibble(
 purrr::pwalk(all_my_reports, spcr_make_report, data_bundle = data_bundle)
 
 # ... but you may want to pass different data to each:
-
 all_my_reports |>
   dplyr::mutate(data_bundle = list(data_bundle1, data_bundle2, data_bundle3)) |>
   purrr::pwalk(spcr_make_report)
