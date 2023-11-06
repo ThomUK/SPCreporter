@@ -23,6 +23,7 @@ spcr_make_report(
   fresh_colour = "white",
   output_directory = ".",
   include_dq_icon = TRUE,
+  annotate_limits = TRUE,
   export_csv = TRUE
 )
 }
@@ -63,7 +64,9 @@ spcr_make_report(
 
 \item{include_dq_icon}{logical. Whether to include the data quality icon on the final report}
 
-\item{export_csv}{logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.}
+\item{annotate_limits}{logical. Whether to add annotations to a secondary y axis for process limits and mean}
+
+\item{export_csv}{logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE}
 }
 \description{
 Make the SPC Report
