@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/404.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/authors.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/index.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/reference/SPCreporter-package.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/reference/check_dataset_is_complete.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/reference/spcr_make_data_bundle.html</loc>
+  </url>
+  <url>
+    <loc>https://thomuk.github.io/SPCreporter/reference/spcr_make_report.html</loc>
+  </url>
+</urlset>
