@@ -3,7 +3,7 @@ Title: Creates Metric Reports using Statistical Process Control in the NHS style
 Version: 0.1.6
 Authors@R: c(
     person("Tom", "Smith",, "tomsmith_uk@hotmail.com", role = c("aut", "cre")),
-    person("Fran", "Barton",, "fbarton@alwaysdata.net", role = "ctb"))
+    person("Fran", "Barton",, "fbarton@alwaysdata.net", role = "aut"))
 Description: Takes a dataset file and a configuration file to produce an HTML
     report with each metric presented as an SPC chart. The initial rendering of
     the report contains the charts folded to enable quick scanning of
@@ -16,7 +16,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-URL: https://github.com/ThomUK/SPCreporter
+URL: https://github.com/ThomUK/SPCreporter,
+    https://thomuk.github.io/SPCreporter/
 BugReports: https://github.com/ThomUK/SPCreporter/issues
 Depends: 
     R (>= 4.1.0)
