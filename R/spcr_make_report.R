@@ -214,9 +214,9 @@ make_spc_chart <- function(
       x_axis_label = NULL,
       y_axis_label = NULL,
       x_axis_date_format = dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
+      label_limits = label_limits,
       icons_position = "none",
-      break_lines = "limits",
-      label_limits = label_limits
+      break_lines = "limits"
     ) +
     ggplot2::labs(
       caption = paste0("Data source: ", data_source)
