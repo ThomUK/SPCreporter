@@ -16,7 +16,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-URL: https://github.com/ThomUK/SPCreporter
+URL: https://github.com/ThomUK/SPCreporter,
+    https://thomuk.github.io/SPCreporter/
 BugReports: https://github.com/ThomUK/SPCreporter/issues
 Depends: 
     R (>= 4.1.0)
