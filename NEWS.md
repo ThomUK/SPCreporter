@@ -1,3 +1,16 @@
+# SPCreporter 0.1.6
+
+## Feature addition
+
+* There is a new argument "annotate_limits" available for `spcr_make_report()`. By default it is `TRUE`, and adds labels for the numeric values of the control limits and mean to the right of the plot.
+
+## Bugfix
+
+* Fixed a bug which caused status messages to be printed in the main report if report generation is done on a slow computer.
+* Fixed minor README argument name mistake, which would have thrown an error for new users.
+
+---
+
 # SPCreporter 0.1.5.6
 
 This version introduces a large number of changes to the package.
