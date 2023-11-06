@@ -18,8 +18,8 @@
 #' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
 #' @param output_directory string. The name of the directory in which to save the resulting report
 #' @param include_dq_icon logical. Whether to include the data quality icon on the final report
-#' @param annotate_spc logical. Whether to add annotations to a secondary y axis for
-#' @param export_csv logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.
+#' @param annotate_limits logical. Whether to add annotations to a secondary y axis for process limits and mean
+#' @param export_csv logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE
 #'
 #' @export
 spcr_make_report <- function(
@@ -41,7 +41,7 @@ spcr_make_report <- function(
     fresh_colour = "white",
     output_directory = ".",
     include_dq_icon = TRUE,
-    annotate_spc = TRUE,
+    annotate_limits = TRUE,
     export_csv = TRUE) {
   start_time <- Sys.time()
 
@@ -65,7 +65,7 @@ spcr_make_report <- function(
       "aggregation"
     ))) |>
     dplyr::mutate(spc_data = spc_data) |>
-    dplyr::mutate(label_limits = annotate_spc) |>
+    dplyr::mutate(label_limits = annotate_limits) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
