@@ -12,8 +12,66 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-
-```{r setup}
 library(SPCreporter)
 ```
+
+This vignette covers how to get started with {SPCreporter}.  We are going to produce an example report using example files that are bundled into this package.  Everything is self-contained.  You'll have your first report in no time!
+
+The example uses three _xlsx_ files which are located in the "example_data" folder of the package.
+
+```{r}
+#| eval: false
+
+# set up to read the package files. You will not need to do this to read your own data.
+example_files <- system.file("example_data", package="SPCreporter")
+
+####
+# 1. READ THE DATA FILES IN
+#############################
+
+# read in measure data from the two worksheets in the example file
+measure_data <- list(
+  week = readxl::read_xlsx(file.path(example_files, "data.xlsx"), sheet = "week"),
+  month = readxl::read_xlsx(file.path(example_files, "data.xlsx"), sheet = "month")
+)
+
+# read in the report config from example file
+report_config <- readxl::read_xlsx(file.path(example_files, "report_config.xlsx"))
+
+# read in measure config from example file
+measure_config <- readxl::read_xlsx(file.path(example_files, "measure_config.xlsx"))
+
+####
+# 2. CREATE THE DATA BUNDLE
+#############################
+
+# create the data bundle
+data_bundle <- spcr_make_data_bundle(
+  measure_data = measure_data, 
+  report_config = report_config,
+  measure_config = measure_config 
+)
+
+####
+# 3. MAKE THE REPORT
+#############################
+
+# make the report, including information for the six mandatory arguments.
+spcr_make_report(
+  data_bundle = data_bundle,
+  report_title = "My Example Report",
+  report_ref = "EG.001",
+  data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59"),
+  author_name = "Anne Author",
+  author_email = "a.author@example.com"
+)
+
+
+```
+
+You should now have an example report in your working directory
+
+After running this example, the next stage is to move the example files to your machine, and start to modify them to create a report of your own data.  
+
+---
+END
