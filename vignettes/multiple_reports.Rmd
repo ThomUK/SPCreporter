@@ -1,0 +1,51 @@
+---
+title: "Creating multiple reports"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example - creating multiple reports}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(SPCreporter)
+```
+
+This vignette covers a more advanced example, using {purrr} to map over several versions of the configuration data files, to produce multiple sets of reports.  
+
+You might do this to produce similar reports customised for different business areas with a single command, or to produce tiered sets of reports (low detail, medium detail, full detail) for use at different levels in your business.  
+
+As a simple example the codes below generates 3 example reports with different background colours.  
+
+```{r}
+#| eval: false
+
+# example where we map over several reports, creating them in one go
+
+all_my_reports <- tibble::tibble(
+  report_title = c("Report 1", "Report 2", "Report 3"),
+  report_ref = c("ID.1", "ID.2", "ID.3"),
+  author_name = "Anne Author",
+  author_email = "a.author@example.com",
+  data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59"),
+  # create reports with different paper colours
+  paper_colour = c("seashell", "thistle", "#afcfaf")
+)
+
+# map over the dataframe, which will create 3 separate reports
+# in this case with the same dataset...
+purrr::pwalk(all_my_reports, spcr_make_report, data_bundle = data_bundle)
+
+# ... but you may want to pass different data to each:
+all_my_reports |>
+  dplyr::mutate(data_bundle = list(data_bundle1, data_bundle2, data_bundle3)) |>
+  purrr::pwalk(spcr_make_report)
+
+```
+
+---
+END
