@@ -72,6 +72,3 @@ spcr_make_report(
 You should now have an example report in your working directory
 
 After running this example, the next stage is to move the example files to your machine, and start to modify them to create a report of your own data.  
-
----
-END

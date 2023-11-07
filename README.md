@@ -19,8 +19,8 @@ Community](https://nhsrcommunity.com/).
 
 This is a link to my [2022 NHS-R
 Conference](https://nhsrcommunity.com/events/nhs-r-online-speaker-conference-2022-9th-november-2022/)
-talk, where I presented an overview of the package.  
-![](https://www.youtube.com/watch?v=fWYehE5U6Vs&t=2862s)
+talk, where I presented an overview of the package:  
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fWYehE5U6Vs;start=2862" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
 
 ## Installation
 
@@ -66,7 +66,3 @@ this package.
 [Creating multiple
 reports](https://thomuk.github.io/SPCreporter/articles/multiple_reports.html) -
 An example of how to use {purrr} to automate groups of reports.
-
-------------------------------------------------------------------------
-
-END
