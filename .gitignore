@@ -6,3 +6,4 @@
 
 local_development_files/*
 docs
+inst/doc
