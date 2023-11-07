@@ -46,6 +46,3 @@ all_my_reports |>
   purrr::pwalk(spcr_make_report)
 
 ```
-
----
-END
