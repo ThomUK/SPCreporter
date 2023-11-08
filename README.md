@@ -3,8 +3,8 @@
 
 # {SPCreporter}
 
-**{SPCreporter}** is a simple way to add value to your performance
-reporting using statistical process control.
+{SPCreporter} is a simple way to add value to your performance reporting
+using statistical process control.
 
 **Help sort signals from noise, and ensure your leadership are talking
 about signals that matter.**
@@ -20,7 +20,7 @@ Community](https://nhsrcommunity.com/).
 This is a link to my [2022 NHS-R
 Conference](https://nhsrcommunity.com/events/nhs-r-online-speaker-conference-2022-9th-november-2022/)
 talk, where I presented an overview of the package:  
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=fWYehE5U6Vs&t=2862s" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fWYehE5U6Vs?si=lNEoHaXxEVUB5Bk2&amp;start=2862" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## Installation
 
