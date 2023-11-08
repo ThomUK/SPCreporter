@@ -17,33 +17,40 @@ library(SPCreporter)
 
 This vignette covers how to get started with {SPCreporter}.  We are going to produce an example report using example files that are bundled into this package.  Everything is self-contained.  You'll have your first report in no time!
 
-The example uses three _xlsx_ files which are located in the "example_data" folder of the package.
+## Preliminary step
+
+The example uses three _xlsx_ files which are located in the "example_data" folder of the package.  This preliminary step is not necessary when working with your own data, but to access the files bundled with the package, we need to run this line.
 
 ```{r}
 #| eval: false
 
 # set up to read the package files. You will not need to do this to read your own data.
-example_files <- system.file("example_data", package="SPCreporter")
+path_to_example_files <- system.file("example_data", package="SPCreporter")
+```
 
-####
-# 1. READ THE DATA FILES IN
-#############################
+## 1. Read the data in
+
+```{r}
+#| eval: false
 
 # read in measure data from the two worksheets in the example file
 measure_data <- list(
-  week = readxl::read_xlsx(file.path(example_files, "data.xlsx"), sheet = "week"),
-  month = readxl::read_xlsx(file.path(example_files, "data.xlsx"), sheet = "month")
+  week = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "week"),
+  month = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "month")
 )
 
 # read in the report config from example file
-report_config <- readxl::read_xlsx(file.path(example_files, "report_config.xlsx"))
+report_config <- readxl::read_xlsx(file.path(path_to_example_files, "report_config.xlsx"))
 
 # read in measure config from example file
-measure_config <- readxl::read_xlsx(file.path(example_files, "measure_config.xlsx"))
+measure_config <- readxl::read_xlsx(file.path(path_to_example_files, "measure_config.xlsx"))
 
-####
-# 2. CREATE THE DATA BUNDLE
-#############################
+```
+
+## 2. Create the data bundle
+
+```{r}
+#| eval: false
 
 # create the data bundle
 data_bundle <- spcr_make_data_bundle(
@@ -52,9 +59,12 @@ data_bundle <- spcr_make_data_bundle(
   measure_config = measure_config 
 )
 
-####
-# 3. MAKE THE REPORT
-#############################
+```
+
+## 3. Make the report
+
+```{r}
+#| eval: false
 
 # make the report, including information for the six mandatory arguments.
 spcr_make_report(
@@ -66,9 +76,10 @@ spcr_make_report(
   author_email = "a.author@example.com"
 )
 
-
 ```
 
-You should now have an example report in your working directory
+Success!  Your rendered report should look like this [**example report**](/docs/report_examples/My_Example Report.html).
 
-After running this example, the next stage is to move the example files to your machine, and start to modify them to create a report of your own data.  
+Once you have run this example, you might choose to move the three example config files to you own machine, and replicate the process again.  
+
+After that, start modifying the files to reflect your own data and reporting needs...
