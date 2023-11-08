@@ -36,6 +36,9 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
+  <a class="nav-link" href="../report_examples/My_Example%20Report.html">Example Report</a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="active nav-item dropdown">
@@ -85,44 +88,49 @@
 going to produce an example report using example files that are bundled
 into this package. Everything is self-contained. You’ll have your first
 report in no time!</p>
+<div class="section level2">
+<h2 id="preliminary-step">Preliminary step<a class="anchor" aria-label="anchor" href="#preliminary-step"></a>
+</h2>
 <p>The example uses three <em>xlsx</em> files which are located in the
-“example_data” folder of the package.</p>
+“example_data” folder of the package. This preliminary step is not
+necessary when working with your own data, but to access the files
+bundled with the package, we need to run this line.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set up to read the package files. You will not need to do this to read your own data.</span></span>
-<span><span class="va">example_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example_data"</span>, package<span class="op">=</span><span class="st">"SPCreporter"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">####</span></span>
-<span><span class="co"># 1. READ THE DATA FILES IN</span></span>
-<span><span class="co">#############################</span></span>
-<span></span>
-<span><span class="co"># read in measure data from the two worksheets in the example file</span></span>
+<span><span class="va">path_to_example_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example_data"</span>, package<span class="op">=</span><span class="st">"SPCreporter"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="read-the-data-in">1. Read the data in<a class="anchor" aria-label="anchor" href="#read-the-data-in"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># read in measure data from the two worksheets in the example file</span></span>
 <span><span class="va">measure_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  week <span class="op">=</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">example_files</span>, <span class="st">"data.xlsx"</span><span class="op">)</span>, sheet <span class="op">=</span> <span class="st">"week"</span><span class="op">)</span>,</span>
-<span>  month <span class="op">=</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">example_files</span>, <span class="st">"data.xlsx"</span><span class="op">)</span>, sheet <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span>
+<span>  week <span class="op">=</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_to_example_files</span>, <span class="st">"data.xlsx"</span><span class="op">)</span>, sheet <span class="op">=</span> <span class="st">"week"</span><span class="op">)</span>,</span>
+<span>  month <span class="op">=</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_to_example_files</span>, <span class="st">"data.xlsx"</span><span class="op">)</span>, sheet <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># read in the report config from example file</span></span>
-<span><span class="va">report_config</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">example_files</span>, <span class="st">"report_config.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">report_config</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_to_example_files</span>, <span class="st">"report_config.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># read in measure config from example file</span></span>
-<span><span class="va">measure_config</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">example_files</span>, <span class="st">"measure_config.xlsx"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">####</span></span>
-<span><span class="co"># 2. CREATE THE DATA BUNDLE</span></span>
-<span><span class="co">#############################</span></span>
-<span></span>
-<span><span class="co"># create the data bundle</span></span>
+<span><span class="va">measure_config</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_to_example_files</span>, <span class="st">"measure_config.xlsx"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="create-the-data-bundle">2. Create the data bundle<a class="anchor" aria-label="anchor" href="#create-the-data-bundle"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># create the data bundle</span></span>
 <span><span class="va">data_bundle</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spcr_make_data_bundle.html">spcr_make_data_bundle</a></span><span class="op">(</span></span>
 <span>  measure_data <span class="op">=</span> <span class="va">measure_data</span>, </span>
 <span>  report_config <span class="op">=</span> <span class="va">report_config</span>,</span>
 <span>  measure_config <span class="op">=</span> <span class="va">measure_config</span> </span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">####</span></span>
-<span><span class="co"># 3. MAKE THE REPORT</span></span>
-<span><span class="co">#############################</span></span>
-<span></span>
-<span><span class="co"># make the report, including information for the six mandatory arguments.</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="make-the-report">3. Make the report<a class="anchor" aria-label="anchor" href="#make-the-report"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># make the report, including information for the six mandatory arguments.</span></span>
 <span><span class="fu"><a href="../reference/spcr_make_report.html">spcr_make_report</a></span><span class="op">(</span></span>
 <span>  data_bundle <span class="op">=</span> <span class="va">data_bundle</span>,</span>
 <span>  report_title <span class="op">=</span> <span class="st">"My Example Report"</span>,</span>
@@ -131,11 +139,16 @@ report in no time!</p>
 <span>  author_name <span class="op">=</span> <span class="st">"Anne Author"</span>,</span>
 <span>  author_email <span class="op">=</span> <span class="st">"a.author@example.com"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>You should now have an example report in your working directory</p>
-<p>After running this example, the next stage is to move the example
-files to your machine, and start to modify them to create a report of
-your own data.</p>
-  </main>
+<p>Success! Your rendered report should look like this <a href="/docs/report_examples/My_Example%20Report.html"><strong>example
+report</strong></a>.</p>
+<p>Once you have run this example, you might choose to move the three
+example config files to you own machine, and replicate the process
+again.</p>
+<p>After that, start modifying the files to reflect your own data and
+reporting needs…</p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
