@@ -4,7 +4,8 @@
 # {SPCreporter}
 
 {SPCreporter} is a simple way to add value to your performance reporting
-using statistical process control.
+using statistical process control. It produces reports similar to this
+[**example report**](report_examples/My_Example%20Report.html).
 
 **Help sort signals from noise, and ensure your leadership are talking
 about signals that matter.**
@@ -60,7 +61,7 @@ spcr_make_report(
 
 [Get Started
 vignette](https://thomuk.github.io/SPCreporter/articles/get_started.html) -
-Start here to produce your first reprot using data that is bundled into
+Start here to produce your first report using data that is bundled into
 this package.
 
 [Creating multiple
