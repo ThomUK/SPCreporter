@@ -2,7 +2,7 @@
 title: "Creating multiple reports"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Example - creating multiple reports}
+  %\VignetteIndexEntry{Creating multiple reports}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
