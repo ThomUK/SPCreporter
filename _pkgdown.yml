@@ -2,3 +2,11 @@ url: https://thomuk.github.io/SPCreporter/
 template:
   bootstrap: 5
 
+navbar:
+  structure:
+    left:  [intro, report_examples, reference, articles, tutorials, news]
+    right: [search, github]
+  components:
+   report_examples:
+    text: Example Report
+    href: report_examples/My_Example Report.html
