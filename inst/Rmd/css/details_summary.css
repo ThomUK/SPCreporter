@@ -41,6 +41,7 @@ details summary::marker {
 
 .summary_title:before {
     content: "+";
+    display: inline-block;
     font-size: 2.5rem;
     text-align: center;
     width: 20px;
