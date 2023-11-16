@@ -54,6 +54,16 @@ h1, h2, h3, h4, h5 {
   flex: 1;
 }
 
+/* hide the icon titles in mobile view */
+.icon_titles{
+  display: none;
+}
+@media (min-width: 768px) {
+  .icon_titles{
+    display: flex;
+  }
+}
+
 details {
   margin-bottom: 1.8rem;
 }

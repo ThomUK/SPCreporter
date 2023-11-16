@@ -20,7 +20,7 @@ if (logo_path == "nhs") {
 
 cols_header_text <- paste0(
   "<div class='px-10'>
-  <div class='inner_flex'>
+  <div class='icon_titles'>
   <div class='spc_logo'>Varia-tion</div>
   <div class='spc_logo'>Assur-ance</div>",
   if (include_dq_icon) "<div class='spc_logo'>Data Quality</div>",
