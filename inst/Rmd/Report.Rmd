@@ -105,7 +105,7 @@ cat(knit_out, sep = "  \n")
 
 <details>
   <summary>
-    <h4 class="outer_flex";>
+    <h4 class="summary_title";>
       How to read the icons used in this document
     </h4>
   </summary>

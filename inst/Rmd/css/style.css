@@ -88,10 +88,10 @@ details {
   height: 450px;
 }
 
-.measure_title {
+.summary_title {
   flex: 1;
-  padding: 0 0.5rem 0 0.5rem;
-  width: 30%;
+  padding: 0 0.5rem 0 0;
+  width: 100%;
 }
 
 .report_comment {

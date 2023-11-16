@@ -9,7 +9,7 @@
 <div class="outer_flex">
 <h4 class="measure_title"># {{ref}} - {{measure_name}}</h4>
 
-<div class="inner_flex">
+<h4 class="summary_title"># {{ref}} - {{measure_name}}</h4>
 
 <div class="mini_card wide_card">
 <div class="mini_card_key">
