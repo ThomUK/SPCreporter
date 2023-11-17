@@ -1,3 +1,18 @@
+# SPCreporter 0.1.6.9000
+
+## Feature addition
+
+* The report is now mobile friendly, and works on very narrow screens.  The breakpoint from wide to narrow layout is 768px.
+* The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.
+
+## Useability
+
+* Added the optional columns to the example excel config documents, to aid onboarding for new users.
+
+## Bugfix
+
+---
+
 # SPCreporter 0.1.6
 
 ## Feature addition

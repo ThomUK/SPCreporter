@@ -80,7 +80,7 @@
   
   `r if ("{{reviewed_at}}" != "NA") "Reviewed at: {{reviewed_at}}"`
   
-  `r if ("{{escalated_to}}" != "NA") "Escalated (if needed) to: {escalated_to}}"`
+  `r if ("{{escalated_to}}" != "NA") "Escalated (if needed) to: {{escalated_to}}"`
   
   Data Owner: `r ifelse("{{data_owner}}" != "NA", "{{data_owner}}", "-")`
 
