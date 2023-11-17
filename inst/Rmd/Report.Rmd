@@ -137,10 +137,14 @@ Used to summarise whether a measure is assured to meet a target.
 
 #### Data Quality Icons
 
+USed to summarise the data quality status of a given measure.
+
 | Icons | Data Quality Quadrant |
 |:-----:|:----------------------|
-| | |
-| | |
+| ![A icon](../img/dq_icons/star_GWWW.png) | |
+| ![B icon](../img/dq_icons/star_WGWW.png) | |
+| ![C icon](../img/dq_icons/star_WWGW.png) | |
+| ![D icon](../img/dq_icons/star_WWWG.png) | |
 
 :::
 
