@@ -54,19 +54,59 @@ h1, h2, h3, h4, h5 {
   flex: 1;
 }
 
-details {
-  margin-bottom: 1.8rem;
+/* hide the icon titles in mobile view */
+.icon_titles{
+  display: none;
+}
+@media (min-width: 768px) {
+  .icon_titles{
+    display: flex;
+  }
 }
 
+details {
+  margin-bottom: 1.5rem;
+}
+
+/* change flex direction on mobile screens */
 .outer_flex {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media (min-width: 768px) {
+  .outer_flex {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* measure title */
+.inner_flex_1{
+  display: inline-block;
+  align-items: center;
+  flex-grow: 2; /* grow to take up available space */
+}
+
+/* text cards (target, etc) */
+.inner_flex_2{
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-.inner_flex {
+/* logos */
+.inner_flex_3 {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+  margin-top: 1rem;
+}
+@media (min-width: 768px) {
+  .inner_flex_3{
+    justify-content: flex-end;
+    margin: 0;
+  }
 }
 
 .px-10 {
@@ -78,10 +118,10 @@ details {
   height: 450px;
 }
 
-.measure_title {
+.summary_title {
   flex: 1;
-  padding: 0 0.5rem 0 0.5rem;
-  width: 30%;
+  padding: 0 0.5rem 0 0;
+  width: 100%;
 }
 
 .report_comment {
@@ -100,6 +140,9 @@ details {
   text-align: center;
 }
 
+.spc_logo p{
+  margin: 0;
+}
 
 .spc_logo img {
   border-radius: 2px;
