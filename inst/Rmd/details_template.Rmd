@@ -76,7 +76,7 @@
   
   `r if ("{{rebase_comment}}" != "NA") "Rebase comments: {{rebase_comment}}"`
   
-  Accountable Person: `r ifelse("{{accountable_person}}" != "NA", "{{accountable_person}}", "-")`
+  `r if ("{{accountable_person}}" != "NA") "Accountable Person: {{accountable_person}}"`
   
   `r if ("{{reviewed_at}}" != "NA") "Reviewed at: {{reviewed_at}}"`
   
