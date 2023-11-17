@@ -135,6 +135,12 @@ Used to summarise whether a measure is assured to meet a target.
 ![RND_TARG icon](../img/assurance_icons/RND_TARG.png) | The process is not assured, and will pass and fail the target based on variation in the process.
 ![FAIL_TARG icon](../img/assurance_icons/FAIL_TARG.png) | The process is not assured, and is likely to consistently fail to meet the target set.
 
+#### Data Quality Icons
+
+| Icons | Data Quality Quadrant |
+|:-----:|:----------------------|
+| | |
+| | |
 
 :::
 
