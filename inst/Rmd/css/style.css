@@ -113,6 +113,7 @@ details {
   padding: 0 10px 0 10px;
 }
 
+
 .details-content img {
   width: 900px;
   height: 450px;
@@ -127,7 +128,6 @@ details {
 .report_comment {
   display: block;
   font-size: 18px;
-  padding: 0.5rem 1rem;
 }
 
 .spc_logo {
@@ -171,7 +171,7 @@ details {
 }
 
 .mini_card_value li::marker {
-    content: ' -   ';
+  content: ' -   ';
 }
 
 .table {
