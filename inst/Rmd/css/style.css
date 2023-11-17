@@ -125,8 +125,9 @@ details {
 }
 
 .report_comment {
+  display: block;
   font-size: 18px;
-  background-color: #eee;
+  padding: 0.5rem 1rem;
 }
 
 .spc_logo {
