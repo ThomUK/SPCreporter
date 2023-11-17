@@ -7,10 +7,12 @@
 <summary>
 
 <div class="outer_flex">
-<h4 class="measure_title"># {{ref}} - {{measure_name}}</h4>
 
+<div class="inner_flex_1">
 <h4 class="summary_title"># {{ref}} - {{measure_name}}</h4>
+</div>
 
+<div class="inner_flex_2">
 <div class="mini_card wide_card">
 <div class="mini_card_key">
   Updated to
@@ -47,8 +49,9 @@
   {{last_data_point}}
 </div>
 </div>
+</div>
 
-
+<div class="inner_flex_3">
 <div class="spc_logo">
   `r ifelse("{{variation_type}}" %in% v_labs, paste0("![{{variation_type}} icon](", v_paths[["{{variation_type}}"]], ")"), "{{variation_type}}")`
 </div>
@@ -60,8 +63,8 @@
 <div class="spc_logo">
   `r if ("{{data_quality}}" != "NA") "![{{data_quality}}](../img/dq_icons/star_{{data_quality}}.png)"`
 </div>
-
 </div>
+
 </div>
 </summary>
 
