@@ -148,11 +148,17 @@ spcr_make_report <- function(
   # print the full path to the console
   wd <- getwd() |>
     stringr::str_remove("^\\\\{1}") # if network location, remove an initial '\'
-  path <- file.path("file://", wd, output_directory, output_file_name)
-  usethis::ui_info(paste0("Full path: ", path))
+  path <- file.path(wd, output_directory, output_file_name)
+  usethis::ui_info("HTML filepath: {path}")
 
   # open the result in the browser
   utils::browseURL(path)
+
+  # render a pdf if needed
+  if("pdf" %in% output_type){
+    convert_to_pdf(path)
+  }
+
   beepr::beep()
 
   process_duration <- lubridate::as.period(Sys.time() - start_time) |>
