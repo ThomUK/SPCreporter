@@ -98,7 +98,7 @@ spcr_make_report <- function(
 
   if ("csv" %in% output_type) {
     csv_filename <- paste0(
-      sub(" ", "_", report_title), "_data_", time_stamp, ".csv"
+      gsub(" ", "_", report_title), "_data_", time_stamp, ".csv"
     )
     usethis::ui_info(
       stringr::str_glue("Exporting data CSV file to {csv_filename}")
@@ -116,7 +116,7 @@ spcr_make_report <- function(
 
   # create the report output file name from the report title and the timestamp
   output_file_name <- paste0(
-    sub(" ", "_", report_title), "_", time_stamp, ".html"
+    gsub(" ", "_", report_title), "_", time_stamp, ".html"
   )
 
   # create a document title (HTML <title>), unless already supplied

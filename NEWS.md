@@ -13,6 +13,8 @@
 
 ## Bugfix
 
+* All spaces in the report name are now replaced with underscores. Previously only the first space was replaced.  
+
 ---
 
 # SPCreporter 0.1.6
