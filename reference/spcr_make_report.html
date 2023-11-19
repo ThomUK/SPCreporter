@@ -79,9 +79,9 @@
 <span>  stale_colour <span class="op">=</span> <span class="st">"#FFD1AD"</span>,</span>
 <span>  fresh_colour <span class="op">=</span> <span class="st">"white"</span>,</span>
 <span>  output_directory <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  output_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"html"</span>, <span class="st">"csv"</span><span class="op">)</span>,</span>
 <span>  include_dq_icon <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  annotate_limits <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  export_csv <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  annotate_limits <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -155,16 +155,16 @@
 <dd><p>string. The name of the directory in which to save the resulting report</p></dd>
 
 
+<dt>output_type</dt>
+<dd><p>vector. Specify what output types are needed.  Default is c("html", "csv")</p></dd>
+
+
 <dt>include_dq_icon</dt>
 <dd><p>logical. Whether to include the data quality icon on the final report</p></dd>
 
 
 <dt>annotate_limits</dt>
 <dd><p>logical. Whether to add annotations to a secondary y axis for process limits and mean</p></dd>
-
-
-<dt>export_csv</dt>
-<dd><p>logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE</p></dd>
 
 </dl></div>
 

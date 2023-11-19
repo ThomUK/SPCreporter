@@ -65,10 +65,12 @@
 <div class="section level3">
 <h3 id="useability-0-1-6-9000">Useability<a class="anchor" aria-label="anchor" href="#useability-0-1-6-9000"></a></h3>
 <ul><li>Added the optional columns to the example excel config documents, to aid onboarding for new users.</li>
+<li>BREAKING CHANGE - the argument <code>export_csv</code> to <code><a href="../reference/spcr_make_report.html">spcr_make_report()</a></code> has been disused and replaced with <code>output_type</code> which is now a vector of the required output types. Current valid options are “html” and “csv”. This method will allow addition of more report types in future.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bugfix-0-1-6-9000">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-0-1-6-9000"></a></h3>
-<hr></div>
+<ul><li>All spaces in the report name are now replaced with underscores. Previously only the first space was replaced.</li>
+</ul><hr></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.6" id="spcreporter-016">SPCreporter 0.1.6<a class="anchor" aria-label="anchor" href="#spcreporter-016"></a></h2>
