@@ -97,12 +97,12 @@ spcr_make_report <- function(
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
 
   if ("csv" %in% output_type) {
+    usethis::ui_info("Making CSV output...")
+
     csv_filename <- paste0(
       gsub(" ", "_", report_title), "_data_", time_stamp, ".csv"
     )
-    usethis::ui_info(
-      stringr::str_glue("Exporting data CSV file to {csv_filename}")
-    )
+
     data_bundle |>
       tidyr::hoist("measure_data", "comment", .transform = \(x) head(x, 1)) |>
       tidyr::hoist("measure_data", "date") |>
@@ -111,6 +111,9 @@ spcr_make_report <- function(
       tidyr::unnest_longer(c("date", "value")) |>
       tidyr::pivot_wider(names_from = "date") |>
       readr::write_csv(csv_filename)
+
+    usethis::ui_info("CSV filename: {csv_filename}")
+    usethis::ui_done("CSV output complete.")
   }
 
 
@@ -143,13 +146,13 @@ spcr_make_report <- function(
     output_dir = file.path(getwd(), output_directory),
     output_file = output_file_name
   )
-  usethis::ui_done("HTML output complete.")
 
   # print the full path to the console
   wd <- getwd() |>
     stringr::str_remove("^\\\\{1}") # if network location, remove an initial '\'
   path <- file.path(wd, output_directory, output_file_name)
   usethis::ui_info("HTML filepath: {path}")
+  usethis::ui_done("HTML output complete.")
 
   # open the result in the browser
   utils::browseURL(path)
@@ -165,7 +168,7 @@ spcr_make_report <- function(
     round() |>
     tolower()
 
-  usethis::ui_done("Report generated in {process_duration}.")
+  usethis::ui_done("Report(s) generated in {process_duration}.")
 
   invisible(TRUE)
 }
@@ -250,7 +253,7 @@ convert_to_pdf <- function(filepath) {
 
   pagedown::chrome_print(out_path, pdf_path, scale = 2)
 
-  usethis::ui_done("PDF output complete.")
   usethis::ui_info("PDF filepath: {pdf_path}")
+  usethis::ui_done("PDF output complete.")
   invisible(TRUE)
 }
