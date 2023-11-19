@@ -37,7 +37,10 @@
       data_quality = c("RRRR", "AAAA", "GGGG"),
       baseline_period = c(12L, 12L, 12L),
       rebase_dates = c(NA, NA, NA),
-      rebase_comment = c(NA, NA, NA)
+      rebase_comment = c(NA, NA, NA),
+      allowable_days_lag = NA,
+      reviewed_at = NA,
+      escalated_to = NA
     )
 
     r <- check_measure_config(measure_config)
@@ -170,7 +173,8 @@
       ref = c(1, 2, 3, 1, 2, 3),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
       domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
-      aggregation = c("week", "week", "week", "month", "month", "month")
+      aggregation = c("week", "week", "week", "month", "month", "month"),
+      report_comment = NA
     )
 
     r <- check_report_config(report_config)
