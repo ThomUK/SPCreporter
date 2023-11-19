@@ -137,15 +137,15 @@ Used to summarise whether a measure is assured to meet a target.
 
 #### Data Quality Icons
 
-USed to summarise the data quality status of a given measure.
+Used to summarise the data quality status of a given measure, across the four domains detailed below:
 
-| Icons | Data Quality Quadrant |
-|:-----:|:----------------------|
-| ![A icon](../img/dq_icons/star_GWWW.png) | |
-| ![B icon](../img/dq_icons/star_WGWW.png) | |
-| ![C icon](../img/dq_icons/star_WWGW.png) | |
-| ![D icon](../img/dq_icons/star_WWWG.png) | |
-
+| Icons    | Domain | Summary | Detail                                             |
+|:--------:|:---:|:------:|:-------------------------------------------------------|
+| ![A icon](../img/dq_icons/star_GWWW.png) | S | Sign-off and Validation       | Is there a named accountable person, who can sign off the data as a true reflection of the activity?  Has the data been checked for validity and consistency? Is there exec-level oversight of this process? |
+| ![B icon](../img/dq_icons/star_WGWW.png) | T | Timely & Complete             | Is the data available and up to date at the time of the submission or publication? Are all elements of required information present in the designated data source, and no elements need to be changed at a later date? |
+| ![C icon](../img/dq_icons/star_WWGW.png) | A | Audit & Accuracy              | Are processes in place for either external or internal audits of the data, and are these regularly scheduled (eg. quarterly, annually)? Are accuracy checks built into the data collection and reporting processes? |
+| ![D icon](../img/dq_icons/star_WWWG.png) | R | Robust systems & Data-capture | Are there robust systems which have been documented according to data dictionary standards for data capture such that it is at a sufficiently granular level? |
+ 
 :::
 
 </details>
