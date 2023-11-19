@@ -106,7 +106,7 @@
 
     # some spot checks on the above conversion of the last_data_point to the
     # appropriate character format
-    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 222 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "222", FALSE))
+    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 385 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "385", FALSE))
 
     expect_true(ifelse(round(data_bundle1[["last_data_point"]][[2]], 2) == 0.73 & data_bundle1[["unit"]][[2]] == "%", data_bundle2[["last_data_point"]][[2]] == "73%", FALSE))
 
