@@ -106,7 +106,7 @@
 
     # some spot checks on the above conversion of the last_data_point to the
     # appropriate character format
-    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 222 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "222", FALSE))
+    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 385 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "385", FALSE))
 
     expect_true(ifelse(round(data_bundle1[["last_data_point"]][[2]], 2) == 0.73 & data_bundle1[["unit"]][[2]] == "%", data_bundle2[["last_data_point"]][[2]] == "73%", FALSE))
 
@@ -157,14 +157,16 @@
 
     # a measure_name mismatch in the measure config will throw a warning
     test_measure_config2 <- test_measure_config |>
-      dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Attendances", "Attendance")))
+      dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Capacity", "Capaciteeee")))
 
-    expect_warning(spcr_make_data_bundle(
-      measure_data = test_measure_data,
-      report_config = test_report_config,
-      measure_config = test_measure_config2),
-      "check_measure_names: There is a name mismatch for measure ref: 1.\nThe title in the data bundle is 'Attendances'.\nThe title in the measure config is 'Attendance'."
-      )
+    expect_warning(
+      spcr_make_data_bundle(
+        measure_data = test_measure_data,
+        report_config = test_report_config,
+        measure_config = test_measure_config2
+      ),
+      "check_measure_names: There is a name mismatch for measure ref: 5.\nThe title in the data bundle is 'Capacity'.\nThe title in the measure config is 'Capaciteeee'."
+    )
 
 
     # a measure_name mismatch in the measure data will throw a warning

@@ -204,7 +204,10 @@ check_for_optional_columns <- function(.data, optional_columns) {
 
   missing_columns <- setdiff(optional_columns, names(.data))
   if (length(missing_columns)) {
-    usethis::ui_info("check_for_optional_columns: Adding in blank missing (optional) columns.")
+    # find the name of the first missing col for the console message
+    first_missing_column <- missing_columns[1]
+
+    usethis::ui_info("check_for_optional_columns: Optional column '{first_missing_column}' is missing. Adding it.")
     missing_columns |>
       purrr::reduce(\(x, y) tibble::add_column(x, {{y}} := NA_character_), .init = .data)
   } else .data
@@ -241,3 +244,4 @@ check_dataset_is_complete <- function(report_config, measure_data) {
 
   invisible(TRUE)
 }
+
