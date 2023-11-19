@@ -4,6 +4,7 @@
 
 * The report is now mobile friendly, and works on very narrow screens.  The breakpoint from wide to narrow layout is 768px.
 * The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.
+* Added explanation of the data-quality icons to the footer of the report.
 
 ## Useability
 
