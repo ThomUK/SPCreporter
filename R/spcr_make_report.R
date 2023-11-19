@@ -228,3 +228,23 @@ make_spc_chart <- function(
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
 }
+
+#' Convert HTML output to PDF
+#' @param filepath. A file path to the HTML file
+#' @noRd
+convert_to_pdf <- function(filepath) {
+  usethis::ui_info("Making PDF output...")
+
+  out_path <- file.path(tempdir(), basename(filepath))
+  pdf_path <- xfun::with_ext(filepath, "pdf")
+  filepath |>
+    readr::read_file() |>
+    stringr::str_replace_all("<details>", "<details open>") |>
+    readr::write_file(out_path)
+
+  pagedown::chrome_print(out_path, pdf_path, scale = 2)
+
+  usethis::ui_done("PDF output complete.")
+  usethis::ui_info("PDF filepath: {pdf_path}")
+  invisible(TRUE)
+}
