@@ -17,9 +17,9 @@
 #' @param stale_colour string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name
 #' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
 #' @param output_directory string. The name of the directory in which to save the resulting report
+#' @param output_type vector. Specify what output types are needed.  Default is c("html", "csv")
 #' @param include_dq_icon logical. Whether to include the data quality icon on the final report
 #' @param annotate_limits logical. Whether to add annotations to a secondary y axis for process limits and mean
-#' @param export_csv logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE
 #'
 #' @export
 spcr_make_report <- function(
@@ -40,9 +40,10 @@ spcr_make_report <- function(
     stale_colour = "#FFD1AD", # light orange
     fresh_colour = "white",
     output_directory = ".",
+    output_type = c("html", "csv"),
     include_dq_icon = TRUE,
-    annotate_limits = TRUE,
-    export_csv = TRUE) {
+    annotate_limits = TRUE
+  ) {
   start_time <- Sys.time()
 
   # Create list of source data for SPC charts
@@ -95,9 +96,9 @@ spcr_make_report <- function(
 
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
 
-  if (export_csv) {
+  if ("csv" %in% output_type) {
     csv_filename <- paste0(
-      sub(" ", "_", report_title), "_data_", time_stamp, ".csv"
+      gsub(" ", "_", report_title), "_data_", time_stamp, ".csv"
     )
     usethis::ui_info(
       stringr::str_glue("Exporting data CSV file to {csv_filename}")
@@ -115,7 +116,7 @@ spcr_make_report <- function(
 
   # create the report output file name from the report title and the timestamp
   output_file_name <- paste0(
-    sub(" ", "_", report_title), "_", time_stamp, ".html"
+    gsub(" ", "_", report_title), "_", time_stamp, ".html"
   )
 
   # create a document title (HTML <title>), unless already supplied
