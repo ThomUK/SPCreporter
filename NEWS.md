@@ -9,6 +9,7 @@
 ## Useability
 
 * Added the optional columns to the example excel config documents, to aid onboarding for new users.
+* BREAKING CHANGE - the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type` which is now a vector of the required output types.  Current valid options are "html" and "csv".  This method will allow addition of more report types in future.
 
 ## Bugfix
 
