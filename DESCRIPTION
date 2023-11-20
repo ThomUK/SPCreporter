@@ -39,7 +39,8 @@ Imports:
     tidyr,
     tidyselect,
     usethis,
-    utils
+    utils,
+    pagedown
 Suggests:
     readxl,
     testthat (>= 3.0.0)
