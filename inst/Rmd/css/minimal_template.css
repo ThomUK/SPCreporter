@@ -1,0 +1,15 @@
+body {
+    max-width: 940px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 15px;
+}
+
+.title.toc-ignore {
+    display: none;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 34px;
+}

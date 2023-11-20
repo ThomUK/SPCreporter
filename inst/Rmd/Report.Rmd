@@ -4,6 +4,7 @@ output:
     theme: null
     css: [
     "css/tailwind_preflight.css", 
+    "css/minimal_template.css", 
     "css/details_summary.css", 
     "css/style.css"
     ]
