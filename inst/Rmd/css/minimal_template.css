@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 500;
+  src: url(fonts/SourceSansPro.ttf) format('truetype');
+}
+
+html {
+    font-family: "Source Sans Pro";
+}
+
 body {
     max-width: 940px;
     margin-left: auto;
