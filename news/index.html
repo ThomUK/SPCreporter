@@ -18,8 +18,13 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../report_examples/My_Example%20Report.html">Example Report</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-report-examples">Report Examples</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-report-examples">
+    <a class="dropdown-item" href="../report_examples/My_Example_Report.html">HTML report</a>
+    <a class="dropdown-item" href="../report_examples/My_Example_Report.pdf">PDF report</a>
+    <a class="dropdown-item" href="../report_examples/My_Example_Report_data.csv">CSV output</a>
+  </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
@@ -61,11 +66,12 @@
 <ul><li>The report is now mobile friendly, and works on very narrow screens. The breakpoint from wide to narrow layout is 768px.</li>
 <li>The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.</li>
 <li>Added explanation of the data-quality icons to the footer of the report.</li>
+<li>Added the ability to output “.pdf” reports. Note this is early functionality and page-breaking is not yet controlled.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="useability-0-1-6-9000">Useability<a class="anchor" aria-label="anchor" href="#useability-0-1-6-9000"></a></h3>
 <ul><li>Added the optional columns to the example excel config documents, to aid onboarding for new users.</li>
-<li>BREAKING CHANGE - the argument <code>export_csv</code> to <code><a href="../reference/spcr_make_report.html">spcr_make_report()</a></code> has been disused and replaced with <code>output_type</code> which is now a vector of the required output types. Current valid options are “html” and “csv”. This method will allow addition of more report types in future.</li>
+<li>BREAKING CHANGE - the argument <code>export_csv</code> to <code><a href="../reference/spcr_make_report.html">spcr_make_report()</a></code> has been disused and replaced with <code>output_type</code> which is now a vector of the required output types. Current valid options are “html”, “pdf”, and “csv”. This method will allow addition of more report types in future.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bugfix-0-1-6-9000">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-0-1-6-9000"></a></h3>
