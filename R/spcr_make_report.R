@@ -17,7 +17,7 @@
 #' @param stale_colour string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name
 #' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
 #' @param output_directory string. The name of the directory in which to save the resulting report
-#' @param output_type vector. Specify what output types are needed.  Default is c("html", "csv")
+#' @param output_type vector. Specify what output types are needed.  Default is c("html", "csv"). "pdf" is also possible.
 #' @param include_dq_icon logical. Whether to include the data quality icon on the final report
 #' @param annotate_limits logical. Whether to add annotations to a secondary y axis for process limits and mean
 #'
