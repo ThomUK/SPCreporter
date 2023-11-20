@@ -182,10 +182,10 @@ write_chart_to_img <- function(img_file, chart) {
     filename = img_file,
     plot = chart,
     device = ragg::agg_png,
-    width = 1500,
-    height = 750,
+    width = 1000,
+    height = 500,
     units = "px",
-    dpi = 125
+    dpi = 72
     )
 }
 
