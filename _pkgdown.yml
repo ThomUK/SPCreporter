@@ -7,6 +7,12 @@ navbar:
     left:  [intro, report_examples, reference, articles, tutorials, news]
     right: [search, github]
   components:
-   report_examples:
-    text: Example Report
-    href: report_examples/My_Example Report.html
+    report_examples:
+      text: Report Examples
+      menu:
+      - text: HTML report
+        href: report_examples/My_Example_Report.html
+      - text: PDF report
+        href: report_examples/My_Example_Report.pdf
+      - text: CSV output
+        href: report_examples/My_Example_Report_data.csv
