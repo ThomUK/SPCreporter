@@ -1,8 +1,11 @@
 ---
 output: 
   html_document:
-    css: ["css/details_summary.css", "css/style.css"]
-    theme: cosmo
+    theme: null
+    css: [
+    "css/details_summary.css", 
+    "css/style.css"
+    ]
 title: "`r report_title`"
 pagetitle: "`r document_title`"
 ---
