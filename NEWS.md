@@ -5,11 +5,12 @@
 * The report is now mobile friendly, and works on very narrow screens.  The breakpoint from wide to narrow layout is 768px.
 * The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.
 * Added explanation of the data-quality icons to the footer of the report.
+* Added the ability to output ".pdf" reports. Note this is early functionality and page-breaking is not yet controlled.
 
 ## Useability
 
 * Added the optional columns to the example excel config documents, to aid onboarding for new users.
-* BREAKING CHANGE - the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type` which is now a vector of the required output types.  Current valid options are "html" and "csv".  This method will allow addition of more report types in future.
+* BREAKING CHANGE - the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type` which is now a vector of the required output types.  Current valid options are "html", "pdf", and "csv".  This method will allow addition of more report types in future.
 
 ## Bugfix
 

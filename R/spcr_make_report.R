@@ -17,7 +17,7 @@
 #' @param stale_colour string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name
 #' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
 #' @param output_directory string. The name of the directory in which to save the resulting report
-#' @param output_type vector. Specify what output types are needed.  Default is c("html", "csv")
+#' @param output_type vector. Specify what output types are needed.  Default is c("html", "csv"). "pdf" is also possible.
 #' @param include_dq_icon logical. Whether to include the data quality icon on the final report
 #' @param annotate_limits logical. Whether to add annotations to a secondary y axis for process limits and mean
 #'
@@ -97,12 +97,12 @@ spcr_make_report <- function(
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
 
   if ("csv" %in% output_type) {
+    usethis::ui_info("Making CSV output...")
+
     csv_filename <- paste0(
       gsub(" ", "_", report_title), "_data_", time_stamp, ".csv"
     )
-    usethis::ui_info(
-      stringr::str_glue("Exporting data CSV file to {csv_filename}")
-    )
+
     data_bundle |>
       tidyr::hoist("measure_data", "comment", .transform = \(x) head(x, 1)) |>
       tidyr::hoist("measure_data", "date") |>
@@ -111,6 +111,9 @@ spcr_make_report <- function(
       tidyr::unnest_longer(c("date", "value")) |>
       tidyr::pivot_wider(names_from = "date") |>
       readr::write_csv(csv_filename)
+
+    usethis::ui_info("CSV filename: {csv_filename}")
+    usethis::ui_done("CSV output complete.")
   }
 
 
@@ -143,23 +146,29 @@ spcr_make_report <- function(
     output_dir = file.path(getwd(), output_directory),
     output_file = output_file_name
   )
-  usethis::ui_done("HTML output complete.")
 
   # print the full path to the console
   wd <- getwd() |>
     stringr::str_remove("^\\\\{1}") # if network location, remove an initial '\'
-  path <- file.path("file://", wd, output_directory, output_file_name)
-  usethis::ui_info(paste0("Full path: ", path))
+  path <- file.path(wd, output_directory, output_file_name)
+  usethis::ui_info("HTML filepath: {path}")
+  usethis::ui_done("HTML output complete.")
 
   # open the result in the browser
   utils::browseURL(path)
+
+  # render a pdf if needed
+  if("pdf" %in% output_type){
+    convert_to_pdf(path)
+  }
+
   beepr::beep()
 
   process_duration <- lubridate::as.period(Sys.time() - start_time) |>
     round() |>
     tolower()
 
-  usethis::ui_done("Report generated in {process_duration}.")
+  usethis::ui_done("Report(s) generated in {process_duration}.")
 
   invisible(TRUE)
 }
@@ -227,4 +236,24 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
+}
+
+#' Convert HTML output to PDF
+#' @param filepath. A file path to the HTML file
+#' @noRd
+convert_to_pdf <- function(filepath) {
+  usethis::ui_info("Making PDF output...")
+
+  out_path <- file.path(tempdir(), basename(filepath))
+  pdf_path <- xfun::with_ext(filepath, "pdf")
+  filepath |>
+    readr::read_file() |>
+    stringr::str_replace_all("<details>", "<details open>") |>
+    readr::write_file(out_path)
+
+  pagedown::chrome_print(out_path, pdf_path)
+
+  usethis::ui_info("PDF filepath: {pdf_path}")
+  usethis::ui_done("PDF output complete.")
+  invisible(TRUE)
 }

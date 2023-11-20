@@ -62,7 +62,7 @@ spcr_make_report(
 
 \item{output_directory}{string. The name of the directory in which to save the resulting report}
 
-\item{output_type}{vector. Specify what output types are needed.  Default is c("html", "csv")}
+\item{output_type}{vector. Specify what output types are needed.  Default is c("html", "csv"). "pdf" is also possible.}
 
 \item{include_dq_icon}{logical. Whether to include the data quality icon on the final report}
 
