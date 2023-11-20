@@ -58,7 +58,7 @@ h1, h2, h3, h4, h5 {
 .icon_titles{
   display: none;
 }
-@media (min-width: 768px) {
+@media print, screen and (min-width: 768px) {
   .icon_titles{
     display: flex;
   }
@@ -74,7 +74,7 @@ details {
   flex-direction: column;
   justify-content: space-between;
 }
-@media (min-width: 768px) {
+@media print, screen and (min-width: 768px) {
   .outer_flex {
     flex-direction: row;
     align-items: center;
@@ -102,7 +102,7 @@ details {
   align-items: center;
   margin-top: 1rem;
 }
-@media (min-width: 768px) {
+@media print, screen and (min-width: 768px) {
   .inner_flex_3{
     justify-content: flex-end;
     margin: 0;
