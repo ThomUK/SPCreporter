@@ -251,7 +251,7 @@ convert_to_pdf <- function(filepath) {
     stringr::str_replace_all("<details>", "<details open>") |>
     readr::write_file(out_path)
 
-  pagedown::chrome_print(out_path, pdf_path, scale = 2)
+  pagedown::chrome_print(out_path, pdf_path)
 
   usethis::ui_info("PDF filepath: {pdf_path}")
   usethis::ui_done("PDF output complete.")
