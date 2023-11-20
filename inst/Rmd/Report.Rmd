@@ -3,6 +3,7 @@ output:
   html_document:
     theme: null
     css: [
+    "css/tailwind_preflight.css", 
     "css/details_summary.css", 
     "css/style.css"
     ]
