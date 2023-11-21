@@ -2,11 +2,6 @@
   margin-top: 1.25rem;
 }
 
-
-h1, h2, h3, h4, h5 {
-  font-weight: 500;
-}
-
 /* hide default title header. We use a custom h1 to display `r title` instead */
 #header {
   display: none;
@@ -57,10 +52,6 @@ h1, h2, h3, h4, h5 {
   .icon_titles{
     display: flex;
   }
-}
-
-details {
-  margin-bottom: 1.5rem;
 }
 
 /* change flex direction on mobile screens */
