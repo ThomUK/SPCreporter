@@ -40,12 +40,17 @@ details summary::marker {
     display: none
 }
 
+.summary_title {
+    display: flex;
+    align-items: center;
+}
 .summary_title:before {
     content: "+";
     display: inline-block;
-    font-size: 2.5rem;
+    font-size: 1.6rem;
     text-align: center;
     width: 20px;
+    margin: 0.2rem;
 }
 
 details[open] .summary_title:before {
