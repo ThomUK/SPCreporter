@@ -87,10 +87,10 @@ h6 {
 Reset links to optimize for opt-in styling instead of opt-out.
 */
 
-a {
+/* a {
   color: inherit;
   text-decoration: inherit;
-}
+} */
 
 /*
 Add the correct font weight in Edge and Safari.
