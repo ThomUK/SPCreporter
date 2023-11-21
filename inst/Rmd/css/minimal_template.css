@@ -7,6 +7,7 @@
 
 html {
     font-family: "Source Sans Pro";
+    font-weight: 500;
     font-size: 14px;
 }
 
@@ -22,12 +23,10 @@ body {
 }
 
 h1 {
-    font-weight: 500;
     font-size: 2.4rem;
 }
 
 h2 {
-    font-weight: 500;
     font-size: 1.8rem;
 }
 
