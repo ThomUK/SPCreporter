@@ -164,6 +164,7 @@
   margin: 0;
 }
 
-.table {
+table {
   max-width: 500px;
+  margin-bottom: 1.5rem;
 }
