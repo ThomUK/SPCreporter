@@ -58,5 +58,10 @@ details[open] .summary_title:before {
 }
 
 #session-info summary {
-  background-color: #dde;
+    background-color: #dde;
+    padding: 0.5rem;
+}
+
+#session-info pre {
+    padding: 0.5rem;
 }

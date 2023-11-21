@@ -165,11 +165,9 @@ Report reference: `r report_ref`
 
 Report author:  `r author_name` [`r author_email`](`r paste0("mailto:", author_email, "?subject=Report ", report_ref)`)
 
-END
-
 <details id="session-info">
 
-<summary>Session info (metadata for analyst team)</summary>
+<summary>Session metadata for report author</summary>
 
 ```{r session-info}
 utils::sessionInfo()
