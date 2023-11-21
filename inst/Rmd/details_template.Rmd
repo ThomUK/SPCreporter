@@ -1,5 +1,5 @@
 `r ifelse({{domain_heading}}, "::: {#domain_header}", "")`
-`r ifelse({{domain_heading}}, "### {{domain}}", "")`
+`r ifelse({{domain_heading}}, "## {{domain}}", "")`
 `r ifelse({{domain_heading}}, cols_header_text, "")`
 `r ifelse({{domain_heading}}, ":::", "")`
 

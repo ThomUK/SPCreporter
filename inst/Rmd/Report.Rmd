@@ -79,7 +79,7 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
 
 ::::
 
-### Notes:
+## Notes:
 
 `r intro`
 

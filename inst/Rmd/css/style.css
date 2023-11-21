@@ -46,11 +46,11 @@ h1, h2, h3, h4, h5 {
   font-weight: 700;
 }
 
-#domain_header .level3 {
+#domain_header .level2 {
   display: flex;
 }
 
-#domain_header .level3 h3 {
+#domain_header .level2 h2 {
   flex: 1;
 }
 
