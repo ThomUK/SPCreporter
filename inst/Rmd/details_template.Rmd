@@ -28,7 +28,7 @@
   Target
 </div>
 <div class="mini_card_value">
-  `r ifelse("{{target_text}}" != "NA", "{{target_text}}", "-")`
+  `r ifelse("{{target_text}}" != "-", "{{target_text}}", "\\-")`
 </div>
 </div>
 
@@ -37,7 +37,7 @@
   Set by
 </div>
 <div class="mini_card_value">
-  `r ifelse("{{target_set_by}}" != "NA", "{{target_set_by}}", "-")`
+  `r ifelse("{{target_set_by}}" != "NA", "{{target_set_by}}", "\\-")`
 </div>
 </div>
 

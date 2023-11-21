@@ -156,10 +156,6 @@
   border-radius: 5px;
 }
 
-.mini_card_value li::marker {
-  content: ' -   ';
-}
-
 .table {
   max-width: 500px;
 }
