@@ -57,7 +57,7 @@ check_report_config <- function(report_config) {
     "aggregation"
   )
 
-  optional_columns <- "report_comment"
+  optional_columns <- c("report_comment", "rare_event_chart")
 
   # check required cols are present
   report_config |>
@@ -102,7 +102,6 @@ check_measure_config <- function(measure_config) {
 
   optional_columns <- c(
     "allowable_days_lag",
-    "rare_event_chart",
     "reviewed_at",
     "escalated_to"
   )
