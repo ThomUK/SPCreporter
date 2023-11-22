@@ -47,6 +47,12 @@ spcr_make_data_bundle <- function(
   nested_data <- report_config |>
     # use measure names from report_config not from measure_config
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
+    dplyr::mutate(
+      measure_name = dplyr::case_when(
+        rare_event_chart == "Y" ~ paste(measure_name, "(time-between)"),
+        TRUE ~ measure_name
+      )
+    ) |>
     dplyr::nest_join(
       measure_data_long,
       by = c("ref", "aggregation"),
