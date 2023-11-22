@@ -33,6 +33,7 @@ Imports:
     NHSRplotthedots,
     pagedown,
     purrr (>= 1.0.0),
+    ragg,
     readr,
     rlang,
     rmarkdown,

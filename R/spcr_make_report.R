@@ -249,7 +249,7 @@ convert_to_pdf <- function(filepath) {
   usethis::ui_info("Making PDF output...")
 
   out_path <- file.path(tempdir(), basename(filepath))
-  pdf_path <- xfun::with_ext(filepath, "pdf")
+  pdf_path <- with_ext(filepath, "pdf")
   filepath |>
     readr::read_file() |>
     stringr::str_replace_all("<details>", "<details open>") |>
@@ -260,4 +260,36 @@ convert_to_pdf <- function(filepath) {
   usethis::ui_info("PDF filepath: {pdf_path}")
   usethis::ui_done("PDF output complete.")
   invisible(TRUE)
+}
+
+
+#' Copied from {xfun}
+#' https://github.com/yihui/xfun/blob/main/R/paths.R
+#'
+#' @param x A character of file paths.
+#' @param ext A vector of new extensions. It must be either of length 1, or the
+#'   same length as `x`.
+#' @param extra Extra characters to be allowed in the extensions. By default,
+#'   only alphanumeric characters are allowed (and also some special cases in
+#'   \sQuote{Details}). If other characters should be allowed, they can be
+#'   specified in a character string, e.g., `"-+!_#"`.
+#' @export
+with_ext = function(x, ext, extra = '') {
+  if (anyNA(ext)) stop("NA is not allowed in 'ext'")
+  n1 = length(x); n2 = length(ext)
+  if (n1 * n2 == 0) return(x)
+  i = !grepl('^[.]', ext) & ext != ''
+  ext[i] = paste0('.', ext[i])
+
+  if (all(ext == '')) ext = ''
+  r = sub('[$]$', '?$', reg_ext(extra))  # make extensions in 'x' optional
+  if (length(ext) == 1) return(sub(r, ext, x))
+
+  if (n1 > 1 && n1 != n2) stop("'ext' must be of the same length as 'x'")
+  mapply(sub, r, ext, x, USE.NAMES = FALSE)
+}
+
+# regex to extract base path and extension from a file path
+reg_ext  = function(extra = '') {
+  sprintf('([.](([%s[:alnum:]]+|tar[.](gz|bz2|xz)|nb[.]html)[~#]?))$', extra)
 }
