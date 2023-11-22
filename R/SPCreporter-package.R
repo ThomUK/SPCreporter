@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom dplyr across if_any pick
+#' @importFrom dplyr across if_any if_else pick
 #' @importFrom glue glue
 #' @importFrom rlang := .data
 #' @importFrom tidyselect all_of any_of everything
