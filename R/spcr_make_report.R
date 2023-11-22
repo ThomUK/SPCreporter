@@ -197,14 +197,16 @@ make_spc_data <- function(
     target,
     rebase_dates,
     improvement_direction,
-    measure_data) {
+    measure_data
+  ) {
   measure_data |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
       value_field = "value",
       date_field = "date",
       target = target,
-      improvement_direction = improvement_direction)
+      improvement_direction = improvement_direction
+    )
 }
 
 #' Create an SPC chart from an SPC data parcel and some data bundle columns
@@ -224,7 +226,8 @@ make_spc_chart <- function(
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
       y_axis_label = NULL,
-      x_axis_date_format = dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
+      x_axis_breaks = "1 month",
+      x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,
       icons_position = "none",
       break_lines = "limits"
