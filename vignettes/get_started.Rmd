@@ -36,7 +36,8 @@ path_to_example_files <- system.file("example_data", package="SPCreporter")
 # read in measure data from the two worksheets in the example file
 measure_data <- list(
   week = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "week"),
-  month = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "month")
+  month = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "month"),
+  none = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "none")
 )
 
 # read in the report config from example file
