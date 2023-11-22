@@ -29,7 +29,7 @@
 
     expect_named(measure_data, unique(measure_data_long[["aggregation"]]))
     expect_named(measure_data_long, test_names)
-    expect_equal(nrow(measure_data_long), 378)
+    expect_equal(nrow(measure_data_long), 415)
   })
 
 
@@ -121,7 +121,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config)
 
-    expect_length(out, 24)
+    expect_length(out, 25)
     expect_equal(nrow(out), nrow(test_report_config))
     expect_type(out[["ref"]], "character")
     expect_type(out[["target"]], "double")
@@ -145,7 +145,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config2)
 
-    expect_length(out2, 24)
+    expect_length(out2, 25)
     expect_equal(nrow(out2), nrow(test_report_config))
 
   })
