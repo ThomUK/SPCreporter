@@ -223,7 +223,7 @@ make_spc_chart <- function(
   label_limits,
   spc_data
   ) {
-  spc_data |>
+  plot <- spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
       percentage_y_axis = unit == "%",
@@ -244,6 +244,17 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
+
+    # conditionally add the "hollow" final data point to rare-event charts
+    if (rare_event_chart == "Y") {
+      final_x <- spc_data |> dplyr::pull(x) |> tail(1)
+      final_y <- spc_data |> dplyr::pull(y) |> tail(1)
+      
+      plot <- plot +
+        ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "#7B7D7D", size = 7) +
+        ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "white", size = 5)
+    }
+  return(plot)
 }
 
 #' Convert HTML output to PDF
