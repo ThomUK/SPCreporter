@@ -102,6 +102,7 @@ spcr_make_report <- function(
     csv_filename <- paste0(
       gsub(" ", "_", report_title), "_data_", time_stamp, ".csv"
     )
+    csv_path <- file.path(getwd(), output_directory, csv_filename)
 
     data_bundle |>
       tidyr::hoist("measure_data", "comment", .transform = \(x) head(x, 1)) |>
@@ -110,9 +111,9 @@ spcr_make_report <- function(
       dplyr::select(!"measure_data") |>
       tidyr::unnest_longer(c("date", "value")) |>
       tidyr::pivot_wider(names_from = "date") |>
-      readr::write_csv(csv_filename)
+      readr::write_csv(csv_path)
 
-    usethis::ui_info("CSV filename: {csv_filename}")
+    usethis::ui_info("CSV filename: {csv_path}")
     usethis::ui_done("CSV output complete.")
   }
 
@@ -182,10 +183,10 @@ write_chart_to_img <- function(img_file, chart) {
     filename = img_file,
     plot = chart,
     device = ragg::agg_png,
-    width = 1500,
-    height = 750,
+    width = 1000,
+    height = 500,
     units = "px",
-    dpi = 125
+    dpi = 72
     )
 }
 

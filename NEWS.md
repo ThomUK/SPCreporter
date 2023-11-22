@@ -11,10 +11,12 @@
 
 * Added the optional columns to the example excel config documents, to aid onboarding for new users.
 * BREAKING CHANGE - the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type` which is now a vector of the required output types.  Current valid options are "html", "pdf", and "csv".  This method will allow addition of more report types in future.
+* File size reduced by approx 30% by handling plot resolution differently, and by a further 0.6MB by removing javascript, css, and font files bundled as part of RMarkdown.  As a result of the latter change the template behaves less like standard Rmd and is more reliant on custom CSS, but as it is rarely edited the file size reduction is worth this trade-off.  
 
 ## Bugfix
 
 * All spaces in the report name are now replaced with underscores. Previously only the first space was replaced.  
+* The CSV output now respects the `output_directory` argument. Previously this file was saved in the working directory regardless of the output_directory argument.
 
 ---
 

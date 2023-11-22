@@ -5,7 +5,7 @@
 
 {SPCreporter} is a simple way to add value to your performance reporting
 using statistical process control. It produces reports similar to this
-[**example report**](report_examples/My_Example%20Report.html).
+[**example report**](report_examples/My_Example_Report.html).
 
 **Help sort signals from noise, and ensure your leadership are talking
 about signals that matter.**

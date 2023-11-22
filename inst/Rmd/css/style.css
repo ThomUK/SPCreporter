@@ -1,15 +1,5 @@
-body {
-  font-weight: 400;
-  font-size: 15px;
-}
-
 #notes > * + * {
   margin-top: 1.25rem;
-}
-
-
-h1, h2, h3, h4, h5 {
-  font-weight: 500;
 }
 
 /* hide default title header. We use a custom h1 to display `r title` instead */
@@ -22,7 +12,7 @@ h1, h2, h3, h4, h5 {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin: 3rem 0 2rem 0;
+  margin: 2.2rem 0 1.6rem 0;
 }
 
 
@@ -46,11 +36,11 @@ h1, h2, h3, h4, h5 {
   font-weight: 700;
 }
 
-#domain_header .level3 {
+#domain_header .level2 {
   display: flex;
 }
 
-#domain_header .level3 h3 {
+#domain_header .level2 h2 {
   flex: 1;
 }
 
@@ -62,10 +52,6 @@ h1, h2, h3, h4, h5 {
   .icon_titles{
     display: flex;
   }
-}
-
-details {
-  margin-bottom: 1.5rem;
 }
 
 /* change flex direction on mobile screens */
@@ -151,16 +137,20 @@ details {
 
 .mini_card {
   width: 50px;
-  margin: 0 0.5rem 0 0.5rem;
+  margin: 0.3rem;
 }
 
 .wide_card {
   width: 100px;
-  margin: 0 0.5rem 0 0.5rem;
+  margin: 0.3rem;
 }
 
 .mini_card_key {
   text-align: center;
+}
+
+.mini_card_key > p {
+  margin-bottom: 0.3rem;
 }
 
 .mini_card_value {
@@ -170,10 +160,11 @@ details {
   border-radius: 5px;
 }
 
-.mini_card_value li::marker {
-  content: ' -   ';
+.mini_card_value > p {
+  margin: 0;
 }
 
-.table {
+table {
   max-width: 500px;
+  margin-bottom: 1.5rem;
 }

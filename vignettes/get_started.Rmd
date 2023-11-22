@@ -78,7 +78,7 @@ spcr_make_report(
 
 ```
 
-Success!  Your rendered report should look like this [**example report**](https://thomuk.github.io/SPCreporter/report_examples/My_Example Report.html).
+Success!  Your rendered report should look like this [**example report**](https://thomuk.github.io/SPCreporter/report_examples/My_Example_Report.html).
 
 Once you have run this example, you might choose to move the three example config files to you own machine, and replicate the process again.  
 

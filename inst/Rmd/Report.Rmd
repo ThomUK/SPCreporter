@@ -1,8 +1,13 @@
 ---
 output: 
   html_document:
-    css: ["css/details_summary.css", "css/style.css"]
-    theme: cosmo
+    theme: null
+    css: [
+    "css/tailwind_preflight.css", 
+    "css/minimal_template.css", 
+    "css/details_summary.css", 
+    "css/style.css"
+    ]
 title: "`r report_title`"
 pagetitle: "`r document_title`"
 ---
@@ -74,7 +79,7 @@ a_paths <- purrr::map(a_labs, a_icon_path) |>
 
 ::::
 
-### Notes:
+## Notes:
 
 `r intro`
 
@@ -160,11 +165,9 @@ Report reference: `r report_ref`
 
 Report author:  `r author_name` [`r author_email`](`r paste0("mailto:", author_email, "?subject=Report ", report_ref)`)
 
-END
-
 <details id="session-info">
 
-<summary>Session info (metadata for analyst team)</summary>
+<summary>Session metadata for report author</summary>
 
 ```{r session-info}
 utils::sessionInfo()
