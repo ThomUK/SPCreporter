@@ -66,8 +66,8 @@ spcr_make_report <- function(
       "rare_event_chart",
       "aggregation"
     ))) |>
-    dplyr::mutate(spc_data = spc_data) |>
     dplyr::mutate(label_limits = annotate_limits) |>
+    dplyr::mutate(spc_data = spc_data) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
@@ -161,7 +161,7 @@ spcr_make_report <- function(
   utils::browseURL(path)
 
   # render a pdf if needed
-  if("pdf" %in% output_type){
+  if ("pdf" %in% output_type) {
     convert_to_pdf(path)
   }
 
@@ -189,7 +189,7 @@ write_chart_to_img <- function(img_file, chart) {
     height = 500,
     units = "px",
     dpi = 72
-    )
+  )
 }
 
 
@@ -214,19 +214,22 @@ make_spc_data <- function(
 #' Create an SPC chart from an SPC data parcel and some data bundle columns
 #' @noRd
 make_spc_chart <- function(
-    ref,
-    measure_name,
-    data_source,
-    unit,
-    aggregation,
-    spc_data) {
+  ref,
+  measure_name,
+  data_source,
+  unit,
+  rare_event_chart,
+  aggregation,
+  label_limits,
+  spc_data
+  ) {
   spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = NULL,
+      y_axis_label = if_else(rare_event_chart == "Y", "Days since previous occurrence", ""),
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,
