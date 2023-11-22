@@ -1,15 +1,5 @@
-body {
-  font-weight: 400;
-  font-size: 15px;
-}
-
 #notes > * + * {
   margin-top: 1.25rem;
-}
-
-
-h1, h2, h3, h4, h5 {
-  font-weight: 500;
 }
 
 /* hide default title header. We use a custom h1 to display `r title` instead */
@@ -22,7 +12,7 @@ h1, h2, h3, h4, h5 {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin: 3rem 0 2rem 0;
+  margin: 2.2rem 0 1.6rem 0;
 }
 
 
@@ -46,47 +36,84 @@ h1, h2, h3, h4, h5 {
   font-weight: 700;
 }
 
-#domain_header .level3 {
+#domain_header .level2 {
   display: flex;
 }
 
-#domain_header .level3 h3 {
+#domain_header .level2 h2 {
   flex: 1;
 }
 
-details {
-  margin-bottom: 1.8rem;
+/* hide the icon titles in mobile view */
+.icon_titles{
+  display: none;
+}
+@media print, screen and (min-width: 768px) {
+  .icon_titles{
+    display: flex;
+  }
 }
 
+/* change flex direction on mobile screens */
 .outer_flex {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media print, screen and (min-width: 768px) {
+  .outer_flex {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* measure title */
+.inner_flex_1{
+  display: inline-block;
+  align-items: center;
+  flex-grow: 2; /* grow to take up available space */
+}
+
+/* text cards (target, etc) */
+.inner_flex_2{
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
-.inner_flex {
+/* logos */
+.inner_flex_3 {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+  margin-top: 1rem;
+}
+@media print, screen and (min-width: 768px) {
+  .inner_flex_3{
+    justify-content: flex-end;
+    margin: 0;
+  }
 }
 
 .px-10 {
   padding: 0 10px 0 10px;
 }
 
+
 .details-content img {
   width: 900px;
   height: 450px;
 }
 
-.measure_title {
+.summary_title {
   flex: 1;
-  padding: 0 0.5rem 0 0.5rem;
-  width: 30%;
+  padding: 0 0.5rem 0 0;
+  width: 100%;
 }
 
 .report_comment {
+  display: block;
   font-size: 18px;
-  background-color: #eee;
 }
 
 .spc_logo {
@@ -100,6 +127,9 @@ details {
   text-align: center;
 }
 
+.spc_logo p{
+  margin: 0;
+}
 
 .spc_logo img {
   border-radius: 2px;
@@ -107,16 +137,20 @@ details {
 
 .mini_card {
   width: 50px;
-  margin: 0 0.5rem 0 0.5rem;
+  margin: 0.3rem;
 }
 
 .wide_card {
   width: 100px;
-  margin: 0 0.5rem 0 0.5rem;
+  margin: 0.3rem;
 }
 
 .mini_card_key {
   text-align: center;
+}
+
+.mini_card_key > p {
+  margin-bottom: 0.3rem;
 }
 
 .mini_card_value {
@@ -126,10 +160,11 @@ details {
   border-radius: 5px;
 }
 
-.mini_card_value li::marker {
-    content: ' -   ';
+.mini_card_value > p {
+  margin: 0;
 }
 
-.table {
+table {
   max-width: 500px;
+  margin-bottom: 1.5rem;
 }

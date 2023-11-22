@@ -44,26 +44,26 @@ spcr_make_data_bundle <- function(
   # measure_data in long format is joined on to the config files as a nested df
   # column. Then we mutate the data frame row by row, adding new variables and
   # tidying up / formatting variables ready for reporting
-    nested_data <- report_config |>
-      # use measure names from report_config not from measure_config
-      dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
-      dplyr::nest_join(
-        measure_data_long,
-        by = c("ref", "aggregation"),
-        name = "measure_data"
-        ) |>
-      dplyr::mutate(
-        across("measure_data",
-               \(x) purrr::map(x, \(x) janitor::remove_empty(x, "rows")))
-        ) |>
-      dplyr::rowwise() |>
-      dplyr::group_split() |>
-      purrr::map(
-        \(x) dplyr::mutate(x, last_date = max(measure_data[[1]][["date"]], na.rm = TRUE))
-        ) |>
-      purrr::map(
-        \(x) dplyr::mutate(x, last_data_point = dplyr::pull(dplyr::slice_max(measure_data[[1]], date), "value"))
-        ) |>
+  nested_data <- report_config |>
+    # use measure names from report_config not from measure_config
+    dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
+    dplyr::nest_join(
+      measure_data_long,
+      by = c("ref", "aggregation"),
+      name = "measure_data"
+    ) |>
+    dplyr::mutate(
+      across("measure_data",
+             \(x) purrr::map(x, \(x) janitor::remove_empty(x, "rows")))
+    ) |>
+    dplyr::rowwise() |>
+    dplyr::group_split() |>
+    purrr::map(
+      \(x) dplyr::mutate(x, last_date = max(measure_data[[1]][["date"]], na.rm = TRUE))
+    ) |>
+    purrr::map(
+      \(x) dplyr::mutate(x, last_data_point = dplyr::pull(dplyr::slice_max(measure_data[[1]], date, n = 1), "value"))
+    ) |>
     dplyr::bind_rows()
 
   # Check that measure data that is supposed to be integer data is supplied as
@@ -77,9 +77,11 @@ spcr_make_data_bundle <- function(
         glue(
           "spcr_make_data_bundle: ",
           "Measure {y} is configured as an integer, ",
-          "but has been supplied with decimal data."))
-    }
-  )
+          "but has been supplied with decimal data."
+          )
+        )
+      }
+    )
 
   nested_data |>
     dplyr::mutate(
@@ -108,8 +110,15 @@ spcr_make_data_bundle <- function(
         TRUE ~ as.character(round(x))))
       ) |>
     dplyr::mutate(
-      target_text = get_target_text(.data[["target"]], .data[["improvement_direction"]], .data[["unit"]]),
-      updated_to = get_updatedto_text(.data[["last_date"]], .data[["aggregation"]])
+      target_text = get_target_text(
+        .data[["target"]],
+        .data[["improvement_direction"]],
+        .data[["unit"]]
+        ),
+      updated_to = get_updatedto_text(
+        .data[["last_date"]],
+        .data[["aggregation"]]
+        )
       ) |>
     dplyr::mutate(domain_heading = dplyr::row_number() == 1, .by = "domain")
 }

@@ -2,6 +2,7 @@
 
 export(spcr_make_data_bundle)
 export(spcr_make_report)
+export(with_ext)
 importFrom(dplyr,across)
 importFrom(dplyr,if_any)
 importFrom(dplyr,if_else)

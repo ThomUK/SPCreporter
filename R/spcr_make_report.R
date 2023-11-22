@@ -17,8 +17,9 @@
 #' @param stale_colour string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name
 #' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
 #' @param output_directory string. The name of the directory in which to save the resulting report
+#' @param output_type vector. Specify what output types are needed.  Default is c("html", "csv"). "pdf" is also possible.
 #' @param include_dq_icon logical. Whether to include the data quality icon on the final report
-#' @param export_csv logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.
+#' @param annotate_limits logical. Whether to add annotations to a secondary y axis for process limits and mean
 #'
 #' @export
 spcr_make_report <- function(
@@ -39,9 +40,10 @@ spcr_make_report <- function(
     stale_colour = "#FFD1AD", # light orange
     fresh_colour = "white",
     output_directory = ".",
+    output_type = c("html", "csv"),
     include_dq_icon = TRUE,
-    export_csv = TRUE
-    ) {
+    annotate_limits = TRUE
+  ) {
   start_time <- Sys.time()
 
   # Create list of source data for SPC charts
@@ -65,6 +67,7 @@ spcr_make_report <- function(
       "aggregation"
     ))) |>
     dplyr::mutate(spc_data = spc_data) |>
+    dplyr::mutate(label_limits = annotate_limits) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
@@ -73,9 +76,8 @@ spcr_make_report <- function(
     purrr::pmap_chr(\(x, y) paste0("tmp_", x, "_", y, "_")) |>
     tempfile(fileext = ".png")
 
-
   tmp_files |>
-    purrr::walk2(spc_charts, ggplot2::ggsave, width = 1800, height = 900, units = "px", dpi = 144)
+    purrr::walk2(spc_charts, write_chart_to_img)
 
   spc_chart_uris <- tmp_files |>
     purrr::map_chr(knitr::image_uri)
@@ -93,13 +95,34 @@ spcr_make_report <- function(
 
 
 
+  time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
 
+  if ("csv" %in% output_type) {
+    usethis::ui_info("Making CSV output...")
+
+    csv_filename <- paste0(
+      gsub(" ", "_", report_title), "_data_", time_stamp, ".csv"
+    )
+    csv_path <- file.path(getwd(), output_directory, csv_filename)
+
+    data_bundle |>
+      tidyr::hoist("measure_data", "comment", .transform = \(x) head(x, 1)) |>
+      tidyr::hoist("measure_data", "date") |>
+      tidyr::hoist("measure_data", "value") |>
+      dplyr::select(!"measure_data") |>
+      tidyr::unnest_longer(c("date", "value")) |>
+      tidyr::pivot_wider(names_from = "date") |>
+      readr::write_csv(csv_path)
+
+    usethis::ui_info("CSV filename: {csv_path}")
+    usethis::ui_done("CSV output complete.")
+  }
 
 
   # create the report output file name from the report title and the timestamp
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
   output_file_name <- paste0(
-    sub(" ", "_", report_title), "_", time_stamp, ".html"
+    gsub(" ", "_", report_title), "_", time_stamp, ".html"
   )
 
   # create a document title (HTML <title>), unless already supplied
@@ -120,32 +143,54 @@ spcr_make_report <- function(
       toc = FALSE,
       self_contained = TRUE,
       fig_caption = FALSE,
+      highlight = NULL,
       mathjax = NULL
     ),
     output_dir = file.path(getwd(), output_directory),
     output_file = output_file_name
   )
-  usethis::ui_done("HTML output complete.")
 
   # print the full path to the console
   wd <- getwd() |>
     stringr::str_remove("^\\\\{1}") # if network location, remove an initial '\'
-  path <- file.path("file://", wd, output_directory, output_file_name)
-  usethis::ui_info(paste0("Full path: ", path))
+  path <- file.path(wd, output_directory, output_file_name)
+  usethis::ui_info("HTML filepath: {path}")
+  usethis::ui_done("HTML output complete.")
+
+  # open the result in the browser
+  utils::browseURL(path)
+
+  # render a pdf if needed
+  if("pdf" %in% output_type){
+    convert_to_pdf(path)
+  }
+
+  beepr::beep()
 
   process_duration <- lubridate::as.period(Sys.time() - start_time) |>
     round() |>
     tolower()
 
-  usethis::ui_done("Process completed in {process_duration}.")
-  beepr::beep()
+  usethis::ui_done("Report(s) generated in {process_duration}.")
 
   invisible(TRUE)
 }
 
 
 
-
+#' Write a ggplot2 chart to a temporary png file (wrapper round `ggsave()`)
+#' @noRd
+write_chart_to_img <- function(img_file, chart) {
+  ggplot2::ggsave(
+    filename = img_file,
+    plot = chart,
+    device = ragg::agg_png,
+    width = 1000,
+    height = 500,
+    units = "px",
+    dpi = 72
+    )
+}
 
 
 #' Create a 'plot the dots' SPC data parcel from data bundle columns
@@ -155,7 +200,7 @@ make_spc_data <- function(
     rebase_dates,
     improvement_direction,
     measure_data
-    ) {
+  ) {
   measure_data |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
@@ -173,20 +218,18 @@ make_spc_chart <- function(
     measure_name,
     data_source,
     unit,
-    rare_event_chart,
     aggregation,
-    spc_data
-    ) {
-  p <- spc_data |>
+    spc_data) {
+  spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = if_else(rare_event_chart == "Y", "Days since previous occurrence", ""),
+      y_axis_label = NULL,
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
-      label_limits = TRUE,
+      label_limits = label_limits,
       icons_position = "none",
       break_lines = "limits"
     ) +
@@ -198,4 +241,56 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
+}
+
+#' Convert HTML output to PDF
+#' @param filepath. A file path to the HTML file
+#' @noRd
+convert_to_pdf <- function(filepath) {
+  usethis::ui_info("Making PDF output...")
+
+  out_path <- file.path(tempdir(), basename(filepath))
+  pdf_path <- with_ext(filepath, "pdf")
+  filepath |>
+    readr::read_file() |>
+    stringr::str_replace_all("<details>", "<details open>") |>
+    readr::write_file(out_path)
+
+  pagedown::chrome_print(out_path, pdf_path)
+
+  usethis::ui_info("PDF filepath: {pdf_path}")
+  usethis::ui_done("PDF output complete.")
+  invisible(TRUE)
+}
+
+
+#' Copied from {xfun}
+#' https://github.com/yihui/xfun/blob/main/R/paths.R
+#'
+#' @param x A character of file paths.
+#' @param ext A vector of new extensions. It must be either of length 1, or the
+#'   same length as `x`.
+#' @param extra Extra characters to be allowed in the extensions. By default,
+#'   only alphanumeric characters are allowed (and also some special cases in
+#'   \sQuote{Details}). If other characters should be allowed, they can be
+#'   specified in a character string, e.g., `"-+!_#"`.
+#' @export
+with_ext = function(x, ext, extra = '') {
+  if (anyNA(ext)) stop("NA is not allowed in 'ext'")
+  n1 = length(x); n2 = length(ext)
+  if (n1 * n2 == 0) return(x)
+  i = !grepl('^[.]', ext) & ext != ''
+  ext[i] = paste0('.', ext[i])
+
+  if (all(ext == '')) ext = ''
+  r = sub('[$]$', '?$', reg_ext(extra))  # make extensions in 'x' optional
+  if (length(ext) == 1) return(sub(r, ext, x))
+
+  if (n1 > 1 && n1 != n2) stop("'ext' must be of the same length as 'x'")
+  mapply(sub, r, ext, x, USE.NAMES = FALSE)
+}
+
+# regex to extract base path and extension from a file path
+reg_ext  = function(extra = '') {
+  sprintf('([.](([%s[:alnum:]]+|tar[.](gz|bz2|xz)|nb[.]html)[~#]?))$', extra)
 }

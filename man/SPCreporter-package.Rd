@@ -12,6 +12,7 @@ Takes a dataset file and a configuration file to produce an HTML report with eac
 Useful links:
 \itemize{
   \item \url{https://github.com/ThomUK/SPCreporter}
+  \item \url{https://thomuk.github.io/SPCreporter/}
   \item Report bugs at \url{https://github.com/ThomUK/SPCreporter/issues}
 }
 
@@ -19,9 +20,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Tom Smith \email{tomsmith_uk@hotmail.com}
 
-Other contributors:
+Authors:
 \itemize{
-  \item Fran Barton \email{fbarton@alwaysdata.net} [contributor]
+  \item Fran Barton \email{fbarton@alwaysdata.net}
 }
 
 }

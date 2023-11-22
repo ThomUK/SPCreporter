@@ -1,0 +1,85 @@
+---
+title: "Get Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(SPCreporter)
+```
+
+This vignette covers how to get started with {SPCreporter}.  We are going to produce an example report using example files that are bundled into this package.  Everything is self-contained.  You'll have your first report in no time!
+
+## Preliminary step
+
+The example uses three _xlsx_ files which are located in the "example_data" folder of the package.  This preliminary step is not necessary when working with your own data, but to access the files bundled with the package, we need to run this line.
+
+```{r}
+#| eval: false
+
+# set up to read the package files. You will not need to do this to read your own data.
+path_to_example_files <- system.file("example_data", package="SPCreporter")
+```
+
+## 1. Read the data in
+
+```{r}
+#| eval: false
+
+# read in measure data from the two worksheets in the example file
+measure_data <- list(
+  week = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "week"),
+  month = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "month")
+)
+
+# read in the report config from example file
+report_config <- readxl::read_xlsx(file.path(path_to_example_files, "report_config.xlsx"))
+
+# read in measure config from example file
+measure_config <- readxl::read_xlsx(file.path(path_to_example_files, "measure_config.xlsx"))
+
+```
+
+## 2. Create the data bundle
+
+```{r}
+#| eval: false
+
+# create the data bundle
+data_bundle <- spcr_make_data_bundle(
+  measure_data = measure_data, 
+  report_config = report_config,
+  measure_config = measure_config 
+)
+
+```
+
+## 3. Make the report
+
+```{r}
+#| eval: false
+
+# make the report, including information for the six mandatory arguments.
+spcr_make_report(
+  data_bundle = data_bundle,
+  report_title = "My Example Report",
+  report_ref = "EG.001",
+  data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59"),
+  author_name = "Anne Author",
+  author_email = "a.author@example.com"
+)
+
+```
+
+Success!  Your rendered report should look like this [**example report**](https://thomuk.github.io/SPCreporter/report_examples/My_Example_Report.html).
+
+Once you have run this example, you might choose to move the three example config files to you own machine, and replicate the process again.  
+
+After that, start modifying the files to reflect your own data and reporting needs...

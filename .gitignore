@@ -5,3 +5,5 @@
 .DS_Store
 *.html
 local_development_files/*
+docs
+inst/doc

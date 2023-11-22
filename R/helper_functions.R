@@ -112,7 +112,8 @@ convert_date <- function(x) {
   if_else(
     grepl(ymd_regex, x),
     lubridate::ymd(x),
-    lubridate::as_date(as.numeric(x), origin = "1899-12-30"))
+    lubridate::as_date(as.numeric(x), origin = "1899-12-30")
+  )
 }
 
 quietly_convert_date <- function(...) {
@@ -146,7 +147,9 @@ parse_rebase_dates <- function(input) {
     tryCatch(
       lubridate::ymd(vector),
       error = function(c) stop("error in parse_rebase_dates: ", c),
-      warning = function(c) stop("parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format.")
+      warning = function(c) stop(
+        "parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format."
+      )
     )
   }
 }

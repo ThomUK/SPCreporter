@@ -5,12 +5,13 @@
 details {
     border-radius: 10px;
     border: 2px solid grey;
+    margin-bottom: 1rem;
 }
 
 details summary {
     list-style: none; /* Remove standard summary marker */
     border-radius: 10px;
-    padding: 0.5rem;
+    padding: 0.3rem;
     cursor: pointer;
 }
 
@@ -39,17 +40,28 @@ details summary::marker {
     display: none
 }
 
-.outer_flex:before {
+.summary_title {
+    display: flex;
+    align-items: center;
+}
+.summary_title:before {
     content: "+";
-    font-size: 2.5rem;
+    display: inline-block;
+    font-size: 1.6rem;
     text-align: center;
     width: 20px;
+    margin: 0.2rem;
 }
 
-details[open] .outer_flex:before {
+details[open] .summary_title:before {
     content: "-";
 }
 
 #session-info summary {
-  background-color: #dde;
+    background-color: #dde;
+    padding: 0.5rem;
+}
+
+#session-info pre {
+    padding: 0.5rem;
 }
