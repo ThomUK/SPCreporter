@@ -10,7 +10,7 @@
   test_that({
     expect_error(
       check_measure_data(list(`Once in a blue moon` = 1)),
-      "check_measure_data: One element of measure_data must be named 'day', 'week' or 'month'"
+      "check_measure_data: One element of measure_data must be named 'week' or 'month'"
     )
   })
 

@@ -2,7 +2,7 @@
 #'
 #' @param measure_data list. A list of data frames (in wide format).
 #'
-#' @returns A data frame merged via
+#' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
 check_measure_data <- function(measure_data) {
   assertthat::assert_that(
@@ -11,13 +11,12 @@ check_measure_data <- function(measure_data) {
   )
 
   measure_data <- rlang::set_names(measure_data, tolower)
-  aggs <- c("none", "day", "week", "month", "calendar_year", "financial_year")
 
   assertthat::assert_that(
-    any(aggs %in% names(measure_data)),
+    any(c("week", "month") %in% names(measure_data)),
     msg = paste0(
       "check_measure_data: ",
-      "One element of measure_data must be named 'day', 'week' or 'month'"
+      "One element of measure_data must be named 'week' or 'month'"
     )
   )
 
@@ -25,7 +24,7 @@ check_measure_data <- function(measure_data) {
   # 'day', 'week' or 'month'. We then check that each data frame has the
   # required columns and that the 'ref' column is a character type.
   measure_data |>
-    purrr::keep_at(aggs) |>
+    purrr::keep_at(c("none", "week", "month")) |>
     purrr::iwalk(
       \(x, nm) check_for_required_columns(
         x, nm, required_columns = c("ref", "measure_name", "comment"))
@@ -196,7 +195,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
 #' @param df_name character. A data frame name to use in the error message
 #' @param required_columns character. A vector of the required column names
 #'
-#' @returns the original data frame, if required columns are present, or an
+#' @returns The original data frame, if required columns are present, or an
 #'  error message if not
 #' @noRd
 check_for_required_columns <- function(.data, df_name, required_columns) {
@@ -223,7 +222,7 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
 #'
 #' @param optional_columns character. A vector of optional column names
 #'
-#' @returns the original data frame, plus any optional columns that were missing
+#' @returns The original data frame, plus any optional columns that were missing
 #' @noRd
 check_for_optional_columns <- function(.data, optional_columns) {
 
