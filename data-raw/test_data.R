@@ -14,7 +14,7 @@ test_measure_data <- list(
     readxl::read_xlsx(sheet = "week"),
   month = data_file |>
     readxl::read_xlsx(sheet = "month")
-)
+  )
 
 
 # read in the report config from example file
@@ -26,8 +26,10 @@ test_measure_config <- here::here(example_files, "measure_config.xlsx") |>
   readxl::read_xlsx()
 
 
-usethis::use_data(test_measure_data,
-                  test_report_config,
-                  test_measure_config,
-                  internal = TRUE,
-                  overwrite = TRUE)
+usethis::use_data(
+  test_measure_data,
+  test_report_config,
+  test_measure_config,
+  internal = TRUE,
+  overwrite = TRUE
+)

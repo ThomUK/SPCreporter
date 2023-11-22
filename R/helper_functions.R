@@ -53,7 +53,8 @@ lengthen_measure_data <- function(.data) {
 #' Get the character representation of the target
 #'
 #' @param target string/numeric. The target (probably a numeric)
-#' @param improvement_direction string. One of "increase", "decrease", or "neutral"
+#' @param improvement_direction string. One of "increase", "decrease", or
+#'  "neutral"
 #' @param unit string. One of "integer", "decimal", or "%"
 #'
 #' @returns A character string suitable for inclusion in the report
@@ -93,6 +94,8 @@ get_target_text <- function(target, improvement_direction, unit) {
 #' @noRd
 get_updatedto_text <- function(last_date, aggregation) {
   dplyr::case_when(
+    aggregation == "none" ~ lubridate::ceiling_date(last_date, "month") - 1,
+    aggregation == "day" ~ lubridate::as_date(last_date),
     aggregation == "week" ~ lubridate::ceiling_date(last_date, "week", week_start = "Mon") - 1,
     aggregation == "month" ~ lubridate::ceiling_date(last_date, "month") - 1,
     TRUE ~ as.Date(NA_character_)) |>
@@ -105,10 +108,11 @@ get_updatedto_text <- function(last_date, aggregation) {
 # warnings we need to worry about
 convert_date <- function(x) {
   ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
-  dplyr::if_else(
+  if_else(
     grepl(ymd_regex, x),
     lubridate::ymd(x),
-    lubridate::as_date(as.numeric(x), origin = "1899-12-30"))
+    lubridate::as_date(as.numeric(x), origin = "1899-12-30")
+  )
 }
 
 quietly_convert_date <- function(...) {
@@ -142,7 +146,9 @@ parse_rebase_dates <- function(input) {
     tryCatch(
       lubridate::ymd(vector),
       error = function(c) stop("error in parse_rebase_dates: ", c),
-      warning = function(c) stop("parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format.")
+      warning = function(c) stop(
+        "parse_rebase_dates: rebase dates must be in 'YYYY-MM-DD' format."
+      )
     )
   }
 }
@@ -158,7 +164,8 @@ parse_rebase_dates <- function(input) {
 #' @inheritParams parse_rebase_dates
 #' @param measure_data data frame containing a column of date values
 #'
-#' @returns a vector of dates, amended as necessary, or NULL if no dates were present initially
+#' @returns a vector of dates, amended as necessary, or NULL if no dates were
+#'  present initially
 #' @noRd
 align_rebase_dates <- function(input, measure_data) {
 
@@ -171,7 +178,7 @@ align_rebase_dates <- function(input, measure_data) {
 
   if (is.null(dates)) NULL
   else dates |>
-    purrr::map_dbl(pull_closest_date, dates_list = measure_data$date) |>
+    purrr::map_dbl(pull_closest_date, dates_list = measure_data[["date"]]) |>
     lubridate::as_date()
 }
 

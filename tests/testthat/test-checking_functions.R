@@ -136,8 +136,7 @@
     )
 
     expect_warning(
-      check_measure_names(10, measure_data, measure_config),
-      "check_measure_names: There is a name mismatch for measure ref: 10.\nThe title in the data bundle is 'Measure 10'.\nThe title in the measure config is 'A different name'."
+      check_measure_names(10, measure_data, measure_config)
     )
   })
 

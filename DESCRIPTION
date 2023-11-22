@@ -24,13 +24,16 @@ Depends:
 Imports: 
     assertthat,
     beepr,
-    dplyr (>= 1.0.0),
+    dplyr (>= 1.1.0),
     glue,
     ggplot2,
+    janitor,
     knitr,
     lubridate,
     NHSRplotthedots,
-    purrr,
+    pagedown,
+    purrr (>= 1.0.0),
+    ragg,
     readr,
     rlang,
     rmarkdown,
@@ -39,8 +42,7 @@ Imports:
     tidyr,
     tidyselect,
     usethis,
-    utils,
-    pagedown
+    utils
 Suggests:
     readxl,
     testthat (>= 3.0.0)
