@@ -11,13 +11,12 @@ check_measure_data <- function(measure_data) {
   )
 
   measure_data <- rlang::set_names(measure_data, tolower)
-  aggs <- c("none", "day", "week", "month", "calendar_year", "financial_year")
 
   assertthat::assert_that(
-    any(aggs %in% names(measure_data)),
+    any(c("week", "month") %in% names(measure_data)),
     msg = paste0(
       "check_measure_data: ",
-      "One element of measure_data must be named 'day', 'week' or 'month'"
+      "One element of measure_data must be named 'week' or 'month'"
     )
   )
 
@@ -25,7 +24,7 @@ check_measure_data <- function(measure_data) {
   # 'day', 'week' or 'month'. We then check that each data frame has the
   # required columns and that the 'ref' column is a character type.
   measure_data |>
-    purrr::keep_at(aggs) |>
+    purrr::keep_at(c("none", "week", "month")) |>
     purrr::iwalk(
       \(x, nm) check_for_required_columns(
         x, nm, required_columns = c("ref", "measure_name", "comment"))

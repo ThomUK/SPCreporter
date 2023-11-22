@@ -73,7 +73,6 @@ get_target_text <- function(target, improvement_direction, unit) {
   dplyr::case_when(
     target == 0 & imp_dir == "decrease" ~ string,
     target == 1 & unit == "%" & imp_dir == "increase" ~ string,
-    target == Inf ~ "inf",
     # \u2264 is: ≤
     !is.na(target) & imp_dir == "decrease" ~ paste0("\u2264 ", string),
     # \u2265 is: ≥
