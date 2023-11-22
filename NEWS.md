@@ -16,6 +16,7 @@
 ## Bugfix
 
 * All spaces in the report name are now replaced with underscores. Previously only the first space was replaced.  
+* The CSV output now respects the `output_directory` argument. Previously this file was saved in the working directory regardless of the output_directory argument.
 
 ---
 
