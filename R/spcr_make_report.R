@@ -40,7 +40,8 @@ spcr_make_report <- function(
     fresh_colour = "white",
     output_directory = ".",
     include_dq_icon = TRUE,
-    export_csv = TRUE) {
+    export_csv = TRUE
+    ) {
   start_time <- Sys.time()
 
   # Create list of source data for SPC charts
@@ -153,7 +154,8 @@ make_spc_data <- function(
     target,
     rebase_dates,
     improvement_direction,
-    measure_data) {
+    measure_data
+    ) {
   measure_data |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
@@ -173,16 +175,17 @@ make_spc_chart <- function(
     unit,
     rare_event_chart,
     aggregation,
-    spc_data) {
+    spc_data
+    ) {
   p <- spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = NULL,
+      y_axis_label = if_else(rare_event_chart == "Y", "Days since previous occurrence", ""),
       x_axis_breaks = "1 month",
-      x_axis_date_format = dplyr::if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
+      x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = TRUE,
       icons_position = "none",
       break_lines = "limits"
@@ -195,13 +198,4 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
-
-  if (rare_event_chart == "Y" & aggregation == "none") {
-    p +
-      ggplot2::labs(y = "Days since previous occurrence") +
-      ggplot2::scale_x_datetime(
-        breaks = unique(head(tail(sort(spc_data[["x"]]), -1), -1)),
-        labels = \(x) format(x, "%b '%y")
-      )
-  } else p
 }

@@ -6,9 +6,11 @@
 #'
 #' @returns data frame. A nested data frame containing source data for the report
 #' @export
-spcr_make_data_bundle <- function(measure_data = test_measure_data,
-                                  report_config = test_report_config,
-                                  measure_config = test_measure_config) {
+spcr_make_data_bundle <- function(
+    measure_data = test_measure_data,
+    report_config = test_report_config,
+    measure_config = test_measure_config
+    ) {
 
   # check measure_data (list) columns and set `ref` column to character
   measure_data <- check_measure_data(measure_data)
@@ -32,7 +34,7 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   # by ensuring a typo in one place (ref or title) will raise an error.
   report_config |>
     dplyr::pull("ref") |>
-    purrr::walk(\(x) check_measure_names(x, measure_data = measure_data_wide, measure_config = measure_config))
+    purrr::walk(\(x) check_measure_names(x, measure_data_wide, measure_config))
 
   # create long version of measure_data, combined to a single data frame
   measure_data_long <- measure_data |>
@@ -42,17 +44,26 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   # measure_data in long format is joined on to the config files as a nested df
   # column. Then we mutate the data frame row by row, adding new variables and
   # tidying up / formatting variables ready for reporting
-  nested_data <- report_config |>
-    dplyr::left_join(
-      dplyr::select(measure_config, !"measure_name"), "ref") |>
-    dplyr::nest_join(measure_data_long,
-                    by = c("ref", "aggregation"),
-                    name = "measure_data") |>
-    dplyr::mutate(across("measure_data", \(x) purrr::map(x, \(x) janitor::remove_empty(x, "rows")))) |>
-    dplyr::rowwise() |>
-    dplyr::group_split() |>
-    purrr::map(\(x) dplyr::mutate(x, last_date = max(measure_data[[1]][["date"]], na.rm = TRUE))) |>
-    purrr::map(\(x) dplyr::mutate(x, last_data_point = dplyr::pull(dplyr::slice_max(measure_data[[1]], date), "value"))) |>
+    nested_data <- report_config |>
+      # use measure names from report_config not from measure_config
+      dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
+      dplyr::nest_join(
+        measure_data_long,
+        by = c("ref", "aggregation"),
+        name = "measure_data"
+        ) |>
+      dplyr::mutate(
+        across("measure_data",
+               \(x) purrr::map(x, \(x) janitor::remove_empty(x, "rows")))
+        ) |>
+      dplyr::rowwise() |>
+      dplyr::group_split() |>
+      purrr::map(
+        \(x) dplyr::mutate(x, last_date = max(measure_data[[1]][["date"]], na.rm = TRUE))
+        ) |>
+      purrr::map(
+        \(x) dplyr::mutate(x, last_data_point = dplyr::pull(dplyr::slice_max(measure_data[[1]], date), "value"))
+        ) |>
     dplyr::bind_rows()
 
   # Check that measure data that is supposed to be integer data is supplied as
@@ -71,9 +82,22 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   )
 
   nested_data |>
-    dplyr::mutate(across("improvement_direction", \(x) dplyr::if_else(rare_event_chart == "Y" & aggregation == "none", "increase", x))) |>
-    dplyr::mutate(across("unit", \(x) dplyr::if_else(rare_event_chart == "Y" & aggregation == "none", "days", x))) |>
-    dplyr::mutate(across("target", \(x) dplyr::if_else(rare_event_chart == "Y" & aggregation == "none" & x == 0, Inf, x))) |>
+    dplyr::mutate(
+      across("improvement_direction",
+             \(x) dplyr::case_when(
+               .data[["rare_event_chart"]] == "Y" & x == "decrease" ~ "increase",
+               # a rather unlikely situation
+               .data[["rare_event_chart"]] == "Y" & x == "increase" ~ "decrease",
+               TRUE ~ x))
+      ) |>
+    dplyr::mutate(
+      across("unit",
+             \(x) if_else(.data[["rare_event_chart"]] == "Y", "days", x))
+      ) |>
+    dplyr::mutate(
+      across("target",
+             \(x) if_else(.data[["rare_event_chart"]] == "Y", NA, x))
+      ) |>
     dplyr::mutate(
       across("last_data_point", \(x) dplyr::case_when(
         is.na(x) ~ NA_character_,
@@ -81,10 +105,11 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
         unit == "%" ~ paste0(round(x * 100, 1), "%"),
         unit == "decimal" ~ as.character(round(x, 2)),
         unit == "days" ~ paste0(x, "d"),
-        TRUE ~ as.character(round(x))
-      ))) |>
+        TRUE ~ as.character(round(x))))
+      ) |>
     dplyr::mutate(
       target_text = get_target_text(.data[["target"]], .data[["improvement_direction"]], .data[["unit"]]),
-      updated_to = get_updatedto_text(.data[["last_date"]], .data[["aggregation"]])) |>
+      updated_to = get_updatedto_text(.data[["last_date"]], .data[["aggregation"]])
+      ) |>
     dplyr::mutate(domain_heading = dplyr::row_number() == 1, .by = "domain")
 }

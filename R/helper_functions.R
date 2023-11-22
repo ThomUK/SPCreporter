@@ -109,7 +109,7 @@ get_updatedto_text <- function(last_date, aggregation) {
 # warnings we need to worry about
 convert_date <- function(x) {
   ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
-  dplyr::if_else(
+  if_else(
     grepl(ymd_regex, x),
     lubridate::ymd(x),
     lubridate::as_date(as.numeric(x), origin = "1899-12-30"))
