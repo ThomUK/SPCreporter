@@ -6,9 +6,11 @@
 #'
 #' @returns data frame. A nested data frame containing source data for the report
 #' @export
-spcr_make_data_bundle <- function(measure_data = test_measure_data,
-                                  report_config = test_report_config,
-                                  measure_config = test_measure_config) {
+spcr_make_data_bundle <- function(
+    measure_data = test_measure_data,
+    report_config = test_report_config,
+    measure_config = test_measure_config
+    ) {
 
   # check measure_data (list) columns and set `ref` column to character
   measure_data <- check_measure_data(measure_data)
@@ -32,7 +34,7 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   # by ensuring a typo in one place (ref or title) will raise an error.
   report_config |>
     dplyr::pull("ref") |>
-    purrr::walk(\(x) check_measure_names(x, measure_data = measure_data_wide, measure_config = measure_config))
+    purrr::walk(\(x) check_measure_names(x, measure_data_wide, measure_config))
 
   # create long version of measure_data, combined to a single data frame
   measure_data_long <- measure_data |>
@@ -43,16 +45,26 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
   # column. Then we mutate the data frame row by row, adding new variables and
   # tidying up / formatting variables ready for reporting
   nested_data <- report_config |>
-    dplyr::left_join(
-      dplyr::select(measure_config, !"measure_name"), "ref") |>
-    dplyr::nest_join(measure_data_long,
-                    by = c("ref", "aggregation"),
-                    name = "measure_data") |>
-    dplyr::rowwise() |>
+    # use measure names from report_config not from measure_config
+    dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
+    dplyr::nest_join(
+      measure_data_long,
+      by = c("ref", "aggregation"),
+      name = "measure_data"
+    ) |>
     dplyr::mutate(
-      last_date = max(measure_data[["date"]], na.rm = TRUE),
-      last_data_point = dplyr::pull(dplyr::slice_max(measure_data, date), "value")) |>
-    dplyr::ungroup()
+      across("measure_data",
+             \(x) purrr::map(x, \(x) janitor::remove_empty(x, "rows")))
+    ) |>
+    dplyr::rowwise() |>
+    dplyr::group_split() |>
+    purrr::map(
+      \(x) dplyr::mutate(x, last_date = max(measure_data[[1]][["date"]], na.rm = TRUE))
+    ) |>
+    purrr::map(
+      \(x) dplyr::mutate(x, last_data_point = dplyr::pull(dplyr::slice_max(measure_data[[1]], date, n = 1), "value"))
+    ) |>
+    dplyr::bind_rows()
 
   # Check that measure data that is supposed to be integer data is supplied as
   # such, or raise a warning message
@@ -60,7 +72,16 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
     dplyr::filter(if_any("unit", \(x) x == "integer")) |>
     tidyr::hoist("measure_data", "value") |>
     dplyr::select(all_of(c(x = "value", y = "ref"))) |>
-    purrr::pwalk(\(x, y) if (any(round(x) != x)) warning(glue::glue("spcr_make_data_bundle: Measure {y} is configured as an integer, but has been supplied with decimal data.")))
+    purrr::pwalk(\(x, y) if (any(round(x) != x)) {
+      warning(
+        glue(
+          "spcr_make_data_bundle: ",
+          "Measure {y} is configured as an integer, ",
+          "but has been supplied with decimal data."
+          )
+        )
+      }
+    )
 
   nested_data |>
     dplyr::mutate(
@@ -72,7 +93,15 @@ spcr_make_data_bundle <- function(measure_data = test_measure_data,
         TRUE ~ as.character(round(x))
       ))) |>
     dplyr::mutate(
-      target_text = get_target_text(.data[["target"]], .data[["improvement_direction"]], .data[["unit"]]),
-      updated_to = get_updatedto_text(.data[["last_date"]], .data[["aggregation"]])) |>
+      target_text = get_target_text(
+        .data[["target"]],
+        .data[["improvement_direction"]],
+        .data[["unit"]]
+        ),
+      updated_to = get_updatedto_text(
+        .data[["last_date"]],
+        .data[["aggregation"]]
+        )
+      ) |>
     dplyr::mutate(domain_heading = dplyr::row_number() == 1, .by = "domain")
 }
