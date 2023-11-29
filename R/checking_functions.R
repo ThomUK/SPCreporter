@@ -21,7 +21,7 @@ check_measure_data <- function(measure_data) {
   )
 
   # Now we need to only retain data frames from the list if they are named
-  # 'day', 'week' or 'month'. We then check that each data frame has the
+  # 'none', 'week' or 'month'. We then check that each data frame has the
   # required columns and that the 'ref' column is a character type.
   measure_data |>
     purrr::keep_at(c("none", "week", "month")) |>
