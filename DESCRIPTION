@@ -28,7 +28,7 @@ Imports:
     ggplot2,
     knitr,
     lubridate,
-    NHSRplotthedots (== 0.1.0),
+    NHSRplotthedots,
     purrr,
     readr,
     rlang,

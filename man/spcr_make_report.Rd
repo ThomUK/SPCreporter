@@ -23,6 +23,7 @@ spcr_make_report(
   fresh_colour = "white",
   output_directory = ".",
   include_dq_icon = TRUE,
+  annotate_spc = TRUE,
   export_csv = TRUE
 )
 }
@@ -62,6 +63,8 @@ spcr_make_report(
 \item{output_directory}{string. The name of the directory in which to save the resulting report}
 
 \item{include_dq_icon}{logical. Whether to include the data quality icon on the final report}
+
+\item{annotate_spc}{logical. Whether to add annotations to a secondary y axis for}
 
 \item{export_csv}{logical. Whether to export a CSV file of the source data as well as the HTML report. Default TRUE.}
 }
