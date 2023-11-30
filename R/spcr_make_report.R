@@ -218,7 +218,7 @@ make_spc_chart <- function(
     unit,
     aggregation,
     spc_data,
-    label_limits = TRUE) {
+    label_limits) {
   spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
