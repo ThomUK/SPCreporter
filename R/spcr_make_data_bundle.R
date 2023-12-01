@@ -60,7 +60,7 @@ spcr_make_data_bundle <- function(
     ) |>
     # pull most recent data point from each data frame in the measure_data column
     dplyr::mutate(
-      last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) dplyr::last(x[["value"]], order_by = x[["date"]], na_rm = TRUE))
+      last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) dplyr::slice_max(x[["value"]], order_by = x[["date"]], n = 1))
     )
 
   # Check that measure data that is supposed to be integer data is supplied as
