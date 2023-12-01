@@ -63,10 +63,11 @@ spcr_make_report <- function(
       "measure_name",
       "data_source",
       "unit",
+      "rare_event_chart",
       "aggregation"
     ))) |>
-    dplyr::mutate(spc_data = spc_data) |>
     dplyr::mutate(label_limits = annotate_limits) |>
+    dplyr::mutate(spc_data = spc_data) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
@@ -119,6 +120,7 @@ spcr_make_report <- function(
 
 
   # create the report output file name from the report title and the timestamp
+  time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
   output_file_name <- paste0(
     gsub(" ", "_", report_title), "_", time_stamp, ".html"
   )
@@ -159,7 +161,7 @@ spcr_make_report <- function(
   utils::browseURL(path)
 
   # render a pdf if needed
-  if("pdf" %in% output_type){
+  if ("pdf" %in% output_type) {
     convert_to_pdf(path)
   }
 
@@ -187,7 +189,7 @@ write_chart_to_img <- function(img_file, chart) {
     height = 500,
     units = "px",
     dpi = 72
-    )
+  )
 }
 
 
@@ -212,20 +214,22 @@ make_spc_data <- function(
 #' Create an SPC chart from an SPC data parcel and some data bundle columns
 #' @noRd
 make_spc_chart <- function(
-    ref,
-    measure_name,
-    data_source,
-    unit,
-    aggregation,
-    spc_data,
-    label_limits) {
-  spc_data |>
+  ref,
+  measure_name,
+  data_source,
+  unit,
+  rare_event_chart,
+  aggregation,
+  label_limits,
+  spc_data
+  ) {
+  plot <- spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = NULL,
+      y_axis_label = if_else(rare_event_chart == "Y", "Days since previous occurrence", ""),
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,
@@ -240,6 +244,17 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
+
+    # conditionally add the "hollow" final data point to rare-event charts
+    if (rare_event_chart == "Y") {
+      final_x <- spc_data |> dplyr::pull(x) |> tail(1)
+      final_y <- spc_data |> dplyr::pull(y) |> tail(1)
+      
+      plot <- plot +
+        ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "#7B7D7D", size = 7) +
+        ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "white", size = 5)
+    }
+  return(plot)
 }
 
 #' Convert HTML output to PDF

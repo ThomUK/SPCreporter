@@ -29,7 +29,7 @@
 
     expect_named(measure_data, unique(measure_data_long[["aggregation"]]))
     expect_named(measure_data_long, test_names)
-    expect_equal(nrow(measure_data_long), 411)
+    expect_equal(nrow(measure_data_long), 415)
   })
 
 
@@ -106,7 +106,7 @@
 
     # some spot checks on the above conversion of the last_data_point to the
     # appropriate character format
-    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 385 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "385", FALSE))
+    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 222 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "222", FALSE))
 
     expect_true(ifelse(round(data_bundle1[["last_data_point"]][[2]], 2) == 0.73 & data_bundle1[["unit"]][[2]] == "%", data_bundle2[["last_data_point"]][[2]] == "73%", FALSE))
 
@@ -121,7 +121,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config)
 
-    expect_length(out, 24)
+    expect_length(out, 25)
     expect_equal(nrow(out), nrow(test_report_config))
     expect_type(out[["ref"]], "character")
     expect_type(out[["target"]], "double")
@@ -145,7 +145,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config2)
 
-    expect_length(out2, 24)
+    expect_length(out2, 25)
     expect_equal(nrow(out2), nrow(test_report_config))
 
   })

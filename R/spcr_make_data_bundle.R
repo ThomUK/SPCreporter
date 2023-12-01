@@ -48,6 +48,12 @@ spcr_make_data_bundle <- function(
   nested_data <- report_config |>
     # use measure names from report_config not from measure_config
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
+    dplyr::mutate(
+      measure_name = dplyr::case_when(
+        rare_event_chart == "Y" ~ paste(measure_name, "(time-between)"),
+        TRUE ~ measure_name
+      )
+    ) |>
     dplyr::nest_join(
       measure_data_long,
       by = c("ref", "aggregation"),
@@ -82,13 +88,30 @@ spcr_make_data_bundle <- function(
 
   nested_data |>
     dplyr::mutate(
+      across("improvement_direction",
+             \(x) dplyr::case_when(
+               .data[["rare_event_chart"]] == "Y" & x == "decrease" ~ "increase",
+               # a rather unlikely situation
+               .data[["rare_event_chart"]] == "Y" & x == "increase" ~ "decrease",
+               TRUE ~ x))
+      ) |>
+    dplyr::mutate(
+      across("unit",
+             \(x) if_else(.data[["rare_event_chart"]] == "Y", "days", x))
+      ) |>
+    dplyr::mutate(
+      across("target",
+             \(x) if_else(.data[["rare_event_chart"]] == "Y", NA, x))
+      ) |>
+    dplyr::mutate(
       across("last_data_point", \(x) dplyr::case_when(
         is.na(x) ~ NA_character_,
         x == Inf ~ NA_character_,
         unit == "%" ~ paste0(round(x * 100, 1), "%"),
         unit == "decimal" ~ as.character(round(x, 2)),
-        TRUE ~ as.character(round(x))
-      ))) |>
+        unit == "days" ~ paste0(x, "d"),
+        TRUE ~ as.character(round(x))))
+      ) |>
     dplyr::mutate(
       target_text = get_target_text(
         .data[["target"]],
