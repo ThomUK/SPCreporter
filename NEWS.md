@@ -1,11 +1,16 @@
 # SPCreporter 0.1.6.9000
 
+## Breaking change
+
+* Associated with the addition of rare-event charts, the `report_config` now includes a mandatory column `spc_chart_type`. Valid value in this column are "xmr" or "t".  
+
 ## Feature addition
 
 * The report is now mobile friendly, and works on very narrow screens.  The breakpoint from wide to narrow layout is 768px.
 * The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.
 * Added explanation of the data-quality icons to the footer of the report.
 * Added the ability to output ".pdf" reports, which include tidy page-breaks.
+* Added the ability to create rare-event charts of type "T" (time-between).
 
 ## Useability
 
