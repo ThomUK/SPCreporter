@@ -54,10 +54,10 @@ check_report_config <- function(report_config) {
 
   # check for column names, and provide a helpful error message if needed
   required_columns <- c(
-    "ref", "measure_name", "domain", "aggregation"
+    "ref", "measure_name", "domain", "spc_chart_type", "aggregation"
   )
 
-  optional_columns <- c("report_comment", "rare_event_chart")
+  optional_columns <- c("report_comment")
 
   # check required cols are present
   report_config |>
@@ -234,8 +234,7 @@ check_for_optional_columns <- function(.data, optional_columns) {
 
     usethis::ui_info(
       c(
-        "check_for_optional_columns: Optional column '{first_missing_column}'",
-        "is missing. Adding it."
+        "check_for_optional_columns: Optional column '{first_missing_column}' is missing. Adding it."
       )
     )
     missing_columns |>

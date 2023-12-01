@@ -172,6 +172,7 @@
       ref = c(1, 2, 3, 1, 2, 3),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
       domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
       aggregation = c("week", "week", "week", "month", "month", "month"),
       report_comment = NA
     )
@@ -192,6 +193,7 @@
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
       # domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
       aggregation = c("week", "week", "week", "month", "month", "month")
     )
 
@@ -204,7 +206,8 @@
     report_config <- tibble::tibble(
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
-      Domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      DomainWithABigD = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
       aggregation = c("week", "week", "week", "month", "month", "month")
     )
 
@@ -212,4 +215,24 @@
       check_report_config(report_config),
       "check_for_required_columns: Column 'domain' is missing from the 'report_config' data frame. Check for typos in the column names."
     )
+  })
+
+"check report config: missing optional columns does not throw an error" |>
+  test_that({
+
+    # assign numeric refs
+    report_config <- tibble::tibble(
+      ref = c(1, 2, 3, 1, 2, 3),
+      measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
+      domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
+      aggregation = c("week", "week", "week", "month", "month", "month"),
+      # report_comment = NA # this is an optional column
+    )
+
+    expect_message(
+      check_report_config(report_config),
+      "i check_for_optional_columns: Optional column 'report_comment' is missing. Adding it."
+    )
+
   })
