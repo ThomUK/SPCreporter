@@ -38,12 +38,9 @@ lengthen_measure_data <- function(.data) {
   .data |>
     tidyr::pivot_longer(!any_of(init_cols), names_to = "date", values_drop_na = TRUE) |>
     dplyr::mutate(across("date", quietly_convert_date)) |>
-
     # Sort data from oldest to latest by measure - it should already be sorted
     # (pivot_longer draws from L-R wide data)... but let's make sure
-    dplyr::group_by(.data[["ref"]]) |>
-    dplyr::arrange(across("date"), .by_group = TRUE) |>
-    dplyr::ungroup()
+    dplyr::arrange(across(all_of(c("ref", "date"))))
 }
 
 

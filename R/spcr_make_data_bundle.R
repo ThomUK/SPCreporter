@@ -37,6 +37,7 @@ spcr_make_data_bundle <- function(
     purrr::walk(\(x) check_measure_names(x, measure_data_wide, measure_config))
 
   # create long version of measure_data, combined to a single data frame
+  # and sorted by date (within each ref)
   measure_data_long <- measure_data |>
     purrr::map(lengthen_measure_data) |>
     dplyr::bind_rows(.id = "aggregation")
@@ -58,19 +59,15 @@ spcr_make_data_bundle <- function(
       by = c("ref", "aggregation"),
       name = "measure_data"
     ) |>
+
+    # pull most recent date from each data frame in the measure_data column
     dplyr::mutate(
-      across("measure_data",
-             \(x) purrr::map(x, \(x) janitor::remove_empty(x, "rows")))
+      last_date = purrr::map_vec(.data[["measure_data"]], \(x) max(x[["date"]], na.rm = TRUE))
     ) |>
-    dplyr::rowwise() |>
-    dplyr::group_split() |>
-    purrr::map(
-      \(x) dplyr::mutate(x, last_date = max(measure_data[[1]][["date"]], na.rm = TRUE))
-    ) |>
-    purrr::map(
-      \(x) dplyr::mutate(x, last_data_point = dplyr::pull(dplyr::slice_max(measure_data[[1]], date, n = 1), "value"))
-    ) |>
-    dplyr::bind_rows()
+    # pull most recent data point from each data frame in the measure_data column
+    dplyr::mutate(
+      last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) dplyr::slice_max(x[["value"]], order_by = x[["date"]], n = 1))
+    )
 
   # Check that measure data that is supposed to be integer data is supplied as
   # such, or raise a warning message

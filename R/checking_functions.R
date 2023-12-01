@@ -23,15 +23,19 @@ check_measure_data <- function(measure_data) {
   # Now we need to only retain data frames from the list if they are named
   # 'none', 'week' or 'month'. We then check that each data frame has the
   # required columns and that the 'ref' column is a character type.
+
+  allowed_names <- c(
+    "none", "event", "day", "week", "month",
+    "calendar_year", "financial_year"
+    )
   measure_data |>
-    purrr::keep_at(c("none", "week", "month")) |>
+    purrr::keep_at(allowed_names) |>
     purrr::iwalk(
       \(x, nm) check_for_required_columns(
         x, nm, required_columns = c("ref", "measure_name", "comment"))
     ) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
 }
-
 
 
 
@@ -50,10 +54,7 @@ check_report_config <- function(report_config) {
 
   # check for column names, and provide a helpful error message if needed
   required_columns <- c(
-    "ref",
-    "measure_name",
-    "domain",
-    "aggregation"
+    "ref", "measure_name", "domain", "aggregation"
   )
 
   optional_columns <- c("report_comment", "rare_event_chart")
