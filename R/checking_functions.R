@@ -2,7 +2,7 @@
 #'
 #' @param measure_data list. A list of data frames (in wide format).
 #'
-#' @returns A data frame merged via
+#' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
 check_measure_data <- function(measure_data) {
   assertthat::assert_that(
@@ -14,18 +14,28 @@ check_measure_data <- function(measure_data) {
 
   assertthat::assert_that(
     any(c("week", "month") %in% names(measure_data)),
-    msg = "check_measure_data: One element of measure_data must be named 'week' or 'month'"
+    msg = paste0(
+      "check_measure_data: ",
+      "One element of measure_data must be named 'week' or 'month'"
+    )
   )
 
   # Now we need to only retain data frames from the list if they are named
-  # 'week' or 'month'. We then check that each data frame has the required
-  # columns and that the 'ref' column is a character type.
+  # 'none', 'week' or 'month'. We then check that each data frame has the
+  # required columns and that the 'ref' column is a character type.
+  allowed_names <- c(
+    "none", "event", "day", "week", "month",
+    "calendar_year", "financial_year"
+    )
+
   measure_data |>
-    purrr::keep_at(\(x) x %in% c("week", "month")) |>
-    purrr::iwalk(\(x, nm) check_for_required_columns(x, nm, required_columns = c("ref", "measure_name", "comment"))) |>
+    purrr::keep_at(allowed_names) |>
+    purrr::iwalk(
+      \(x, nm) check_for_required_columns(
+        x, nm, required_columns = c("ref", "measure_name", "comment"))
+    ) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
 }
-
 
 
 
