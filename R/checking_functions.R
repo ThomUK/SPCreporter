@@ -44,10 +44,7 @@ check_report_config <- function(report_config) {
 
   # check for column names, and provide a helpful error message if needed
   required_columns <- c(
-    "ref",
-    "measure_name",
-    "domain",
-    "aggregation"
+    "ref", "measure_name", "domain", "aggregation"
   )
 
   optional_columns <- "report_comment"
