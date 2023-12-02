@@ -50,7 +50,7 @@ spcr_make_data_bundle <- function(
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
     dplyr::mutate(
       measure_name = dplyr::case_when(
-        rare_event_chart == "Y" ~ paste(measure_name, "(time-between)"),
+        spc_chart_type == "t" ~ paste(measure_name, "(time-between)"),
         TRUE ~ measure_name
       )
     ) |>
@@ -90,18 +90,18 @@ spcr_make_data_bundle <- function(
     dplyr::mutate(
       across("improvement_direction",
              \(x) dplyr::case_when(
-               .data[["rare_event_chart"]] == "Y" & x == "decrease" ~ "increase",
+               .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
                # a rather unlikely situation
-               .data[["rare_event_chart"]] == "Y" & x == "increase" ~ "decrease",
+               .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
                TRUE ~ x))
       ) |>
     dplyr::mutate(
       across("unit",
-             \(x) if_else(.data[["rare_event_chart"]] == "Y", "days", x))
+             \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x))
       ) |>
     dplyr::mutate(
       across("target",
-             \(x) if_else(.data[["rare_event_chart"]] == "Y", NA, x))
+             \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x))
       ) |>
     dplyr::mutate(
       across("last_data_point", \(x) dplyr::case_when(

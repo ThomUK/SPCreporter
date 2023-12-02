@@ -63,7 +63,7 @@ spcr_make_report <- function(
       "measure_name",
       "data_source",
       "unit",
-      "rare_event_chart",
+      "spc_chart_type",
       "aggregation"
     ))) |>
     dplyr::mutate(label_limits = annotate_limits) |>
@@ -218,7 +218,7 @@ make_spc_chart <- function(
   measure_name,
   data_source,
   unit,
-  rare_event_chart,
+  spc_chart_type,
   aggregation,
   label_limits,
   spc_data
@@ -229,7 +229,7 @@ make_spc_chart <- function(
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = if_else(rare_event_chart == "Y", "Days since previous occurrence", ""),
+      y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""),
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,
@@ -246,7 +246,7 @@ make_spc_chart <- function(
     )
 
     # conditionally add the "hollow" final data point to rare-event charts
-    if (rare_event_chart == "Y") {
+    if (spc_chart_type == "t") {
       final_x <- spc_data |> dplyr::pull(x) |> tail(1)
       final_y <- spc_data |> dplyr::pull(y) |> tail(1)
       
