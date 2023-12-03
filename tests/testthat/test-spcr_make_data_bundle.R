@@ -139,41 +139,41 @@
   })
 
 
-# "test the whole thing" |>
-#   test_that({
-#     out <- spcr_make_data_bundle(
-#       measure_data = test_measure_data,
-#       report_config = test_report_config,
-#       measure_config = test_measure_config)
-#
-#     expect_length(out, 25)
-#     expect_equal(nrow(out), nrow(test_report_config))
-#     expect_type(out[["ref"]], "character")
-#     expect_type(out[["target"]], "double")
-#     expect_type(out[["allowable_days_lag"]], "integer")
-#     expect_type(out[["measure_data"]], "list")
-#     expect_s3_class(out[["last_date"]], "Date")
-#     expect_type(out[["updated_to"]], "character")
-#     expect_type(out[["domain_heading"]], "logical")
-#
-#     # set all targets to NA
-#     test_measure_config2 <- test_measure_config |>
-#       dplyr::mutate(across("target", \(x) NA_real_))
-#
-#     expect_no_error(spcr_make_data_bundle(
-#       measure_data = test_measure_data,
-#       report_config = test_report_config,
-#       measure_config = test_measure_config2))
-#
-#     out2 <- spcr_make_data_bundle(
-#       measure_data = test_measure_data,
-#       report_config = test_report_config,
-#       measure_config = test_measure_config2)
-#
-#     expect_length(out2, 25)
-#     expect_equal(nrow(out2), nrow(test_report_config))
-#
-#   })
+"test the whole thing" |>
+  test_that({
+    out <- spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config,
+      measure_config = test_measure_config)
+
+    expect_length(out, 25)
+    expect_equal(nrow(out), nrow(test_report_config))
+    expect_type(out[["ref"]], "character")
+    expect_type(out[["target"]], "double")
+    expect_type(out[["allowable_days_lag"]], "integer")
+    expect_type(out[["measure_data"]], "list")
+    expect_s3_class(out[["last_date"]], "POSIXct")
+    expect_type(out[["updated_to"]], "character")
+    expect_type(out[["domain_heading"]], "logical")
+
+    # set all targets to NA
+    test_measure_config2 <- test_measure_config |>
+      dplyr::mutate(across("target", \(x) NA_real_))
+
+    expect_no_error(spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config,
+      measure_config = test_measure_config2))
+
+    out2 <- spcr_make_data_bundle(
+      measure_data = test_measure_data,
+      report_config = test_report_config,
+      measure_config = test_measure_config2)
+
+    expect_length(out2, 25)
+    expect_equal(nrow(out2), nrow(test_report_config))
+
+  })
 
 # this is more properly a test for the check_measure_names() function
 # but it's good to test it as part of the make_bundle() workflow too
