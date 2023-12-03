@@ -39,7 +39,7 @@ spcr_make_data_bundle <- function(
   e_data_time_between <- process_event_data_t(e_data)
 
   # reduce measure_data list to a single data frame
-  measure_data_wide <- measure_data |>
+  a_data_df <- a_data |>
     dplyr::bind_rows(.id = "aggregation")
 
   # check all required data is supplied
@@ -52,11 +52,12 @@ spcr_make_data_bundle <- function(
     dplyr::pull("ref") |>
     purrr::walk(\(x) check_measure_names(x, measure_data_wide, measure_config))
 
-  # create long version of measure_data, combined to a single data frame
-  # and sorted by date (within each ref)
-  measure_data_long <- measure_data |>
-    purrr::map(lengthen_measure_data) |>
-    dplyr::bind_rows(.id = "aggregation")
+  # create long version of the aggregated data, 
+  # sorted by date (within each ref), and with 
+  # the processed event data added to the end
+  measure_data_long <- a_data_df |>
+    lengthen_measure_data() |>
+    dplyr::bind_rows(e_data_time_between)
 
   # measure_data in long format is joined on to the config files as a nested df
   # column. Then we mutate the data frame row by row, adding new variables and

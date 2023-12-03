@@ -1,8 +1,8 @@
-#' Transform the data from wide to long format
+#' Transform aggregated data from wide to long format
 #'
-#' @param .data Data frame in wide format
+#' @param .data data frame. Data frame in wide format
 #'
-#' @returns Data frame in long format
+#' @returns data frame. Data frame in long format
 #' @noRd
 lengthen_measure_data <- function(.data) {
   assertthat::assert_that(
@@ -12,7 +12,7 @@ lengthen_measure_data <- function(.data) {
 
   # Should match date strings of the form 2022-06-01
   ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
-  init_cols <- c("ref", "measure_name", "comment")
+  init_cols <- c("aggregation", "ref", "measure_name", "comment")
 
   assertthat::assert_that(
     all(purrr::map_lgl(
