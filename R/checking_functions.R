@@ -78,6 +78,9 @@ check_a_data <- function(a_data) {
 #' @returns The input data frame, after checking for necessary columns
 #' @noRd
 check_e_data <- function(e_data) {
+
+  if(is.null(e_data)) stop("The 'events' worksheet is missing from 'measure_data'.")
+
   assertthat::assert_that(
     inherits(e_data, "data.frame"),
     msg = "check_event_data: The data must be a data frame."
