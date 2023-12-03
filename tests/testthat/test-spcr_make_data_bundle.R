@@ -1,5 +1,3 @@
-# TODO: Use {withr} package to set usethis.quiet option for tests so that
-# optional columns info messages don't clutter the output
 
 "spcr_make_data_bundle: happy path" |>
   test_that({
@@ -53,70 +51,6 @@
     )
 
   })
-
-# "test checked and lengthened data step" |>
-#   test_that({
-#     measure_data <- test_measure_data |>
-#       check_measure_data()
-#     report_config <- test_report_config |>
-#       check_report_config()
-#     measure_config <- test_measure_config |>
-#       check_measure_config()
-#
-#     expect_type(measure_data[[1]][["ref"]], "character")
-#     expect_type(report_config[["ref"]], "character")
-#     expect_type(measure_config[["ref"]], "character")
-#     expect_type(measure_config[["target"]], "double")
-#     expect_type(measure_config[["allowable_days_lag"]], "integer")
-#
-#     measure_data_long <- measure_data |>
-#       purrr::map(lengthen_measure_data) |>
-#       dplyr::bind_rows(.id = "aggregation")
-#
-#     expect_type(measure_data_long[["ref"]], "character")
-#     expect_s3_class(measure_data_long[["date"]], "Date")
-#
-#     test_names <- c("aggregation", "ref", "measure_name",
-#                     "comment", "date", "value")
-#
-#     expect_named(measure_data, unique(measure_data_long[["aggregation"]]))
-#     expect_named(measure_data_long, test_names)
-#     expect_equal(nrow(measure_data_long), 411)
-#   })
-
-
-
-# "test nested data step" |>
-#   test_that({
-#     measure_data <- test_measure_data |>
-#       check_measure_data()
-#     report_config <- test_report_config |>
-#       check_report_config()
-#     measure_config <- test_measure_config |>
-#       check_measure_config()
-#
-#
-#     measure_data_long <- measure_data |>
-#       purrr::map(lengthen_measure_data) |>
-#       dplyr::bind_rows(.id = "aggregation")
-#
-#     nested_data <- report_config |>
-#       dplyr::left_join(measure_config, by = c("ref", "measure_name")) |>
-#       dplyr::nest_join(measure_data_long,
-#                        by = c("ref", "aggregation"),
-#                        name = "measure_data")
-#
-#     test_names <- c(union(names(report_config), names(measure_config)), "measure_data")
-#
-#     expect_equal(nrow(nested_data), nrow(report_config))
-#     expect_type(nested_data[["measure_data"]], "list")
-#     expect_type(nested_data[["measure_data"]], "list")
-#     expect_s3_class(nested_data[["measure_data"]][[1]], "data.frame")
-#     expect_s3_class(nested_data[["measure_data"]][[1]], "tbl_df")
-#     expect_named(nested_data, test_names)
-#   })
-
-
 
 
 
