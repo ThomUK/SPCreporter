@@ -249,7 +249,7 @@ make_spc_chart <- function(
     if (spc_chart_type == "t") {
       final_x <- spc_data |> dplyr::pull(x) |> tail(1)
       final_y <- spc_data |> dplyr::pull(y) |> tail(1)
-      
+
       plot <- plot +
         ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "#7B7D7D", size = 7) +
         ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "white", size = 5)
