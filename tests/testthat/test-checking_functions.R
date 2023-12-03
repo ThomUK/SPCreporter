@@ -1,21 +1,57 @@
 
-# check dataset is complete
-"check dataset is complete" |>
+"check_dataset_is_complete: happy path" |>
   test_that({
-    test_measure_data_wide <- test_measure_data |>
-      check_measure_data() |>
-      dplyr::bind_rows(.id = "aggregation")
 
-    test_report_config |>
-      check_report_config() |>
-      check_dataset_is_complete(test_measure_data_wide) |>
-      expect_true()
+    # this function is called when before the aggregation is manually changed from
+    # "events" to "none", so we need to create the renaming here
+    measure_data_df <- test_measure_data |>
+      dplyr::bind_rows(.id = "aggregation") |>
+      dplyr::mutate(aggregation = dplyr::case_when(
+        aggregation == "events" ~ "none",
+        TRUE ~ aggregation
+      ))
 
-    test_report_config |>
-      check_report_config() |>
-      tibble::add_row(ref = "99", measure_name = "test", aggregation = "week") |>
-      check_dataset_is_complete(test_measure_data_wide) |>
-      expect_error("check_dataset_is_complete: Data is missing for 1 report items")
+    expect_no_error(
+      check_dataset_is_complete(
+        test_report_config,
+        measure_data_df
+      )
+    )
+  })
+
+"check_dataset_is_complete: it errors when data is missing" |>
+  test_that({
+
+    measure_data_df <- test_measure_data |>
+      dplyr::bind_rows(.id = "aggregation") |>
+      dplyr::mutate(aggregation = dplyr::case_when(
+        aggregation == "events" ~ "none",
+        TRUE ~ aggregation
+      ))
+
+    report_config_plus_one <- test_report_config |>
+      tibble::add_row(ref = 9999, measure_name = "test", aggregation = "week")
+
+    # add a single row
+    expect_error(
+      check_dataset_is_complete(
+        report_config_plus_one,
+        measure_data_df
+      ),
+      "Data is missing for 1 report items. The first is ref 9999, 'test', aggregation: week."
+    )
+
+    report_config_plus_two <- test_report_config |>
+      tibble::add_row(ref = 9998, measure_name = "test", aggregation = "none") |>
+      tibble::add_row(ref = 9999, measure_name = "test", aggregation = "week")
+
+    expect_error(
+      check_dataset_is_complete(
+        report_config_plus_two,
+        measure_data_df
+      ),
+      "Data is missing for 2 report items. The first is ref 9998, 'test', aggregation: none."
+    )
   })
 
 

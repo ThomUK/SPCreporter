@@ -42,10 +42,6 @@ spcr_make_data_bundle <- function(
   a_data_df <- a_data |>
     dplyr::bind_rows(.id = "aggregation")
 
-  # check all required data is supplied
-  #TODO reinstate this
-#  check_dataset_is_complete(report_config, measure_data_wide)
-
   # Check reference numbers and measure names agree across both data frames.
   # This is to guard against typos and errors in reported figures
   # by ensuring a typo in one place (ref or title) will raise an error.
@@ -54,12 +50,17 @@ spcr_make_data_bundle <- function(
   #   dplyr::pull("ref") |>
   #   purrr::walk(\(x) check_measure_names(x, measure_data_wide, measure_config))
 
-  # create long version of the aggregated data, 
-  # sorted by date (within each ref), and with 
+  # create long version of the aggregated data,
+  # sorted by date (within each ref), and with
   # the processed event data added to the end
   measure_data_long <- a_data_df |>
     lengthen_measure_data() |>
     dplyr::bind_rows(e_data_time_between)
+
+  # check all required data is supplied
+  #TODO reinstate this
+  check_dataset_is_complete(report_config, measure_data_long)
+
 
   # measure_data in long format is joined on to the config files as a nested df
   # column. Then we mutate the data frame row by row, adding new variables and
