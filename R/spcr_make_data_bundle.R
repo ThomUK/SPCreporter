@@ -14,6 +14,10 @@ spcr_make_data_bundle <- function(
 
   # check measure_data (list) columns and set `ref` column to character
   measure_data <- check_measure_data(measure_data)
+  # check report_config columns and set `ref` column to character
+  report_config <- check_report_config(report_config)
+  # check measure_config columns and set `ref` column to character
+  measure_config <- check_measure_config(measure_config)
 
   # measure data can contain two types of worksheet
   # 1. a wide-format sheet containing aggregated counts, with dated columns (a_data)
@@ -31,12 +35,8 @@ spcr_make_data_bundle <- function(
   # check event_data columns and set `ref` column to character
   e_data <- check_e_data(e_data)
 
-  # check report_config columns and set `ref` column to character
-  report_config <- check_report_config(report_config)
-
-  # check measure_config columns and set `ref` column to character
-  measure_config <- check_measure_config(measure_config)
-
+  # process event data into time-between data
+  e_data_time_between <- process_event_data_t(e_data)
 
   # reduce measure_data list to a single data frame
   measure_data_wide <- measure_data |>
