@@ -1,8 +1,10 @@
 # SPCreporter 0.1.6.9000
 
-## Breaking change
+## Breaking changes
 
-* Associated with the addition of rare-event charts, the `report_config` now includes a mandatory column `spc_chart_type`. Valid value in this column are "xmr" or "t".  
+Associated with the addition of rare-event charts:
+* The `report_config` now includes a mandatory column `spc_chart_type`. Valid value in this column are "xmr" or "t".  
+* The `measure_data` now includes a mandatory list item (or excel worksheet) called "events".
 
 ## Feature addition
 
