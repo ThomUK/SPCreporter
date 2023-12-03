@@ -318,7 +318,6 @@ check_dataset_is_complete <- function(report_config, measure_data) {
 
   missing_data <- report_config |>
     dplyr::select(all_of(c("ref", "measure_name", "aggregation"))) |>
-    dplyr::filter(!if_any("aggregation", \(x) x == "none")) |>
     dplyr::anti_join(measure_data, by = c("ref", "aggregation"))
 
 
@@ -330,7 +329,7 @@ check_dataset_is_complete <- function(report_config, measure_data) {
         stringr::str_glue_data(
           "check_dataset_is_complete: ",
           "Data is missing for {nrow(missing_data)} report items. ",
-          "The first is ref {ref}, '{measure_name}', {aggregation}ly."
+          "The first is ref {ref}, '{measure_name}', aggregation: {aggregation}."
           )
       ))
 
