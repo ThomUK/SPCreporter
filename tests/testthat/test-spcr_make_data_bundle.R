@@ -220,3 +220,20 @@
 #       )
 #
 #   })
+
+"spcr_make_data_bundle: it throws a warning when measure names are mismatched" |>
+  test_that({
+
+    renamed_measure_data <- test_measure_data
+    renamed_measure_data[["month"]][6,][["measure_name"]] <- "Milers of smilers"
+
+    expect_warning(
+      spcr_make_data_bundle(
+        renamed_measure_data,
+        test_report_config,
+        test_measure_config
+      ),
+      "check_measure_names: There is a name mismatch for measure ref: 43. The title in the data bundle is 'Milers of smilers'. The title in the measure config is 'Miles of smiles'."
+    )
+  })
+
