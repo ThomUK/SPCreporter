@@ -21,11 +21,11 @@ check_measure_data <- function(measure_data) {
   )
 
   # Now we need to only retain data frames from the list if they are named
-  # 'none', 'week' or 'month'. We then check that each data frame has the
+  # 'week', or 'month'. We then check that each data frame has the
   # required columns and that the 'ref' column is a character type.
 
   allowed_names <- c(
-    "none", "event", "day", "week", "month",
+    "day", "week", "month",
     "calendar_year", "financial_year"
     )
   measure_data |>
@@ -35,6 +35,29 @@ check_measure_data <- function(measure_data) {
         x, nm, required_columns = c("ref", "measure_name", "comment"))
     ) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
+}
+
+
+
+
+#' Check the e_data (event data) and transform as needed
+#'
+#' @param e_data dataframe. A data frames of event data (in long format).
+#'
+#' @returns The input data frame, after checking for necessary columns
+#' @noRd
+check_e_data <- function(e_data) {
+  assertthat::assert_that(
+    inherits(e_data, "data.frame"),
+    msg = "check_event_data: The data must be a data frame."
+  )
+
+  e_data |>
+    check_for_required_columns(
+      "events",
+      required_columns = c("ref", "measure_name", "comment", "event_date_or_datetime")
+    ) |>
+    dplyr::mutate(across("ref", as.character))
 }
 
 

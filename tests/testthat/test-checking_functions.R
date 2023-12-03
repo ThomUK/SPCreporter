@@ -236,3 +236,35 @@
     )
 
   })
+"check e_data: happy path" |>
+  test_that({
+
+    e_data <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      event_date_or_datetime = "there will be dates here"
+    )
+
+    expect_no_error(
+      check_e_data(e_data)
+    )
+
+  })
+
+"check e_data: missing columns throw an error" |>
+  test_that({
+
+    e_data <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      # event_date_or_datetime = "there will be dates here" # missing column
+    )
+
+    expect_error(
+      check_e_data(e_data),
+      "check_for_required_columns: Column 'event_date_or_datetime' is missing from the 'events' data frame. Check for typos in the column names."
+    )
+
+  })
