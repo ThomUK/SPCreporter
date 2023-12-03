@@ -177,63 +177,46 @@
 
 # this is more properly a test for the check_measure_names() function
 # but it's good to test it as part of the make_bundle() workflow too
-# "error for name mismatches before other errors" |>
-#   test_that({
-#
-#     # a measure_name mismatch in the measure config will throw a warning
-#     test_measure_config2 <- test_measure_config |>
-#       dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Capacity", "Capaciteeee")))
-#
-#     expect_warning(
-#       spcr_make_data_bundle(
-#         measure_data = test_measure_data,
-#         report_config = test_report_config,
-#         measure_config = test_measure_config2
-#       )
-#   # "check_measure_names: There is a name mismatch for measure ref: 5.\nThe title in the data bundle is 'Capacity'.\nThe title in the measure config is 'Capaciteeee'."
-#     )
-#
-#     # a measure_name mismatch in the measure data will throw a warning
-#     test_measure_data2 <- test_measure_data |>
-#       purrr::modify_at("month", \(x)
-#       dplyr::mutate(x, across("measure_name", \(x) stringr::str_replace(x, "Widgets", "widgets"))))
-#
-#     expect_warning(
-#       spcr_make_data_bundle(
-#         measure_data = test_measure_data2,
-#         report_config = test_report_config,
-#         measure_config = test_measure_config
-#       )
-#   # "check_measure_names: There is a name mismatch for measure ref: 11.\nThe title in the data bundle is 'widgets'.\nThe title in the measure config is 'Widgets'."
-#     )
-#
-#     # but a measure_name change in the report config should not throw an error
-#     test_report_config2 <- test_report_config |>
-#       dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Widgets", "widgets")))
-#
-#     expect_no_error(
-#       spcr_make_data_bundle(
-#         measure_data = test_measure_data,
-#         report_config = test_report_config2,
-#         measure_config = test_measure_config
-#         )
-#       )
-#
-#   })
-
-"spcr_make_data_bundle: it throws a warning when measure names are mismatched" |>
+"error for name mismatches before other errors" |>
   test_that({
 
-    renamed_measure_data <- test_measure_data
-    renamed_measure_data[["month"]][6,][["measure_name"]] <- "Milers of smilers"
+    # a measure_name mismatch in the measure config will throw a warning
+    test_measure_config2 <- test_measure_config |>
+      dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Capacity", "Capaciteeee")))
 
     expect_warning(
       spcr_make_data_bundle(
-        renamed_measure_data,
-        test_report_config,
-        test_measure_config
+        measure_data = test_measure_data,
+        report_config = test_report_config,
+        measure_config = test_measure_config2
       ),
-      "check_measure_names: There is a name mismatch for measure ref: 43. The title in the data bundle is 'Milers of smilers'. The title in the measure config is 'Miles of smiles'."
+      "check_measure_names: There is a name mismatch for measure ref: 5. The title in the data bundle is 'Capacity'. The title in the measure config is 'Capaciteeee'."
     )
-  })
 
+    # a measure_name mismatch in the measure data will throw a warning
+    test_measure_data2 <- test_measure_data |>
+      purrr::modify_at("month", \(x)
+      dplyr::mutate(x, across("measure_name", \(x) stringr::str_replace(x, "Widgets", "widgets"))))
+
+    expect_warning(
+      spcr_make_data_bundle(
+        measure_data = test_measure_data2,
+        report_config = test_report_config,
+        measure_config = test_measure_config
+      ),
+      "check_measure_names: There is a name mismatch for measure ref: 11. The title in the data bundle is 'widgets'. The title in the measure config is 'Widgets'."
+    )
+
+    # but a measure_name change in the report config should not throw an error
+    test_report_config2 <- test_report_config |>
+      dplyr::mutate(across("measure_name", \(x) stringr::str_replace(x, "Widgets", "widgets")))
+
+    expect_no_error(
+      spcr_make_data_bundle(
+        measure_data = test_measure_data,
+        report_config = test_report_config2,
+        measure_config = test_measure_config
+        )
+      )
+
+  })
