@@ -58,6 +58,7 @@ spcr_make_data_bundle <- function(
     dplyr::bind_rows(e_data_time_between)
 
   # check all required data is supplied
+  #TODO reinstate this
   check_dataset_is_complete(report_config, measure_data_long)
 
 
