@@ -236,6 +236,105 @@
     )
 
   })
+
+"check measure_data: happy path" |>
+  test_that({
+
+    aggregated_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment")
+    )
+
+    events_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      event_date_or_datetime = "there will be dates here"
+    )
+
+    measure_data <- list(
+      "week" = aggregated_datasheet,
+      "month" = aggregated_datasheet,
+      "events" = events_datasheet
+    )
+
+    expect_no_error(
+      check_measure_data(measure_data)
+    )
+
+  })
+
+"check measure_data: missing columns throw an error" |>
+  test_that({
+
+    aggregated_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      # measure_name = c("M1", "M2", "M3"), # missing column
+      comment = c("comment", "comment", "comment")
+    )
+
+    events_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      event_date_or_datetime = "there will be dates here"
+    )
+
+    measure_data <- list(
+      "week" = aggregated_datasheet,
+      "month" = aggregated_datasheet,
+      "events" = events_datasheet
+    )
+
+    expect_error(
+      check_measure_data(measure_data),
+      "check_for_required_columns: Column 'measure_name' is missing from the 'week' data frame. Check for typos in the column names."
+    )
+
+  })
+
+"check a_data: happy path" |>
+  test_that({
+
+    datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment")
+    )
+
+    a_data <- list(
+      "week" = datasheet,
+      "month" = datasheet
+    )
+
+    expect_no_error(
+      check_a_data(a_data)
+    )
+
+  })
+
+"check a_data: missing columns throw an error" |>
+  test_that({
+
+    datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      # measure_name = c("M1", "M2", "M3"), # missing column
+      comment = c("comment", "comment", "comment")
+    )
+
+    a_data <- list(
+      "week" = datasheet,
+      "month" = datasheet
+    )
+
+    expect_error(
+      check_a_data(a_data),
+      "check_for_required_columns: Column 'measure_name' is missing from the 'week' data frame. Check for typos in the column names."
+    )
+
+  })
+
 "check e_data: happy path" |>
   test_that({
 

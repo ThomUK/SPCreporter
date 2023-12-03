@@ -12,18 +12,21 @@ spcr_make_data_bundle <- function(
     measure_config = test_measure_config
     ) {
 
-  # measure data can contain two types of worksheet
-  # 1. a wide-format sheet containing aggregated counts, with dated columns
-  # 2. a long-format sheet containing event-list data.
-  # separate them into m_data and e_data
+  # check measure_data (list) columns and set `ref` column to character
+  measure_data <- check_measure_data(measure_data)
 
+  # measure data can contain two types of worksheet
+  # 1. a wide-format sheet containing aggregated counts, with dated columns (a_data)
+  # 2. a long-format sheet containing event-list data (e_data).
+  # separate them into a_data and e_data
   e_data <- measure_data |>
     purrr::pluck("events")
 
-  measure_data[["events"]] <- NULL
+  a_data <- measure_data
+  a_data[["events"]] <- NULL
 
-  # check measure_data (list) columns and set `ref` column to character
-  measure_data <- check_measure_data(measure_data)
+  # a_data is closely related to the measure_data, but we use a different function to check it
+  a_data <- check_a_data(a_data)
 
   # check event_data columns and set `ref` column to character
   e_data <- check_e_data(e_data)

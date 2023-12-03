@@ -1,6 +1,6 @@
-#' Check the measure data and transform as needed
+#' Check the incoming measure data and transform as needed
 #'
-#' @param measure_data list. A list of data frames (in wide format).
+#' @param measure_data list. A list of data frames containing a combination of aggregated data and event data
 #'
 #' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
@@ -25,7 +25,7 @@ check_measure_data <- function(measure_data) {
   # required columns and that the 'ref' column is a character type.
 
   allowed_names <- c(
-    "day", "week", "month",
+    "events", "day", "week", "month",
     "calendar_year", "financial_year"
     )
   measure_data |>
@@ -35,6 +35,37 @@ check_measure_data <- function(measure_data) {
         x, nm, required_columns = c("ref", "measure_name", "comment"))
     ) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
+}
+
+
+
+
+#' Check the a_data, which has been split from the incoming measure
+#'
+#' @param a_data list. A list of data frames (in wide format).
+#'
+#' @returns The input list of data frames, after checking for necessary columns
+#' @noRd
+check_a_data <- function(a_data) {
+  assertthat::assert_that(
+    inherits(a_data, "list"),
+    msg = "check_measure_data: The data must be a list."
+  )
+
+  # Now we need to only retain data frames from the list if they are named
+  # 'week', or 'month'. We then check that each data frame has the
+  # required columns and that the 'ref' column is a character type.
+
+  allowed_names <- c(
+    "day", "week", "month",
+    "calendar_year", "financial_year"
+    )
+  a_data |>
+    purrr::keep_at(allowed_names) |>
+    purrr::iwalk(
+      \(x, nm) check_for_required_columns(
+        x, nm, required_columns = c("ref", "measure_name", "comment"))
+    )
 }
 
 
