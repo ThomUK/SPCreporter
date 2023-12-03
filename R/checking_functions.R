@@ -231,7 +231,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
         x == c_title,
         usethis::ui_silence(TRUE),
         usethis::ui_warn(
-          c("check_measure_names: There is a name mismatch for measure ref: 43. The title in the data bundle is 'Milers of smilers'. The title in the measure config is 'Miles of smiles'.")
+          c("check_measure_names: There is a name mismatch for measure ref: {ref_no}. The title in the data bundle is '{x}'. The title in the measure config is '{c_title}'.")
       )))
 
   invisible(TRUE)
