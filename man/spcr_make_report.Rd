@@ -6,7 +6,6 @@
 \usage{
 spcr_make_report(
   data_bundle,
-  data_cutoff_dttm,
   report_title = "SPC Report",
   subtitle = NULL,
   document_title = NULL,
@@ -29,8 +28,6 @@ spcr_make_report(
 }
 \arguments{
 \item{data_bundle}{data frame. The pre-processed bundle of information (ideally made with \code{spcr_make_data_bundle()})}
-
-\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
 
 \item{report_title}{string. The report title, printed at the top of the report}
 
