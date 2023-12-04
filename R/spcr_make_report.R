@@ -1,7 +1,6 @@
 #' Make the SPC Report
 #'
 #' @param data_bundle data frame. The pre-processed bundle of information (ideally made with `spcr_make_data_bundle()`)
-#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param report_title string. The report title, printed at the top of the report
 #' @param subtitle string. The report subtitle, printed at the top of the report
 #' @param document_title string. A title for the document, as used in the HTML `<title>` tag or as the PDF document title. If left as NULL (the default), this function will use the `report_title` parameter and the current date to construct a title
@@ -24,7 +23,6 @@
 #' @export
 spcr_make_report <- function(
     data_bundle,
-    data_cutoff_dttm,
     report_title = "SPC Report",
     subtitle = NULL,
     document_title = NULL,
@@ -45,6 +43,9 @@ spcr_make_report <- function(
     annotate_limits = TRUE
   ) {
   start_time <- Sys.time()
+
+  # this dttm is the same for every row in the data bundle.  Use the first line.
+  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][1]
 
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
