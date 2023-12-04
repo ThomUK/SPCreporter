@@ -8,8 +8,10 @@
       "event_date_or_datetime" = as.Date(c("2020-01-01", "2020-01-03", "2020-01-13"))
     )
 
+    cutoff_dttm <- as.POSIXct("2020-01-31 23:59:59")
+
     expect_no_error(
-      result <- process_event_data_t(e_data)
+      result <- process_event_data_t(e_data, cutoff_dttm)
     )
 
     expect_equal(
@@ -17,9 +19,9 @@
       c("aggregation", "ref", "measure_name", "comment", "date", "value")
     )
 
-    expect_equal(result[["date"]], as.Date(c("2020-01-03", "2020-01-13")))
-    expect_equal(result[["value"]], c(2, 10))
-    expect_equal(result[["comment"]], c(NA, NA)) # comments removed deliberately
+    expect_equal(result[["date"]], as.Date(c("2020-01-03", "2020-01-13", "2020-01-31")))
+    expect_equal(result[["value"]], c(2, 10, 18))
+    expect_equal(result[["comment"]], c(NA, NA, NA)) # comments removed deliberately
 
   })
 
