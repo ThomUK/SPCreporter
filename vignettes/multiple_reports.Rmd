@@ -31,7 +31,6 @@ all_my_reports <- tibble::tibble(
   report_ref = c("ID.1", "ID.2", "ID.3"),
   author_name = "Anne Author",
   author_email = "a.author@example.com",
-  data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59"),
   # create reports with different paper colours
   paper_colour = c("seashell", "thistle", "#afcfaf")
 )
