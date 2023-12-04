@@ -3,16 +3,20 @@
 ## Breaking changes
 
 Associated with the addition of rare-event charts:
-* The `report_config` now includes a mandatory column `spc_chart_type`. Valid value in this column are "xmr" or "t".  
+* The `report_config` now includes a mandatory column `spc_chart_type`. Valid values in this column are "xmr" or "t".  
 * The `measure_data` now includes a mandatory list item (or excel worksheet) called "events".
+* The `data_cutoff_dttm` argument has been moved from `spcr_make_report()` to `spcr_make_data_bundle()` to support the calculation of the final plotted point, which is placed to illustrate what would happen were an event to happen on this date.
+
+Associated with the addition of pdf and csv output types:
+* The the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type`.
 
 ## Feature addition
 
+* Added the ability to create rare-event charts of type "T" (time-between).
 * The report is now mobile friendly, and works on very narrow screens.  The breakpoint from wide to narrow layout is 768px.
 * The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.
 * Added explanation of the data-quality icons to the footer of the report.
 * Added the ability to output ".pdf" reports, which include tidy page-breaks.
-* Added the ability to create rare-event charts of type "T" (time-between).
 
 ## Useability
 
