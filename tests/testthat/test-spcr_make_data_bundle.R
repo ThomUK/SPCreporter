@@ -11,6 +11,19 @@
     )
   })
 
+"spcr_make_data_bundle: it accepts a custom cutoff dttm" |>
+  test_that({
+
+    expect_no_error(
+      spcr_make_data_bundle(
+        test_measure_data,
+        test_report_config,
+        test_measure_config,
+        data_cutoff_dttm = as.POSIXct("2023-10-31 23:59:59")
+      )
+    )
+  })
+
 "spcr_make_data_bundle: there is a helpful error if the 'events' worksheet is missing" |>
   test_that({
 
@@ -65,10 +78,10 @@
 
     # some spot checks on the above conversion of the last_data_point to the
     # appropriate character format
-    expect_true(db[["last_data_point"]][[1]] == 222)
-    expect_true(db[["last_data_point"]][[2]] == "73%")
-    expect_true(db[["last_data_point"]][[3]] == "0.46")
-    expect_true(db[["last_data_point"]][[9]] == "172d")
+    expect_equal(db[["last_data_point"]][[1]], "222")
+    expect_equal(db[["last_data_point"]][[2]], "73%")
+    expect_equal(db[["last_data_point"]][[3]], "0.46")
+    expect_equal(db[["last_data_point"]][[9]], "430d")
 
   })
 
@@ -80,13 +93,13 @@
       report_config = test_report_config,
       measure_config = test_measure_config)
 
-    expect_length(out, 25)
+    expect_length(out, 26)
     expect_equal(nrow(out), nrow(test_report_config))
     expect_type(out[["ref"]], "character")
     expect_type(out[["target"]], "double")
     expect_type(out[["allowable_days_lag"]], "integer")
     expect_type(out[["measure_data"]], "list")
-    expect_s3_class(out[["last_date"]], "POSIXct")
+    expect_s3_class(out[["last_date"]], "Date")
     expect_type(out[["updated_to"]], "character")
     expect_type(out[["domain_heading"]], "logical")
 
@@ -104,7 +117,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config2)
 
-    expect_length(out2, 25)
+    expect_length(out2, 26)
     expect_equal(nrow(out2), nrow(test_report_config))
 
   })

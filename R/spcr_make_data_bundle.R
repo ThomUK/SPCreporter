@@ -3,13 +3,15 @@
 #' @param measure_data list. List containing data frames of data in wide format
 #' @param report_config data frame. Config information for the report
 #' @param measure_config data frame. Config information for the measures
+#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #'
 #' @returns data frame. A nested data frame containing source data for the report
 #' @export
 spcr_make_data_bundle <- function(
     measure_data = test_measure_data,
     report_config = test_report_config,
-    measure_config = test_measure_config
+    measure_config = test_measure_config,
+    data_cutoff_dttm = Sys.time()
     ) {
 
   # check measure_data (list) columns and set `ref` column to character
@@ -36,7 +38,7 @@ spcr_make_data_bundle <- function(
   e_data <- check_e_data(e_data)
 
   # process event data into time-between data
-  e_data_time_between <- process_event_data_t(e_data)
+  e_data_time_between <- process_event_data_t(e_data, data_cutoff_dttm)
 
   # reduce measure_data list to a single data frame
   a_data_df <- a_data |>
@@ -80,6 +82,7 @@ spcr_make_data_bundle <- function(
 
     # pull most recent date from each data frame in the measure_data column
     dplyr::mutate(
+      data_cutoff_dttm = as.POSIXct(data_cutoff_dttm),
       last_date = purrr::map_vec(.data[["measure_data"]], \(x) max(x[["date"]], na.rm = TRUE))
     ) |>
     # pull most recent data point from each data frame in the measure_data column
