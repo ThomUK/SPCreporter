@@ -1,7 +1,6 @@
 #' Make the SPC Report
 #'
 #' @param data_bundle data frame. The pre-processed bundle of information (ideally made with `spcr_make_data_bundle()`)
-#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param report_title string. The report title, printed at the top of the report
 #' @param subtitle string. The report subtitle, printed at the top of the report
 #' @param document_title string. A title for the document, as used in the HTML `<title>` tag or as the PDF document title. If left as NULL (the default), this function will use the `report_title` parameter and the current date to construct a title
@@ -24,7 +23,6 @@
 #' @export
 spcr_make_report <- function(
     data_bundle,
-    data_cutoff_dttm,
     report_title = "SPC Report",
     subtitle = NULL,
     document_title = NULL,
@@ -46,6 +44,9 @@ spcr_make_report <- function(
   ) {
   start_time <- Sys.time()
 
+  # this dttm is the same for every row in the data bundle.  Use the first line.
+  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][1]
+
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
     dplyr::select(all_of(c(
@@ -63,7 +64,7 @@ spcr_make_report <- function(
       "measure_name",
       "data_source",
       "unit",
-      "rare_event_chart",
+      "spc_chart_type",
       "aggregation"
     ))) |>
     dplyr::mutate(label_limits = annotate_limits) |>
@@ -218,7 +219,7 @@ make_spc_chart <- function(
   measure_name,
   data_source,
   unit,
-  rare_event_chart,
+  spc_chart_type,
   aggregation,
   label_limits,
   spc_data
@@ -229,7 +230,7 @@ make_spc_chart <- function(
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = if_else(rare_event_chart == "Y", "Days since previous occurrence", ""),
+      y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""),
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,
@@ -246,10 +247,10 @@ make_spc_chart <- function(
     )
 
     # conditionally add the "hollow" final data point to rare-event charts
-    if (rare_event_chart == "Y") {
+    if (spc_chart_type == "t") {
       final_x <- spc_data |> dplyr::pull(x) |> tail(1)
       final_y <- spc_data |> dplyr::pull(y) |> tail(1)
-      
+
       plot <- plot +
         ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "#7B7D7D", size = 7) +
         ggplot2::geom_point(ggplot2::aes(final_x, final_y), colour = "white", size = 5)

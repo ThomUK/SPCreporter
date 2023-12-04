@@ -3,44 +3,64 @@
 #' @param measure_data list. List containing data frames of data in wide format
 #' @param report_config data frame. Config information for the report
 #' @param measure_config data frame. Config information for the measures
+#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #'
 #' @returns data frame. A nested data frame containing source data for the report
 #' @export
 spcr_make_data_bundle <- function(
     measure_data = test_measure_data,
     report_config = test_report_config,
-    measure_config = test_measure_config
+    measure_config = test_measure_config,
+    data_cutoff_dttm = Sys.time()
     ) {
 
   # check measure_data (list) columns and set `ref` column to character
   measure_data <- check_measure_data(measure_data)
-
   # check report_config columns and set `ref` column to character
   report_config <- check_report_config(report_config)
-
   # check measure_config columns and set `ref` column to character
   measure_config <- check_measure_config(measure_config)
 
+  # measure data can contain two types of worksheet
+  # 1. a wide-format sheet containing aggregated counts, with dated columns (a_data)
+  # 2. a long-format sheet containing event-list data (e_data).
+  # separate them into a_data and e_data
+  e_data <- measure_data |>
+    purrr::pluck("events")
+
+  a_data <- measure_data
+  a_data[["events"]] <- NULL
+
+  # a_data is closely related to the measure_data, but we use a different function to check it
+  a_data <- check_a_data(a_data)
+
+  # check event_data columns and set `ref` column to character
+  e_data <- check_e_data(e_data)
+
+  # process event data into time-between data
+  e_data_time_between <- process_event_data_t(e_data, data_cutoff_dttm)
 
   # reduce measure_data list to a single data frame
-  measure_data_wide <- measure_data |>
+  a_data_df <- a_data |>
     dplyr::bind_rows(.id = "aggregation")
 
+
+  # create long version of the aggregated data,
+  # sorted by date (within each ref), and with
+  # the processed event data added to the end
+  measure_data_long <- a_data_df |>
+    lengthen_measure_data() |>
+    dplyr::bind_rows(e_data_time_between)
+
   # check all required data is supplied
-  check_dataset_is_complete(report_config, measure_data_wide)
+  check_dataset_is_complete(report_config, measure_data_long)
 
   # Check reference numbers and measure names agree across both data frames.
   # This is to guard against typos and errors in reported figures
   # by ensuring a typo in one place (ref or title) will raise an error.
   report_config |>
     dplyr::pull("ref") |>
-    purrr::walk(\(x) check_measure_names(x, measure_data_wide, measure_config))
-
-  # create long version of measure_data, combined to a single data frame
-  # and sorted by date (within each ref)
-  measure_data_long <- measure_data |>
-    purrr::map(lengthen_measure_data) |>
-    dplyr::bind_rows(.id = "aggregation")
+    purrr::walk(\(x) check_measure_names(x, measure_data_long, measure_config))
 
   # measure_data in long format is joined on to the config files as a nested df
   # column. Then we mutate the data frame row by row, adding new variables and
@@ -50,7 +70,7 @@ spcr_make_data_bundle <- function(
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
     dplyr::mutate(
       measure_name = dplyr::case_when(
-        rare_event_chart == "Y" ~ paste(measure_name, "(time-between)"),
+        spc_chart_type == "t" ~ paste(measure_name, "(time-between)"),
         TRUE ~ measure_name
       )
     ) |>
@@ -62,11 +82,15 @@ spcr_make_data_bundle <- function(
 
     # pull most recent date from each data frame in the measure_data column
     dplyr::mutate(
+      data_cutoff_dttm = as.POSIXct(data_cutoff_dttm),
       last_date = purrr::map_vec(.data[["measure_data"]], \(x) max(x[["date"]], na.rm = TRUE))
     ) |>
     # pull most recent data point from each data frame in the measure_data column
     dplyr::mutate(
-      last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) dplyr::slice_max(x[["value"]], order_by = x[["date"]], n = 1))
+      last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) {
+        dplyr::slice_max(x, order_by = x[["date"]], n = 1)[["value"]]
+      }
+      )
     )
 
   # Check that measure data that is supposed to be integer data is supplied as
@@ -90,18 +114,18 @@ spcr_make_data_bundle <- function(
     dplyr::mutate(
       across("improvement_direction",
              \(x) dplyr::case_when(
-               .data[["rare_event_chart"]] == "Y" & x == "decrease" ~ "increase",
+               .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
                # a rather unlikely situation
-               .data[["rare_event_chart"]] == "Y" & x == "increase" ~ "decrease",
+               .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
                TRUE ~ x))
       ) |>
     dplyr::mutate(
       across("unit",
-             \(x) if_else(.data[["rare_event_chart"]] == "Y", "days", x))
+             \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x))
       ) |>
     dplyr::mutate(
       across("target",
-             \(x) if_else(.data[["rare_event_chart"]] == "Y", NA, x))
+             \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x))
       ) |>
     dplyr::mutate(
       across("last_data_point", \(x) dplyr::case_when(

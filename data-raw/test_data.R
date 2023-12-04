@@ -10,12 +10,12 @@ example_files <- here::here("inst", "example_data")
 data_file <- here::here(example_files, "data.xlsx")
 
 test_measure_data <- list(
-  none = data_file |>
-    readxl::read_xlsx(sheet = "none"),
   week = data_file |>
     readxl::read_xlsx(sheet = "week"),
   month = data_file |>
-    readxl::read_xlsx(sheet = "month")
+    readxl::read_xlsx(sheet = "month"),
+  events = data_file |>
+    readxl::read_xlsx(sheet = "events")
   )
 
 
