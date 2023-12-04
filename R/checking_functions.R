@@ -40,7 +40,7 @@ check_measure_data <- function(measure_data) {
 
 
 
-#' Check the a_data, which has been split from the incoming measure
+#' Check the a_data, which has been split from the incoming measure data
 #'
 #' @param a_data list. A list of data frames (in wide format).
 #'
@@ -52,10 +52,9 @@ check_a_data <- function(a_data) {
     msg = "check_measure_data: The data must be a list."
   )
 
-  # Now we need to only retain data frames from the list if they are named
-  # 'week', or 'month'. We then check that each data frame has the
-  # required columns and that the 'ref' column is a character type.
-
+  # We now only retain data frames from the list if they have a name
+  # matching one of the allowed aggregation levels. We then check that each
+  # data frame has the required columns and the 'ref' column is a character type
   allowed_names <- c(
     "day", "week", "month",
     "calendar_year", "financial_year"
@@ -73,7 +72,7 @@ check_a_data <- function(a_data) {
 
 #' Check the e_data (event data) and transform as needed
 #'
-#' @param e_data dataframe. A data frames of event data (in long format).
+#' @param e_data data frame. A data frame of event data (in long format).
 #'
 #' @returns The input data frame, after checking for necessary columns
 #' @noRd

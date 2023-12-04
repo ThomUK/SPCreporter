@@ -2,11 +2,11 @@
 
 export(spcr_make_data_bundle)
 export(spcr_make_report)
-export(with_ext)
 importFrom(dplyr,across)
 importFrom(dplyr,if_any)
 importFrom(dplyr,if_else)
 importFrom(dplyr,pick)
+importFrom(ggplot2,aes)
 importFrom(glue,glue)
 importFrom(rlang,":=")
 importFrom(rlang,.data)

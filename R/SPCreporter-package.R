@@ -3,6 +3,7 @@
 
 ## usethis namespace: start
 #' @importFrom dplyr across if_any if_else pick
+#' @importFrom ggplot2 aes
 #' @importFrom glue glue
 #' @importFrom rlang := .data
 #' @importFrom tidyselect all_of any_of everything
