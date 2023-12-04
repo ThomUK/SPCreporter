@@ -1,4 +1,4 @@
-# SPCreporter 0.1.6.9000
+# SPCreporter 0.2.0
 
 ## Breaking changes
 
