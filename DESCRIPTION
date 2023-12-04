@@ -27,7 +27,6 @@ Imports:
     dplyr (>= 1.1.0),
     glue,
     ggplot2,
-    janitor,
     knitr,
     lubridate,
     NHSRplotthedots,
