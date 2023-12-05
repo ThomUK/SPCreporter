@@ -70,6 +70,9 @@
 "test data bundle process" |>
   test_that({
 
+    # stub out the Sys.time call with a repeating value
+    mockery::stub(spcr_make_data_bundle, "Sys.time", as.POSIXct("2023-12-04 21:25:25"))
+
     db <- spcr_make_data_bundle(
       test_measure_data,
       test_report_config,
