@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">SPCreporter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">spcr_make_data_bundle</span><span class="op">(</span></span>
 <span>  measure_data <span class="op">=</span> <span class="va">test_measure_data</span>,</span>
 <span>  report_config <span class="op">=</span> <span class="va">test_report_config</span>,</span>
-<span>  measure_config <span class="op">=</span> <span class="va">test_measure_config</span></span>
+<span>  measure_config <span class="op">=</span> <span class="va">test_measure_config</span>,</span>
+<span>  data_cutoff_dttm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,6 +86,10 @@
 
 <dt>measure_config</dt>
 <dd><p>data frame. Config information for the measures</p></dd>
+
+
+<dt>data_cutoff_dttm</dt>
+<dd><p>POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)</p></dd>
 
 </dl></div>
     <div class="section level2">

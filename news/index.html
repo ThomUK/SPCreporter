@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">SPCreporter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,22 +60,29 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.6.9000" id="spcreporter-0169000">SPCreporter 0.1.6.9000<a class="anchor" aria-label="anchor" href="#spcreporter-0169000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="spcreporter-020">SPCreporter 0.2.0<a class="anchor" aria-label="anchor" href="#spcreporter-020"></a></h2>
 <div class="section level3">
-<h3 id="feature-addition-0-1-6-9000">Feature addition<a class="anchor" aria-label="anchor" href="#feature-addition-0-1-6-9000"></a></h3>
-<ul><li>The report is now mobile friendly, and works on very narrow screens. The breakpoint from wide to narrow layout is 768px.</li>
+<h3 id="breaking-changes-0-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-0"></a></h3>
+<p>Associated with the addition of rare-event charts: * The <code>report_config</code> now includes a mandatory column <code>spc_chart_type</code>. Valid values in this column are “xmr” or “t”.<br>
+* The <code>measure_data</code> now includes a mandatory list item (or excel worksheet) called “events”. * The <code>data_cutoff_dttm</code> argument has been moved from <code><a href="../reference/spcr_make_report.html">spcr_make_report()</a></code> to <code><a href="../reference/spcr_make_data_bundle.html">spcr_make_data_bundle()</a></code> to support the calculation of the final plotted point, which is placed to illustrate what would happen were an event to happen on this date.</p>
+<p>Associated with the addition of pdf and csv output types: * The the argument <code>export_csv</code> to <code><a href="../reference/spcr_make_report.html">spcr_make_report()</a></code> has been disused and replaced with <code>output_type</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="feature-addition-0-2-0">Feature addition<a class="anchor" aria-label="anchor" href="#feature-addition-0-2-0"></a></h3>
+<ul><li>Added the ability to create rare-event charts of type “T” (time-between).</li>
+<li>The report is now mobile friendly, and works on very narrow screens. The breakpoint from wide to narrow layout is 768px.</li>
 <li>The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.</li>
 <li>Added explanation of the data-quality icons to the footer of the report.</li>
 <li>Added the ability to output “.pdf” reports, which include tidy page-breaks.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="useability-0-1-6-9000">Useability<a class="anchor" aria-label="anchor" href="#useability-0-1-6-9000"></a></h3>
+<h3 id="useability-0-2-0">Useability<a class="anchor" aria-label="anchor" href="#useability-0-2-0"></a></h3>
 <ul><li>Added the optional columns to the example excel config documents, to aid onboarding for new users.</li>
 <li>BREAKING CHANGE - the argument <code>export_csv</code> to <code><a href="../reference/spcr_make_report.html">spcr_make_report()</a></code> has been disused and replaced with <code>output_type</code> which is now a vector of the required output types. Current valid options are “html”, “pdf”, and “csv”. This method will allow addition of more report types in future.</li>
 <li>File size reduced by approx 30% by handling plot resolution differently, and by a further 0.6MB by removing javascript, css, and font files bundled as part of RMarkdown. As a result of the latter change the template behaves less like standard Rmd and is more reliant on custom CSS, but as it is rarely edited the file size reduction is worth this trade-off.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bugfix-0-1-6-9000">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-0-1-6-9000"></a></h3>
+<h3 id="bugfix-0-2-0">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-0-2-0"></a></h3>
 <ul><li>All spaces in the report name are now replaced with underscores. Previously only the first space was replaced.<br></li>
 <li>The CSV output now respects the <code>output_directory</code> argument. Previously this file was saved in the working directory regardless of the output_directory argument.</li>
 </ul><hr></div>
