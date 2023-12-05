@@ -28,10 +28,10 @@ process_event_data_t <- function(event_data, data_cutoff_dttm){
     dplyr::ungroup() |>
 
     # fill in the gaps left by adding the "today" event
-    tidyr::fill(.data$aggregation, .data$measure_name) |>
-    dplyr::relocate(.data$aggregation) |>
+    tidyr::fill("aggregation", "measure_name") |>
+    dplyr::relocate("aggregation") |>
     dplyr::rename(
-      date = .data$event_date_or_datetime,
-      value = .data$time_between
+      date = "event_date_or_datetime",
+      value = "time_between"
     )
 }
