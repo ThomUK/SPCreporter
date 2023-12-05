@@ -1,18 +1,19 @@
-# SPCreporter 0.2.0
-
-## Breaking changes
-
-Associated with the addition of rare-event charts:
-* The `report_config` now includes a mandatory column `spc_chart_type`. Valid values in this column are "xmr" or "t".  
-* The `measure_data` now includes a mandatory list item (or excel worksheet) called "events".
-* The `data_cutoff_dttm` argument has been moved from `spcr_make_report()` to `spcr_make_data_bundle()` to support the calculation of the final plotted point, which is placed to illustrate what would happen were an event to happen on this date.
-
-Associated with the addition of pdf and csv output types:
-* The the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type`.
+# SPCreporter 0.2.0.9000
 
 ## Feature addition
 
-* Added the ability to create rare-event charts of type "T" (time-between).
+## Useability
+
+## Bugfix
+
+---
+
+# SPCreporter 0.2.0
+
+
+## Feature addition
+
+* **BREAKING CHANGE** - Added the ability to create rare-event charts of type "T" (time-between).
 * The report is now mobile friendly, and works on very narrow screens.  The breakpoint from wide to narrow layout is 768px.
 * The ability to add commentary was added previously, but now the method is demonstrated in the example config docs.
 * Added explanation of the data-quality icons to the footer of the report.
@@ -21,13 +22,23 @@ Associated with the addition of pdf and csv output types:
 ## Useability
 
 * Added the optional columns to the example excel config documents, to aid onboarding for new users.
-* BREAKING CHANGE - the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type` which is now a vector of the required output types.  Current valid options are "html", "pdf", and "csv".  This method will allow addition of more report types in future.
+* **BREAKING CHANGE** - The argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type` which is now a vector of the required output types.  Current valid options are "html", "pdf", and "csv".  This method will allow addition of more report types in future.
 * File size reduced by approx 30% by handling plot resolution differently, and by a further 0.6MB by removing javascript, css, and font files bundled as part of RMarkdown.  As a result of the latter change the template behaves less like standard Rmd and is more reliant on custom CSS, but as it is rarely edited the file size reduction is worth this trade-off.  
 
 ## Bugfix
 
 * All spaces in the report name are now replaced with underscores. Previously only the first space was replaced.  
 * The CSV output now respects the `output_directory` argument. Previously this file was saved in the working directory regardless of the output_directory argument.
+
+## Details of breaking changes
+
+Associated with the addition of rare-event charts:
+* The `report_config` now includes a mandatory column `spc_chart_type`. Valid values in this column are "xmr" or "t".  
+* The `measure_data` now includes a mandatory list item (or excel worksheet) called "events".
+* The `data_cutoff_dttm` argument has been moved from `spcr_make_report()` to `spcr_make_data_bundle()` to support the calculation of the final plotted point, which is placed to illustrate what would happen were an event to happen on this date.
+
+Associated with the addition of pdf and csv output types:
+* The the argument `export_csv` to `spcr_make_report()` has been disused and replaced with `output_type`.
 
 ---
 
