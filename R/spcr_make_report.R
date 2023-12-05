@@ -1,7 +1,6 @@
 #' Make the SPC Report
 #'
 #' @param data_bundle data frame. The pre-processed bundle of information (ideally made with `spcr_make_data_bundle()`)
-#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
 #' @param report_title string. The report title, printed at the top of the report
 #' @param subtitle string. The report subtitle, printed at the top of the report
 #' @param document_title string. A title for the document, as used in the HTML `<title>` tag or as the PDF document title. If left as NULL (the default), this function will use the `report_title` parameter and the current date to construct a title
@@ -24,7 +23,6 @@
 #' @export
 spcr_make_report <- function(
     data_bundle,
-    data_cutoff_dttm,
     report_title = "SPC Report",
     subtitle = NULL,
     document_title = NULL,
@@ -46,6 +44,9 @@ spcr_make_report <- function(
   ) {
   start_time <- Sys.time()
 
+  # this dttm is the same for every row in the data bundle.  Use the first line.
+  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][1]
+
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
     dplyr::select(all_of(c(
@@ -63,10 +64,11 @@ spcr_make_report <- function(
       "measure_name",
       "data_source",
       "unit",
+      "spc_chart_type",
       "aggregation"
     ))) |>
-    dplyr::mutate(spc_data = spc_data) |>
     dplyr::mutate(label_limits = annotate_limits) |>
+    dplyr::mutate(spc_data = spc_data) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
@@ -119,6 +121,7 @@ spcr_make_report <- function(
 
 
   # create the report output file name from the report title and the timestamp
+  time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
   output_file_name <- paste0(
     gsub(" ", "_", report_title), "_", time_stamp, ".html"
   )
@@ -159,7 +162,7 @@ spcr_make_report <- function(
   utils::browseURL(path)
 
   # render a pdf if needed
-  if("pdf" %in% output_type){
+  if ("pdf" %in% output_type) {
     convert_to_pdf(path)
   }
 
@@ -187,7 +190,7 @@ write_chart_to_img <- function(img_file, chart) {
     height = 500,
     units = "px",
     dpi = 72
-    )
+  )
 }
 
 
@@ -212,20 +215,22 @@ make_spc_data <- function(
 #' Create an SPC chart from an SPC data parcel and some data bundle columns
 #' @noRd
 make_spc_chart <- function(
-    ref,
-    measure_name,
-    data_source,
-    unit,
-    aggregation,
-    spc_data,
-    label_limits = TRUE) {
-  spc_data |>
+  ref,
+  measure_name,
+  data_source,
+  unit,
+  spc_chart_type,
+  aggregation,
+  label_limits,
+  spc_data
+  ) {
+  plot <- spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # default is 2.5, orig in this package was 5
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = NULL,
+      y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""),
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,
@@ -240,16 +245,27 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
+
+    # conditionally add the "hollow" final data point to rare-event charts
+    if (spc_chart_type == "t") {
+      final_x <- spc_data |> dplyr::pull("x") |> tail(1)
+      final_y <- spc_data |> dplyr::pull("y") |> tail(1)
+
+      plot <- plot +
+        ggplot2::geom_point(aes(final_x, final_y), colour = "#7B7D7D", size = 7) +
+        ggplot2::geom_point(aes(final_x, final_y), colour = "white", size = 5)
+    }
+  return(plot)
 }
 
 #' Convert HTML output to PDF
-#' @param filepath. A file path to the HTML file
+#' @param filepath. A file path to the HTML file. Should end in ".html"
 #' @noRd
 convert_to_pdf <- function(filepath) {
   usethis::ui_info("Making PDF output...")
 
   out_path <- file.path(tempdir(), basename(filepath))
-  pdf_path <- with_ext(filepath, "pdf")
+  pdf_path <- sub("html$", "pdf", filepath, ignore.case = TRUE)
   filepath |>
     readr::read_file() |>
     stringr::str_replace_all("<details>", "<details open>") |>
@@ -260,36 +276,4 @@ convert_to_pdf <- function(filepath) {
   usethis::ui_info("PDF filepath: {pdf_path}")
   usethis::ui_done("PDF output complete.")
   invisible(TRUE)
-}
-
-
-#' Copied from {xfun}
-#' https://github.com/yihui/xfun/blob/main/R/paths.R
-#'
-#' @param x A character of file paths.
-#' @param ext A vector of new extensions. It must be either of length 1, or the
-#'   same length as `x`.
-#' @param extra Extra characters to be allowed in the extensions. By default,
-#'   only alphanumeric characters are allowed (and also some special cases in
-#'   \sQuote{Details}). If other characters should be allowed, they can be
-#'   specified in a character string, e.g., `"-+!_#"`.
-#' @export
-with_ext = function(x, ext, extra = '') {
-  if (anyNA(ext)) stop("NA is not allowed in 'ext'")
-  n1 = length(x); n2 = length(ext)
-  if (n1 * n2 == 0) return(x)
-  i = !grepl('^[.]', ext) & ext != ''
-  ext[i] = paste0('.', ext[i])
-
-  if (all(ext == '')) ext = ''
-  r = sub('[$]$', '?$', reg_ext(extra))  # make extensions in 'x' optional
-  if (length(ext) == 1) return(sub(r, ext, x))
-
-  if (n1 > 1 && n1 != n2) stop("'ext' must be of the same length as 'x'")
-  mapply(sub, r, ext, x, USE.NAMES = FALSE)
-}
-
-# regex to extract base path and extension from a file path
-reg_ext  = function(extra = '') {
-  sprintf('([.](([%s[:alnum:]]+|tar[.](gz|bz2|xz)|nb[.]html)[~#]?))$', extra)
 }

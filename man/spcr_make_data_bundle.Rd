@@ -7,7 +7,8 @@
 spcr_make_data_bundle(
   measure_data = test_measure_data,
   report_config = test_report_config,
-  measure_config = test_measure_config
+  measure_config = test_measure_config,
+  data_cutoff_dttm = Sys.time()
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ spcr_make_data_bundle(
 \item{report_config}{data frame. Config information for the report}
 
 \item{measure_config}{data frame. Config information for the measures}
+
+\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
 }
 \value{
 data frame. A nested data frame containing source data for the report

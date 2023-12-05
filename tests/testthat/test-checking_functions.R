@@ -1,21 +1,57 @@
 
-# check dataset is complete
-"check dataset is complete" |>
+"check_dataset_is_complete: happy path" |>
   test_that({
-    test_measure_data_wide <- test_measure_data |>
-      check_measure_data() |>
-      dplyr::bind_rows(.id = "aggregation")
 
-    test_report_config |>
-      check_report_config() |>
-      check_dataset_is_complete(test_measure_data_wide) |>
-      expect_true()
+    # this function is called when before the aggregation is manually changed from
+    # "events" to "none", so we need to create the renaming here
+    measure_data_df <- test_measure_data |>
+      dplyr::bind_rows(.id = "aggregation") |>
+      dplyr::mutate(aggregation = dplyr::case_when(
+        aggregation == "events" ~ "none",
+        TRUE ~ aggregation
+      ))
 
-    test_report_config |>
-      check_report_config() |>
-      tibble::add_row(ref = "99", measure_name = "test", aggregation = "week") |>
-      check_dataset_is_complete(test_measure_data_wide) |>
-      expect_error("check_dataset_is_complete: Data is missing for 1 report items")
+    expect_no_error(
+      check_dataset_is_complete(
+        test_report_config,
+        measure_data_df
+      )
+    )
+  })
+
+"check_dataset_is_complete: it errors when data is missing" |>
+  test_that({
+
+    measure_data_df <- test_measure_data |>
+      dplyr::bind_rows(.id = "aggregation") |>
+      dplyr::mutate(aggregation = dplyr::case_when(
+        aggregation == "events" ~ "none",
+        TRUE ~ aggregation
+      ))
+
+    report_config_plus_one <- test_report_config |>
+      tibble::add_row(ref = 9999, measure_name = "test", aggregation = "week")
+
+    # add a single row
+    expect_error(
+      check_dataset_is_complete(
+        report_config_plus_one,
+        measure_data_df
+      ),
+      "Data is missing for 1 report items. The first is ref 9999, 'test', aggregation: week."
+    )
+
+    report_config_plus_two <- test_report_config |>
+      tibble::add_row(ref = 9998, measure_name = "test", aggregation = "none") |>
+      tibble::add_row(ref = 9999, measure_name = "test", aggregation = "week")
+
+    expect_error(
+      check_dataset_is_complete(
+        report_config_plus_two,
+        measure_data_df
+      ),
+      "Data is missing for 2 report items. The first is ref 9998, 'test', aggregation: none."
+    )
   })
 
 
@@ -172,6 +208,7 @@
       ref = c(1, 2, 3, 1, 2, 3),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
       domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
       aggregation = c("week", "week", "week", "month", "month", "month"),
       report_comment = NA
     )
@@ -192,6 +229,7 @@
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
       # domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
       aggregation = c("week", "week", "week", "month", "month", "month")
     )
 
@@ -204,7 +242,8 @@
     report_config <- tibble::tibble(
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
-      Domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      DomainWithABigD = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
       aggregation = c("week", "week", "week", "month", "month", "month")
     )
 
@@ -212,4 +251,155 @@
       check_report_config(report_config),
       "check_for_required_columns: Column 'domain' is missing from the 'report_config' data frame. Check for typos in the column names."
     )
+  })
+
+"check report config: missing optional columns does not throw an error" |>
+  test_that({
+
+    # assign numeric refs
+    report_config <- tibble::tibble(
+      ref = c(1, 2, 3, 1, 2, 3),
+      measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
+      domain = c("D1", "D1", "D1", "D2", "D2", "D2"),
+      spc_chart_type = c("xmr", "xmr", "xmr", "t", "t", "t"),
+      aggregation = c("week", "week", "week", "month", "month", "month"),
+      # report_comment = NA # this is an optional column
+    )
+
+    expect_message(
+      check_report_config(report_config),
+      "i check_for_optional_columns: Optional column 'report_comment' is missing. Adding it."
+    )
+
+  })
+
+"check measure_data: happy path" |>
+  test_that({
+
+    aggregated_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment")
+    )
+
+    events_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      event_date_or_datetime = "there will be dates here"
+    )
+
+    measure_data <- list(
+      "week" = aggregated_datasheet,
+      "month" = aggregated_datasheet,
+      "events" = events_datasheet
+    )
+
+    expect_no_error(
+      check_measure_data(measure_data)
+    )
+
+  })
+
+"check measure_data: missing columns throw an error" |>
+  test_that({
+
+    aggregated_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      # measure_name = c("M1", "M2", "M3"), # missing column
+      comment = c("comment", "comment", "comment")
+    )
+
+    events_datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      event_date_or_datetime = "there will be dates here"
+    )
+
+    measure_data <- list(
+      "week" = aggregated_datasheet,
+      "month" = aggregated_datasheet,
+      "events" = events_datasheet
+    )
+
+    expect_error(
+      check_measure_data(measure_data),
+      "check_for_required_columns: Column 'measure_name' is missing from the 'week' data frame. Check for typos in the column names."
+    )
+
+  })
+
+"check a_data: happy path" |>
+  test_that({
+
+    datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment")
+    )
+
+    a_data <- list(
+      "week" = datasheet,
+      "month" = datasheet
+    )
+
+    expect_no_error(
+      check_a_data(a_data)
+    )
+
+  })
+
+"check a_data: missing columns throw an error" |>
+  test_that({
+
+    datasheet <- tibble::tibble(
+      ref = c(1, 2, 3),
+      # measure_name = c("M1", "M2", "M3"), # missing column
+      comment = c("comment", "comment", "comment")
+    )
+
+    a_data <- list(
+      "week" = datasheet,
+      "month" = datasheet
+    )
+
+    expect_error(
+      check_a_data(a_data),
+      "check_for_required_columns: Column 'measure_name' is missing from the 'week' data frame. Check for typos in the column names."
+    )
+
+  })
+
+"check e_data: happy path" |>
+  test_that({
+
+    e_data <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      event_date_or_datetime = "there will be dates here"
+    )
+
+    expect_no_error(
+      check_e_data(e_data)
+    )
+
+  })
+
+"check e_data: missing columns throw an error" |>
+  test_that({
+
+    e_data <- tibble::tibble(
+      ref = c(1, 2, 3),
+      measure_name = c("M1", "M2", "M3"),
+      comment = c("comment", "comment", "comment"),
+      # event_date_or_datetime = "there will be dates here" # missing column
+    )
+
+    expect_error(
+      check_e_data(e_data),
+      "check_for_required_columns: Column 'event_date_or_datetime' is missing from the 'events' data frame. Check for typos in the column names."
+    )
+
   })

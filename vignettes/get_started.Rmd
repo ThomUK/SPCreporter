@@ -33,10 +33,11 @@ path_to_example_files <- system.file("example_data", package="SPCreporter")
 ```{r}
 #| eval: false
 
-# read in measure data from the two worksheets in the example file
+# read in measure data from the three worksheets in the example file
 measure_data <- list(
-  week = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "week"),
-  month = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "month")
+  week = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "week"), # weekly data
+  month = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "month"), # monthly data
+  none = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "none") # pre-calculated time-between rare events data
 )
 
 # read in the report config from example file
@@ -56,7 +57,8 @@ measure_config <- readxl::read_xlsx(file.path(path_to_example_files, "measure_co
 data_bundle <- spcr_make_data_bundle(
   measure_data = measure_data, 
   report_config = report_config,
-  measure_config = measure_config 
+  measure_config = measure_config,
+  data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59")
 )
 
 ```
@@ -71,7 +73,6 @@ spcr_make_report(
   data_bundle = data_bundle,
   report_title = "My Example Report",
   report_ref = "EG.001",
-  data_cutoff_dttm = as.POSIXct("2022-09-30 23:59:59"),
   author_name = "Anne Author",
   author_email = "a.author@example.com"
 )

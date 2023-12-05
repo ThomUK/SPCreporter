@@ -13,7 +13,9 @@ test_measure_data <- list(
   week = data_file |>
     readxl::read_xlsx(sheet = "week"),
   month = data_file |>
-    readxl::read_xlsx(sheet = "month")
+    readxl::read_xlsx(sheet = "month"),
+  events = data_file |>
+    readxl::read_xlsx(sheet = "events")
   )
 
 

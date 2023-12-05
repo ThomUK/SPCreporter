@@ -1,6 +1,6 @@
 Package: SPCreporter
 Title: Creates Metric Reports using Statistical Process Control in the NHS style
-Version: 0.1.6.9000
+Version: 0.2.0
 Authors@R: c(
     person("Tom", "Smith",, "tomsmith_uk@hotmail.com", role = c("aut", "cre")),
     person("Fran", "Barton",, "fbarton@alwaysdata.net", role = "aut"))
@@ -25,9 +25,8 @@ Imports:
     assertthat,
     beepr,
     dplyr (>= 1.1.0),
-    glue,
     ggplot2,
-    janitor,
+    glue,
     knitr,
     lubridate,
     NHSRplotthedots,
@@ -44,6 +43,7 @@ Imports:
     usethis,
     utils
 Suggests:
+    mockery,
     readxl,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

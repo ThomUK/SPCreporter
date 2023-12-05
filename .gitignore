@@ -3,7 +3,7 @@
 .Rdata
 .httr-oauth
 .DS_Store
-
 local_development_files/*
 docs
 inst/doc
+*.html

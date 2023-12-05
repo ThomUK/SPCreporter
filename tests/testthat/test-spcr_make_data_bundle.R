@@ -1,116 +1,91 @@
-# TODO: Use {withr} package to set usethis.quiet option for tests so that
-# optional columns info messages don't clutter the output
 
-
-"test checked and lengthened data step" |>
+"spcr_make_data_bundle: happy path" |>
   test_that({
-    measure_data <- test_measure_data |>
-      check_measure_data()
-    report_config <- test_report_config |>
-      check_report_config()
-    measure_config <- test_measure_config |>
-      check_measure_config()
 
-    expect_type(measure_data[[1]][["ref"]], "character")
-    expect_type(report_config[["ref"]], "character")
-    expect_type(measure_config[["ref"]], "character")
-    expect_type(measure_config[["target"]], "double")
-    expect_type(measure_config[["allowable_days_lag"]], "integer")
-
-    measure_data_long <- measure_data |>
-      purrr::map(lengthen_measure_data) |>
-      dplyr::bind_rows(.id = "aggregation")
-
-    expect_type(measure_data_long[["ref"]], "character")
-    expect_s3_class(measure_data_long[["date"]], "Date")
-
-    test_names <- c("aggregation", "ref", "measure_name",
-                    "comment", "date", "value")
-
-    expect_named(measure_data, unique(measure_data_long[["aggregation"]]))
-    expect_named(measure_data_long, test_names)
-    expect_equal(nrow(measure_data_long), 411)
+    expect_no_error(
+      spcr_make_data_bundle(
+        test_measure_data,
+        test_report_config,
+        test_measure_config
+      )
+    )
   })
 
-
-
-"test nested data step" |>
+"spcr_make_data_bundle: it accepts a custom cutoff dttm" |>
   test_that({
-    measure_data <- test_measure_data |>
-      check_measure_data()
-    report_config <- test_report_config |>
-      check_report_config()
-    measure_config <- test_measure_config |>
-      check_measure_config()
 
-
-    measure_data_long <- measure_data |>
-      purrr::map(lengthen_measure_data) |>
-      dplyr::bind_rows(.id = "aggregation")
-
-    nested_data <- report_config |>
-      dplyr::left_join(measure_config, by = c("ref", "measure_name")) |>
-      dplyr::nest_join(measure_data_long,
-                       by = c("ref", "aggregation"),
-                       name = "measure_data")
-
-    test_names <- c(union(names(report_config), names(measure_config)), "measure_data")
-
-    expect_equal(nrow(nested_data), nrow(report_config))
-    expect_type(nested_data[["measure_data"]], "list")
-    expect_type(nested_data[["measure_data"]], "list")
-    expect_s3_class(nested_data[["measure_data"]][[1]], "data.frame")
-    expect_s3_class(nested_data[["measure_data"]][[1]], "tbl_df")
-    expect_named(nested_data, test_names)
+    expect_no_error(
+      spcr_make_data_bundle(
+        test_measure_data,
+        test_report_config,
+        test_measure_config,
+        data_cutoff_dttm = as.POSIXct("2023-10-31 23:59:59")
+      )
+    )
   })
 
+"spcr_make_data_bundle: there is a helpful error if the 'events' worksheet is missing" |>
+  test_that({
 
+    measure_data_no_events <- test_measure_data
+    measure_data_no_events[["events"]] <- NULL
+
+    expect_error(
+      spcr_make_data_bundle(
+        measure_data_no_events,
+        test_report_config, # note this will still be calling for t charts
+        test_measure_config
+      ),
+      "The 'events' worksheet is missing from 'measure_data'."
+    )
+
+  })
+
+"spcr_make_data_bundle: it is possible to make a data_bundle if no event data is supplied" |>
+  test_that({
+
+    measure_data_no_events <- test_measure_data
+    measure_data_no_events[["events"]] <- tibble::tibble(
+      "ref" = numeric(),
+      "measure_name" = character(),
+      "comment" = character(),
+      "event_date_or_datetime" = date()
+    )
+
+    report_config <- test_report_config |>
+      dplyr::filter(spc_chart_type != "t") # event data needed for t charts
+
+    expect_no_error(
+      spcr_make_data_bundle(
+        measure_data_no_events,
+        report_config,
+        test_measure_config
+      )
+    )
+
+  })
 
 
 
 "test data bundle process" |>
   test_that({
-    measure_data <- test_measure_data |>
-      check_measure_data()
-    report_config <- test_report_config |>
-      check_report_config()
-    measure_config <- test_measure_config |>
-      check_measure_config()
 
-    measure_data_long <- measure_data |>
-      purrr::map(lengthen_measure_data) |>
-      dplyr::bind_rows(.id = "aggregation")
+    # stub out the Sys.time call with a repeating value
+    mockery::stub(spcr_make_data_bundle, "Sys.time", as.POSIXct("2023-12-04 21:25:25"))
 
-    data_bundle1 <- report_config |>
-      dplyr::left_join(measure_config, by = c("ref", "measure_name")) |>
-      dplyr::nest_join(measure_data_long,
-                       by = c("ref", "aggregation"),
-                       name = "measure_data") |>
-      dplyr::rowwise() |>
-      dplyr::mutate(
-        last_date = max(measure_data[["date"]], na.rm = TRUE),
-        last_data_point = dplyr::pull(dplyr::slice_max(measure_data, date), "value")) |>
-      dplyr::ungroup()
-
-    expect_s3_class(data_bundle1[["last_date"]], "Date")
-
-    data_bundle2 <- data_bundle1 |>
-      dplyr::mutate(
-        across("last_data_point", \(x) dplyr::case_when(
-          is.na(x) ~ NA_character_,
-          x == Inf ~ NA_character_,
-          unit == "%" ~ paste0(round(x * 100, 1), "%"),
-          unit == "decimal" ~ as.character(round(x, 2)),
-          TRUE ~ as.character(round(x))
-        )))
+    db <- spcr_make_data_bundle(
+      test_measure_data,
+      test_report_config,
+      test_measure_config
+    )
 
     # some spot checks on the above conversion of the last_data_point to the
     # appropriate character format
-    expect_true(ifelse(data_bundle1[["last_data_point"]][[1]] == 385 & data_bundle1[["unit"]][[1]] == "integer", data_bundle2[["last_data_point"]][[1]] == "385", FALSE))
+    expect_equal(db[["last_data_point"]][[1]], "222")
+    expect_equal(db[["last_data_point"]][[2]], "73%")
+    expect_equal(db[["last_data_point"]][[3]], "0.46")
+    expect_equal(db[["last_data_point"]][[9]], "430d")
 
-    expect_true(ifelse(round(data_bundle1[["last_data_point"]][[2]], 2) == 0.73 & data_bundle1[["unit"]][[2]] == "%", data_bundle2[["last_data_point"]][[2]] == "73%", FALSE))
-
-    expect_true(ifelse(round(data_bundle1[["last_data_point"]][[3]], 2) == 0.46 & data_bundle1[["unit"]][[3]] == "decimal", data_bundle2[["last_data_point"]][[3]] == "0.46", FALSE))
   })
 
 
@@ -121,7 +96,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config)
 
-    expect_length(out, 24)
+    expect_length(out, 26)
     expect_equal(nrow(out), nrow(test_report_config))
     expect_type(out[["ref"]], "character")
     expect_type(out[["target"]], "double")
@@ -145,7 +120,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config2)
 
-    expect_length(out2, 24)
+    expect_length(out2, 26)
     expect_equal(nrow(out2), nrow(test_report_config))
 
   })
@@ -164,8 +139,8 @@
         measure_data = test_measure_data,
         report_config = test_report_config,
         measure_config = test_measure_config2
-      )
-  # "check_measure_names: There is a name mismatch for measure ref: 5.\nThe title in the data bundle is 'Capacity'.\nThe title in the measure config is 'Capaciteeee'."
+      ),
+      "check_measure_names: There is a name mismatch for measure ref: 5. The title in the data bundle is 'Capacity'. The title in the measure config is 'Capaciteeee'."
     )
 
     # a measure_name mismatch in the measure data will throw a warning
@@ -178,8 +153,8 @@
         measure_data = test_measure_data2,
         report_config = test_report_config,
         measure_config = test_measure_config
-      )
-  # "check_measure_names: There is a name mismatch for measure ref: 11.\nThe title in the data bundle is 'widgets'.\nThe title in the measure config is 'Widgets'."
+      ),
+      "check_measure_names: There is a name mismatch for measure ref: 11. The title in the data bundle is 'widgets'. The title in the measure config is 'Widgets'."
     )
 
     # but a measure_name change in the report config should not throw an error
