@@ -6,6 +6,8 @@
 
 ## Bugfix
 
+* The report now respects the `include_dq_icon` argument to `spcr_make_report`.  When set to `FALSE`, the icons are removed from both the individual metric summary rows, and from the key at the bottom of the report.
+
 ---
 
 # SPCreporter 0.2.0
