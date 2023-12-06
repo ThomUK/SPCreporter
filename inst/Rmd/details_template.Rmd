@@ -60,9 +60,10 @@
   `r ifelse("{{assurance_type}}" %in% a_labs, paste0("![{{assurance_type}} icon](", a_paths[["{{assurance_type}}"]], ")"), "{{assurance_type}}")`
 </div>
 
-<div class="spc_logo">
-  `r if ("{{data_quality}}" != "NA") "![{{data_quality}}](../img/dq_icons/star_{{data_quality}}.png)"`
-</div>
+`r ifelse(include_dq_icon, "<div class='spc_logo'>", "")`
+`r ifelse(include_dq_icon, "![{{data_quality}}](../img/dq_icons/star_{{data_quality}}.png)", "")`
+`r ifelse(include_dq_icon, "</div>", "")`
+
 </div>
 
 </div>
