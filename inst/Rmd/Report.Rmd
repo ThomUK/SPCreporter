@@ -140,7 +140,10 @@ Used to summarise whether a measure is assured to meet a target.
 ![RND_TARG icon](../img/assurance_icons/RND_TARG.png) | The process is not assured, and will pass and fail the target based on variation in the process.
 ![FAIL_TARG icon](../img/assurance_icons/FAIL_TARG.png) | The process is not assured, and is likely to consistently fail to meet the target set.
 
-\newpage
+```{r results="asis"} 
+if(include_dq_icon){
+cat("
+\\newpage
 
 #### Data Quality Icons
 
@@ -152,7 +155,9 @@ Used to summarise the data quality status of a given measure, across the four do
 | ![B icon](../img/dq_icons/star_WGWW.png) | T | Timely & Complete             | Is the data available and up to date at the time of the submission or publication? Are all elements of required information present in the designated data source, and no elements need to be changed at a later date? |
 | ![C icon](../img/dq_icons/star_WWGW.png) | A | Audit & Accuracy              | Are processes in place for either external or internal audits of the data, and are these regularly scheduled (eg. quarterly, annually)? Are accuracy checks built into the data collection and reporting processes? |
 | ![D icon](../img/dq_icons/star_WWWG.png) | R | Robust systems & Data-capture | Are there robust systems which have been documented according to data dictionary standards for data capture such that it is at a sufficiently granular level? |
- 
+")}
+```
+
 :::
 
 </details>
