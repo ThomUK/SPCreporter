@@ -12,7 +12,7 @@ lengthen_measure_data <- function(.data) {
 
   # Should match date strings of the form 2022-06-01
   ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
-  init_cols <- c("aggregation", "ref", "measure_name", "comment")
+  init_cols <- c("aggregation", "measure_prefix", "ref", "measure_name", "comment")
 
   assertthat::assert_that(
     all(purrr::map_lgl(
