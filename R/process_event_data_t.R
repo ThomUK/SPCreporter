@@ -11,7 +11,6 @@ process_event_data_t <- function(event_data, data_cutoff_dttm){
 
   processed_data <- event_data |>
     dplyr::mutate(
-      comment = NA, # remove for clarity (a comment against an event may not refer to the whole pivoted row)
       aggregation = "none"
     ) |>
     dplyr::filter(.data$event_date_or_datetime < data_cutoff_dttm) |> # remove events after the cutoff time (should only happen for retrospective reports)

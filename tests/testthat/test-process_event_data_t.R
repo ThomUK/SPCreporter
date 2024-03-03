@@ -4,7 +4,6 @@
     e_data <- tibble::tibble(
       "ref" = c(123, 123, 123),
       "measure_name" = "Name",
-      "comment" = "comment",
       "event_date_or_datetime" = as.POSIXct(c("2020-01-01", "2020-01-03", "2020-01-13"))
     )
 
@@ -16,12 +15,11 @@
 
     expect_equal(
       names(result),
-      c("aggregation", "ref", "measure_name", "comment", "date", "value")
+      c("aggregation", "ref", "measure_name", "date", "value")
     )
 
     expect_equal(result[["date"]], as.POSIXct(c("2020-01-03 00:00:00", "2020-01-13 00:00:00", "2020-01-31 23:59:59")))
     expect_equal(result[["value"]], c(2, 10, 18))
-    expect_equal(result[["comment"]], c(NA, NA, NA)) # comments removed deliberately
 
   })
 
@@ -31,7 +29,6 @@
     events <- tibble::tibble(
       "ref" = numeric(),
       "measure_name" = character(),
-      "comment" = character(),
       "event_date_or_datetime" = lubridate::POSIXct()
    )
 
