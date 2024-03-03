@@ -37,7 +37,7 @@ path_to_example_files <- system.file("example_data", package="SPCreporter")
 measure_data <- list(
   week = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "week"), # weekly data
   month = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "month"), # monthly data
-  none = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "none") # pre-calculated time-between rare events data
+  events = readxl::read_xlsx(file.path(path_to_example_files, "data.xlsx"), sheet = "events") # an event list, to feed rare-event charts
 )
 
 # read in the report config from example file
