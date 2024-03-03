@@ -19,10 +19,11 @@ process_event_data_t <- function(event_data, data_cutoff_dttm){
 
     # add the theoretical "today" event to each group
     dplyr::group_modify(~ tibble::add_row(.x, event_date_or_datetime = data_cutoff_dttm)) |>
+
+    # calculate the time between events, in days
     dplyr::mutate(
-      time_between = .data$event_date_or_datetime - dplyr::lag(.data$event_date_or_datetime),
+      time_between = difftime(.data$event_date_or_datetime, dplyr::lag(.data$event_date_or_datetime), units = "days"),
       time_between = as.integer(.data$time_between),
-      event_date_or_datetime = as.Date(.data$event_date_or_datetime)
     ) |>
     dplyr::filter(!is.na(.data$time_between)) |>
     dplyr::ungroup() |>
