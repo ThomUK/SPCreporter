@@ -32,7 +32,7 @@ check_measure_data <- function(measure_data) {
     purrr::keep_at(allowed_names) |>
     purrr::iwalk(
       \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name", "comment"))
+        x, nm, required_columns = c("ref", "measure_name"))
     ) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
 }
@@ -88,7 +88,7 @@ check_e_data <- function(e_data) {
   e_data |>
     check_for_required_columns(
       "events",
-      required_columns = c("ref", "measure_name", "comment", "event_date_or_datetime")
+      required_columns = c("ref", "measure_name", "event_date_or_datetime")
     ) |>
     dplyr::mutate(across("ref", as.character))
 }
