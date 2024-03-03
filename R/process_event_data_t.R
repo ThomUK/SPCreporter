@@ -14,15 +14,17 @@ process_event_data_t <- function(event_data, data_cutoff_dttm){
       comment = NA, # remove for clarity (a comment against an event may not refer to the whole pivoted row)
       aggregation = "none"
     ) |>
+    dplyr::filter(.data$event_date_or_datetime < data_cutoff_dttm) |> # remove events after the cutoff time (should only happen for retrospective reports)
     dplyr::group_by(.data$ref) |>
     dplyr::arrange(.data$event_date_or_datetime) |>
 
     # add the theoretical "today" event to each group
     dplyr::group_modify(~ tibble::add_row(.x, event_date_or_datetime = data_cutoff_dttm)) |>
+
+    # calculate the time between events, in days
     dplyr::mutate(
-      time_between = .data$event_date_or_datetime - dplyr::lag(.data$event_date_or_datetime),
+      time_between = difftime(.data$event_date_or_datetime, dplyr::lag(.data$event_date_or_datetime), units = "days"),
       time_between = as.integer(.data$time_between),
-      event_date_or_datetime = as.Date(.data$event_date_or_datetime)
     ) |>
     dplyr::filter(!is.na(.data$time_between)) |>
     dplyr::ungroup() |>

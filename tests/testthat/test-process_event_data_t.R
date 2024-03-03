@@ -5,7 +5,7 @@
       "ref" = c(123, 123, 123),
       "measure_name" = "Name",
       "comment" = "comment",
-      "event_date_or_datetime" = as.Date(c("2020-01-01", "2020-01-03", "2020-01-13"))
+      "event_date_or_datetime" = as.POSIXct(c("2020-01-01", "2020-01-03", "2020-01-13"))
     )
 
     cutoff_dttm <- as.POSIXct("2020-01-31 23:59:59")
@@ -19,7 +19,7 @@
       c("aggregation", "ref", "measure_name", "comment", "date", "value")
     )
 
-    expect_equal(result[["date"]], as.Date(c("2020-01-03", "2020-01-13", "2020-01-31")))
+    expect_equal(result[["date"]], as.POSIXct(c("2020-01-03 00:00:00", "2020-01-13 00:00:00", "2020-01-31 23:59:59")))
     expect_equal(result[["value"]], c(2, 10, 18))
     expect_equal(result[["comment"]], c(NA, NA, NA)) # comments removed deliberately
 
@@ -32,8 +32,8 @@
       "ref" = numeric(),
       "measure_name" = character(),
       "comment" = character(),
-      "event_date_or_datetime" = date()
-    )
+      "event_date_or_datetime" = lubridate::POSIXct()
+   )
 
     expect_equal(
       process_event_data_t(events),

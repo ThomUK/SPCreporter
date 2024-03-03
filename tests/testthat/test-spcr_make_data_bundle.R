@@ -102,7 +102,7 @@
     expect_type(out[["target"]], "double")
     expect_type(out[["allowable_days_lag"]], "integer")
     expect_type(out[["measure_data"]], "list")
-    expect_s3_class(out[["last_date"]], "Date")
+    expect_s3_class(out[["last_date"]], "POSIXct")
     expect_type(out[["updated_to"]], "character")
     expect_type(out[["domain_heading"]], "logical")
 
