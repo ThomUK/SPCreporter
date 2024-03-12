@@ -11,9 +11,7 @@ spcr_make_data_bundle <- function(
     measure_data = test_measure_data,
     report_config = test_report_config,
     measure_config = test_measure_config,
-    data_cutoff_dttm = Sys.time()
-    ) {
-
+    data_cutoff_dttm = Sys.time()) {
   # check measure_data (list) columns and set `ref` column to character
   measure_data <- check_measure_data(measure_data)
   # check report_config columns and set `ref` column to character
@@ -28,8 +26,8 @@ spcr_make_data_bundle <- function(
   e_data <- measure_data |>
     purrr::pluck("events")
 
-  a_data <- measure_data
-  a_data[["events"]] <- NULL
+  a_data <- measure_data |>
+    purrr::discard_at("events")
 
   # a_data is closely related to the measure_data, but we use a different function to check it
   a_data <- check_a_data(a_data)
@@ -79,7 +77,6 @@ spcr_make_data_bundle <- function(
       by = c("ref", "aggregation"),
       name = "measure_data"
     ) |>
-
     # pull most recent date from each data frame in the measure_data column
     dplyr::mutate(
       data_cutoff_dttm = as.POSIXct(data_cutoff_dttm),
@@ -89,8 +86,7 @@ spcr_make_data_bundle <- function(
     dplyr::mutate(
       last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) {
         dplyr::slice_max(x, order_by = x[["date"]], n = 1)[["value"]]
-      }
-      )
+      })
     )
 
   # Check that measure data that is supposed to be integer data is supplied as
@@ -105,28 +101,34 @@ spcr_make_data_bundle <- function(
           "spcr_make_data_bundle: ",
           "Measure {y} is configured as an integer, ",
           "but has been supplied with decimal data."
-          )
         )
-      }
-    )
+      )
+    })
 
   nested_data |>
     dplyr::mutate(
-      across("improvement_direction",
-             \(x) dplyr::case_when(
-               .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
-               # a rather unlikely situation
-               .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
-               TRUE ~ x))
-      ) |>
+      across(
+        "improvement_direction",
+        \(x) dplyr::case_when(
+          .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
+          # a rather unlikely situation
+          .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
+          TRUE ~ x
+        )
+      )
+    ) |>
     dplyr::mutate(
-      across("unit",
-             \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x))
-      ) |>
+      across(
+        "unit",
+        \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x)
+      )
+    ) |>
     dplyr::mutate(
-      across("target",
-             \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x))
-      ) |>
+      across(
+        "target",
+        \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x)
+      )
+    ) |>
     dplyr::mutate(
       across("last_data_point", \(x) dplyr::case_when(
         is.na(x) ~ NA_character_,
@@ -134,18 +136,20 @@ spcr_make_data_bundle <- function(
         unit == "%" ~ paste0(round(x * 100, 1), "%"),
         unit == "decimal" ~ as.character(round(x, 2)),
         unit == "days" ~ paste0(x, "d"),
-        TRUE ~ as.character(round(x))))
-      ) |>
+        TRUE ~ as.character(round(x))
+      ))
+    ) |>
     dplyr::mutate(
       target_text = get_target_text(
         .data[["target"]],
         .data[["improvement_direction"]],
         .data[["unit"]]
-        ),
-      updated_to = get_updatedto_text(
+      ),
+      updated_to = purrr::map2_chr(
         .data[["last_date"]],
-        .data[["aggregation"]]
-        )
-      ) |>
+        .data[["aggregation"]],
+        get_updatedto_text
+      )
+    ) |>
     dplyr::mutate(domain_heading = dplyr::row_number() == 1, .by = "domain")
 }
