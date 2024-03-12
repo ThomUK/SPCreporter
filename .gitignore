@@ -7,3 +7,6 @@ local_development_files/*
 docs
 inst/doc
 *.html
+*.xlsx
+*.pdf
+.vscode
