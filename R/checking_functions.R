@@ -113,6 +113,11 @@ check_report_config <- function(report_config) {
     "ref", "measure_name", "domain", "spc_chart_type", "aggregation"
   )
 
+  assert_that(
+    !any(is.na(report_config[["aggregation"]])),
+    msg = "check_report_config: Some aggregation values are blank."
+  )
+
   optional_columns <- c("report_comment")
 
   # check required cols are present
