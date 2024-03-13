@@ -312,7 +312,7 @@ get_variation_type <- function(spc, improvement_direction) {
 #' @param cutoff_dttm POSIXct. The datetime of the data cutoff, usually the end
 #'  of the week or month.
 #'
-#' @returns logical. TRUE if the data is stale.
+#' @returns character: "stale" or "fresh"
 #' @noRd
 calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
   updated_to <- tryCatch(
@@ -336,8 +336,6 @@ calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
     msg = "calculate_stale_data: The cutoff_dttm argument must be a POSIXct."
   )
 
-  lag <- lubridate::days(lag) # convert to a period
-
-  # adjust from 00:00:00 to 23:59:59
-  (updated_to + lag + lubridate::hms("23:59:59")) < cutoff_dttm
+  lag <- lubridate::days(lag) + lubridate::hms("23:59:59") # convert to a period
+  ifelse((updated_to + lag) < cutoff_dttm, "stale", "fresh") 
 }
