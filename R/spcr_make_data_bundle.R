@@ -43,9 +43,8 @@ spcr_make_data_bundle <- function(
     dplyr::bind_rows(.id = "aggregation")
 
 
-  # create long version of the aggregated data,
-  # sorted by date (within each ref), and with
-  # the processed event data added to the end
+  # Create long version of the aggregated data, sorted by date (within each
+  # ref), and with the processed event data added to the end
   measure_data_long <- a_data_df |>
     lengthen_measure_data() |>
     dplyr::bind_rows(e_data_time_between)
@@ -55,7 +54,7 @@ spcr_make_data_bundle <- function(
 
   # Check reference numbers and measure names agree across both data frames.
   # This is to guard against typos and errors in reported figures
-  # by ensuring a typo in one place (ref or title) will raise an error.
+  # by ensuring a typo in one place (ref or title) will raise a warning.
   report_config |>
     dplyr::pull("ref") |>
     purrr::walk(\(x) check_measure_names(x, measure_data_long, measure_config))
@@ -67,9 +66,10 @@ spcr_make_data_bundle <- function(
     # use measure names from report_config not from measure_config
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
     dplyr::mutate(
-      measure_name = dplyr::case_when(
-        spc_chart_type == "t" ~ paste(measure_name, "(time-between)"),
-        TRUE ~ measure_name
+      across("measure_name",
+        \(x) if_else(
+          .data[["spc_chart_type"]] == "t", paste(x, "(time-between)"), x
+        )
       )
     ) |>
     dplyr::nest_join(
@@ -77,13 +77,11 @@ spcr_make_data_bundle <- function(
       by = c("ref", "aggregation"),
       name = "measure_data"
     ) |>
-    # pull most recent date from each data frame in the measure_data column
+    # Pull most recent date from each data frame in the measure_data column
     dplyr::mutate(
       data_cutoff_dttm = as.POSIXct(data_cutoff_dttm),
-      last_date = purrr::map_vec(.data[["measure_data"]], \(x) max(x[["date"]], na.rm = TRUE))
-    ) |>
-    # pull most recent data point from each data frame in the measure_data column
-    dplyr::mutate(
+      last_date = purrr::map_vec(.data[["measure_data"]], \(x) max(x[["date"]], na.rm = TRUE)),
+      # pull most recent data point from each df in the measure_data column
       last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) {
         dplyr::slice_max(x, order_by = x[["date"]], n = 1)[["value"]]
       })
@@ -115,21 +113,16 @@ spcr_make_data_bundle <- function(
           .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
           TRUE ~ x
         )
-      )
-    ) |>
-    dplyr::mutate(
+      ),
       across(
         "unit",
         \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x)
-      )
-    ) |>
-    dplyr::mutate(
+      ),
       across(
         "target",
         \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x)
-      )
-    ) |>
-    dplyr::mutate(
+      ),
+      across("target_set_by", \(x) if_else(is.na(x), "-", x)),
       across("last_data_point", \(x) dplyr::case_when(
         is.na(x) ~ NA_character_,
         x == Inf ~ NA_character_,
@@ -148,7 +141,12 @@ spcr_make_data_bundle <- function(
       updated_to = purrr::map2_chr(
         .data[["last_date"]],
         .data[["aggregation"]],
-        get_updatedto_text
+        get_updatedto_text # use map2_chr as this doesn't handle vectors well
+      ),
+      stale_data = calculate_stale_data(
+        .data[["updated_to"]],
+        .data[["allowable_days_lag"]],
+        data_cutoff_dttm
       )
     ) |>
     dplyr::mutate(domain_heading = dplyr::row_number() == 1, .by = "domain")
