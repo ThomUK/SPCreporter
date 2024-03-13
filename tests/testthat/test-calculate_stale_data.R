@@ -7,8 +7,8 @@
     lag <- 0
     cutoff_dttm <- as.POSIXct("2020-01-31 23:59:59")
 
-    expect_false(
-      calculate_stale_data(updated_to, lag, cutoff_dttm)
+    expect_equal(
+      calculate_stale_data(updated_to, lag, cutoff_dttm), "fresh"
     )
   })
 
@@ -65,11 +65,11 @@
     # report one month later
     cutoff_dttm <- as.POSIXct("2020-02-28 23:59:59")
 
-    expect_true(
-      calculate_stale_data(updated_to, lag, cutoff_dttm)
+    expect_equal(
+      calculate_stale_data(updated_to, lag, cutoff_dttm), "stale"
     )
 
-    expect_false(
-      calculate_stale_data(updated_to, 30, cutoff_dttm)
+    expect_equal(
+      calculate_stale_data(updated_to, 30, cutoff_dttm), "fresh"
     )
   })

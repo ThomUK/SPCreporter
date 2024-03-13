@@ -321,8 +321,8 @@ calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
   )
 
   assertthat::assert_that(
-    !is.na(updated_to),
-    inherits(updated_to, "Date"),
+    !any(is.na(updated_to)),
+    all(inherits(updated_to, "Date")),
     msg = "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
   )
 
@@ -332,10 +332,10 @@ calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
   )
 
   assertthat::assert_that(
-    inherits(cutoff_dttm, "POSIXct"),
+    all(inherits(cutoff_dttm, "POSIXct")),
     msg = "calculate_stale_data: The cutoff_dttm argument must be a POSIXct."
   )
 
   lag <- lubridate::days(lag) + lubridate::hms("23:59:59") # convert to a period
-  ifelse((updated_to + lag) < cutoff_dttm, "stale", "fresh") 
+  if_else((updated_to + lag) < cutoff_dttm, "stale", "fresh")
 }
