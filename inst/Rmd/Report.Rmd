@@ -93,11 +93,13 @@ A key explaining how to read the icons for Variation, Assurance, and Data Qualit
 
 
 ```{r map-over-data}
+
 expand_template <- \(...) knitr::knit_expand("details_template.Rmd", ...)
 knit_out_list <- data_bundle_full |>
-  pmap(expand_template, .progress = "HTML charts")
+  pmap(expand_template)
 
 knit_out <- knit_child(text = knit_out_list, quiet = TRUE)
+
 ```
 
 ::: {#main_content}

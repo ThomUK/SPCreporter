@@ -40,6 +40,8 @@ check_measure_data <- function(measure_data) {
 
 
 
+
+
 #' Check the a_data, which has been split from the incoming measure data
 #'
 #' @param a_data list. A list of data frames (in wide format).
@@ -70,6 +72,8 @@ check_a_data <- function(a_data) {
 
 
 
+
+
 #' Check the e_data (event data) and transform as needed
 #'
 #' @param e_data data frame. A data frame of event data (in long format).
@@ -92,6 +96,7 @@ check_e_data <- function(e_data) {
     ) |>
     dplyr::mutate(across("ref", as.character))
 }
+
 
 
 
@@ -128,6 +133,7 @@ check_report_config <- function(report_config) {
     dplyr::distinct() |>
     dplyr::mutate(across("ref", as.character))
 }
+
 
 
 
@@ -274,6 +280,7 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
 
 
 
+
 #' Certain variables are optional in measure_config. If supplied, we want to
 #' keep them, but if not supplied we want to add them with contents = `NA`.
 #'
@@ -334,4 +341,3 @@ check_dataset_is_complete <- function(report_config, measure_data) {
 
   invisible(TRUE)
 }
-
