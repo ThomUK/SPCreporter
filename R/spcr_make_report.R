@@ -44,8 +44,8 @@ spcr_make_report <- function(
   ) {
   start_time <- Sys.time()
 
-  # this dttm is the same for every row in the data bundle.  Use the first line.
-  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][1]
+  # This dttm is the same for every row in the data bundle. The first will do.
+  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][[1]]
 
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
@@ -84,9 +84,9 @@ spcr_make_report <- function(
     purrr::map_chr(knitr::image_uri)
 
   data_bundle_full <- data_bundle |>
-    dplyr::bind_cols(spc_data = spc_data) |>
-    dplyr::bind_cols(spc_chart_uri = spc_chart_uris) |>
     dplyr::mutate(
+      spc_data = spc_data,
+      spc_chart_uri = spc_chart_uris,
       variation_type = purrr::map2_chr(
         spc_data,
         .data[["improvement_direction"]],
@@ -96,13 +96,8 @@ spcr_make_report <- function(
         spc_data,
         .data[["improvement_direction"]],
         get_assurance_type
-      ),
-      stale_data = purrr::map2_chr(
-        .data[["updated_to"]],
-        .data[["allowable_days_lag"]],
-        \(x, y) calculate_stale_data(x, y, data_cutoff_dttm)
       )
-
+    )
 
 
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
@@ -263,9 +258,9 @@ make_spc_chart <- function(
         x = dplyr::last(spc_data[["x"]]),
         y = dplyr::last(spc_data[["y"]]),
         shape = "circle filled",
-        colour = "#7B7D7D",
-        fill = "grey95",
-        size = 4,
+        colour = "grey65", # #a6a6a6 (matches plotthedots grey)
+        fill = "grey90",   # #e5e5e5
+        size = 5,
         stroke = 2
       )
   } else {
