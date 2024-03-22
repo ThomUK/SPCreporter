@@ -96,7 +96,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config)
 
-    expect_length(out, 26)
+    expect_length(out, 27)
     expect_equal(nrow(out), nrow(test_report_config))
     expect_type(out[["ref"]], "character")
     expect_type(out[["target"]], "double")
@@ -120,7 +120,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config2)
 
-    expect_length(out2, 26)
+    expect_length(out2, 27)
     expect_equal(nrow(out2), nrow(test_report_config))
 
   })
