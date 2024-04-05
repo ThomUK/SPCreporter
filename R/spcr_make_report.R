@@ -207,6 +207,12 @@ make_spc_data <- function(
     measure_data
   ) {
   measure_data |>
+    # remove duplicate dttms (using `arrange` first in order to keep the higher
+    # "value" - which should be first anyway... This should only remove
+    # zeroes from the "value" column, not the time since last event!)
+    dplyr::arrange(desc(pick("value"))) |>
+    dplyr::distinct(pick("date"), .keep_all = TRUE) |>
+    dplyr::arrange(pick("date")) |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
       value_field = "value",
@@ -259,7 +265,7 @@ make_spc_chart <- function(
         y = dplyr::last(spc_data[["y"]]),
         shape = "circle filled",
         colour = "grey65", # #a6a6a6 (matches plotthedots grey)
-        fill = "grey90",   # #e5e5e5
+        fill = NA,   # so the PTD dot can be seen
         size = 5,
         stroke = 2
       )
