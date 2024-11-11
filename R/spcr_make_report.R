@@ -44,8 +44,8 @@ spcr_make_report <- function(
   ) {
   start_time <- Sys.time()
 
-  # this dttm is the same for every row in the data bundle.  Use the first line.
-  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][1]
+  # This dttm is the same for every row in the data bundle. The first will do.
+  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][[1]]
 
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
@@ -74,7 +74,7 @@ spcr_make_report <- function(
 
   tmp_files <- data_bundle |>
     dplyr::select(all_of(c(x = "ref", y = "aggregation"))) |>
-    purrr::pmap_chr(\(x, y) paste0("tmp_", x, "_", y, "_")) |>
+    purrr::pmap_chr(\(x, y) glue("tmp_{x}_{y}_")) |>
     tempfile(fileext = ".png")
 
   tmp_files |>
@@ -84,16 +84,20 @@ spcr_make_report <- function(
     purrr::map_chr(knitr::image_uri)
 
   data_bundle_full <- data_bundle |>
-    dplyr::mutate(spc_data = spc_data) |>
-    dplyr::mutate(spc_chart_uri = spc_chart_uris) |>
-    dplyr::rowwise() |>
     dplyr::mutate(
-      variation_type = get_variation_type(spc_data, .data[["improvement_direction"]]),
-      assurance_type = get_assurance_type(spc_data, .data[["improvement_direction"]])
-    ) |>
-    dplyr::mutate(stale_data = calculate_stale_data(.data[["updated_to"]], .data[["allowable_days_lag"]], data_cutoff_dttm)) |>
-    dplyr::ungroup()
-
+      spc_data = spc_data,
+      spc_chart_uri = spc_chart_uris,
+      variation_type = purrr::map2_chr(
+        spc_data,
+        .data[["improvement_direction"]],
+        get_variation_type
+      ),
+      assurance_type = purrr::map2_chr(
+        spc_data,
+        .data[["improvement_direction"]],
+        get_assurance_type
+      )
+    )
 
 
   time_stamp <- format.Date(Sys.time(), format = "%Y%m%d_%H%M%S")
@@ -226,7 +230,7 @@ make_spc_chart <- function(
   ) {
   plot <- spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
-      point_size = 4, # default is 2.5, orig in this package was 5
+      point_size = 4, # PTD default is 2.5
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
@@ -246,16 +250,22 @@ make_spc_chart <- function(
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
 
-    # conditionally add the "hollow" final data point to rare-event charts
-    if (spc_chart_type == "t") {
-      final_x <- spc_data |> dplyr::pull("x") |> tail(1)
-      final_y <- spc_data |> dplyr::pull("y") |> tail(1)
-
-      plot <- plot +
-        ggplot2::geom_point(aes(final_x, final_y), colour = "#7B7D7D", size = 7) +
-        ggplot2::geom_point(aes(final_x, final_y), colour = "white", size = 5)
-    }
-  return(plot)
+  # conditionally add the "hollow" final data point to rare-event charts
+  if (spc_chart_type == "t") {
+    plot +
+      ggplot2::annotate(
+        geom = "point",
+        x = dplyr::last(spc_data[["x"]]),
+        y = dplyr::last(spc_data[["y"]]),
+        shape = "circle filled",
+        colour = "grey65", # #a6a6a6 (matches plotthedots grey)
+        fill = "grey90",   # #e5e5e5
+        size = 5,
+        stroke = 2
+      )
+  } else {
+    plot
+  }
 }
 
 #' Convert HTML output to PDF

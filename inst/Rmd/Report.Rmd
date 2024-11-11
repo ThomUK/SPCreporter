@@ -30,22 +30,28 @@ cols_header_text <- paste0(
   <div class='spc_logo'>Assur-ance</div>",
   if (include_dq_icon) "<div class='spc_logo'>Data Quality</div>",
   "</div>
-  </div>")
+  </div>"
+)
+
+library(glue)
+library(knitr)
+library(rlang)
+library(purrr)
 
 ```
 
 ```{r fun}
-v_icon_path <- function(x) glue::glue("../img/variation_icons/{x}.png")
+v_icon_path <- \(x) glue("../img/variation_icons/{x}.png")
 v_labs <- c(paste(paste("SC", rep(c("HI", "LO"), 3), sep = "_"),
   c("CON", "IMP", "NEUTRAL"),
   sep = "_"
 ), "CC")
 v_paths <- purrr::map(v_labs, v_icon_path) |>
-  purrr::set_names(v_labs)
-a_icon_path <- function(x) glue::glue("../img/assurance_icons/{x}.png")
+  rlang::set_names(v_labs)
+a_icon_path <- \(x) glue("../img/assurance_icons/{x}.png")
 a_labs <- paste0(c("PASS", "RND", "FAIL"), "_TARG")
 a_paths <- purrr::map(a_labs, a_icon_path) |>
-  purrr::set_names(a_labs)
+  rlang::set_names(a_labs)
 ```
 
 <style type="text/css">
@@ -87,10 +93,13 @@ A key explaining how to read the icons for Variation, Assurance, and Data Qualit
 
 
 ```{r map-over-data}
-knit_out_list <- data_bundle_full |>
-  purrr::pmap(knitr::knit_expand, file = "details_template.Rmd", .progress = "HTML charts")
 
-knit_out <- knitr::knit_child(text = knit_out_list, quiet = TRUE)
+expand_template <- \(...) knitr::knit_expand("details_template.Rmd", ...)
+knit_out_list <- data_bundle_full |>
+  pmap(expand_template)
+
+knit_out <- knit_child(text = knit_out_list, quiet = TRUE)
+
 ```
 
 ::: {#main_content}

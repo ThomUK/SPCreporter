@@ -2,10 +2,12 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
-
 ^local_development_files/
 ^data-raw$
+^\.vscode$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^\.github$
+.*\.xlsx$
+.*\.code-workspace$
