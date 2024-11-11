@@ -1,11 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.0.7
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   get_started: get_started.html
   multiple_reports: multiple_reports.html
-last_built: 2024-03-22T19:56Z
+last_built: 2024-11-11T14:58Z
 urls:
   reference: https://thomuk.github.io/SPCreporter/reference
   article: https://thomuk.github.io/SPCreporter/articles
-
