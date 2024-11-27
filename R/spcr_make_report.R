@@ -207,6 +207,8 @@ make_spc_data <- function(
     measure_data
   ) {
   measure_data |>
+    # remove duplicate dttms using `slice_max` to keep just one row per date
+    dplyr::slice_max(value, n = 1, with_ties = FALSE, by = "date") |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
       value_field = "value",
@@ -259,7 +261,7 @@ make_spc_chart <- function(
         y = dplyr::last(spc_data[["y"]]),
         shape = "circle filled",
         colour = "grey65", # #a6a6a6 (matches plotthedots grey)
-        fill = "grey90",   # #e5e5e5
+        fill = NA,   # so the PTD dot can be seen
         size = 5,
         stroke = 2
       )
