@@ -207,12 +207,8 @@ make_spc_data <- function(
     measure_data
   ) {
   measure_data |>
-    # remove duplicate dttms (using `arrange` first in order to keep the higher
-    # "value" - which should be first anyway... This should only remove
-    # zeroes from the "value" column, not the time since last event!)
-    dplyr::arrange(desc(pick("value"))) |>
-    dplyr::distinct(pick("date"), .keep_all = TRUE) |>
-    dplyr::arrange(pick("date")) |>
+    # remove duplicate dttms using `slice_max` to keep just one row per date
+    dplyr::slice_max(value, n = 1, with_ties = FALSE, by = "date") |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
       value_field = "value",
