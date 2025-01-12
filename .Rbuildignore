@@ -11,3 +11,4 @@
 ^\.github$
 .*\.xlsx$
 .*\.code-workspace$
+^\.lintr$

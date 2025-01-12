@@ -2,23 +2,31 @@
 #'
 #' @param .data data frame. Data frame in wide format
 #'
-#' @returns data frame. Data frame in long format
+#' @returns A data frame in long format
 #' @noRd
 lengthen_measure_data <- function(.data) {
-  assertthat::assert_that(
+  assert_that(
     inherits(.data, "data.frame"),
     msg = "lengthen_measure_data: The data must be a data frame."
   )
 
   # Should match date strings of the form 2022-06-01
-  ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
-  init_cols <- c("aggregation", "measure_prefix", "ref", "measure_name", "comment")
+  ymd_rx <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
+  init_cols <- c(
+    "aggregation",
+    "measure_prefix",
+    "ref",
+    "measure_name",
+    "comment"
+  )
 
-  assertthat::assert_that(
+  assert_that(
     all(purrr::map_lgl(
-      names(.data), \(x) x %in% init_cols |
+      names(.data), \(x) {
+        x %in% init_cols |
         stringr::str_detect(x, "^[0-9]{5}$") |
-        stringr::str_detect(x, ymd_regex)
+        stringr::str_detect(x, ymd_rx)
+      }
     )),
     msg = usethis::ui_stop(
       paste(
@@ -27,27 +35,24 @@ lengthen_measure_data <- function(.data) {
         stringr::str_flatten_comma(paste0("'", init_cols, "'")),
         "and valid date formats.",
         "One invalid column name found is:",
-        head(
-          stringr::str_subset(
-            setdiff(names(.data), init_cols),
-            stringr::str_glue("^[0-9]{5}$|{ymd_regex}"),
-            negate = TRUE
-          ),
-          1
-        ),
+        head(stringr::str_subset(
+          setdiff(names(.data), init_cols), glue("^[0-9]{5}$|{ymd_rx}"), TRUE
+        ), 1),
         collapse = " "
       )
     )
   )
 
-  # pivot incoming measure_data from wide to long,
-  # and convert date column to date format
+  # Pivot incoming measure_data from wide to long, and convert date column
+  # to date format.
   .data |>
-    tidyr::pivot_longer(!any_of(init_cols), names_to = "date", values_drop_na = TRUE) |>
+    tidyr::pivot_longer(
+      !any_of(init_cols), names_to = "date", values_drop_na = TRUE
+    ) |>
     dplyr::mutate(across("date", quietly_convert_date)) |>
     # Sort data from oldest to latest by measure - it should already be sorted
-    # (pivot_longer draws from L-R wide data)... but let's make sure
-    dplyr::arrange(across(all_of(c("ref", "date"))))
+    # (pivot_longer draws from L-R wide data)... but let's make sure.
+    dplyr::arrange(pick(c("ref", "date")))
 }
 
 
@@ -64,13 +69,13 @@ lengthen_measure_data <- function(.data) {
 #' @returns A character string suitable for inclusion in the report
 #' @noRd
 get_target_text <- function(target, improvement_direction, unit) {
-  imp_dir <- tolower(improvement_direction)
+  imp_dir <- tolower(improvement_direction) # nolint
 
-  string <- dplyr::case_when(
+  string <- dplyr::case_when( # nolint
     is.na(target) ~ "-",
     imp_dir == "neutral" ~ "Neutral",
     unit == "%" ~ paste0(round(target * 100, 1), "%"),
-    TRUE ~ as.character(round(target, 2)) # covers decimal and integer
+    .default = as.character(round(target, 2)) # covers decimal and integer
   )
 
   dplyr::case_when(
@@ -80,7 +85,7 @@ get_target_text <- function(target, improvement_direction, unit) {
     !is.na(target) & imp_dir == "decrease" ~ paste0("\u2264 ", string),
     # \u2265 is: ≥
     !is.na(target) & imp_dir == "increase" ~ paste0("\u2265 ", string),
-    TRUE ~ string
+    .default = string
   )
 }
 
@@ -96,7 +101,6 @@ get_target_text <- function(target, improvement_direction, unit) {
 #' @param aggregation string. e.g. "month"
 #'
 #' @returns A date in "%d-%b-%Y" (day-month-year) format
-#'
 #' @noRd
 get_updatedto_text <- function(last_date, aggregation) {
   assert_that(
@@ -108,7 +112,7 @@ get_updatedto_text <- function(last_date, aggregation) {
     msg = "get_updatedto_text: Multiple values for `aggregation` provided"
   )
 
-  last_date <- as.Date(last_date) # handles dttm being passed in by mistake
+  last_date <- as.Date(last_date) # Handles dttm being passed in by mistake
 
   # Rename "calendar_year" and "none" aggregations to work with ceiling_date()
   agg <- dplyr::case_when(
@@ -118,7 +122,7 @@ get_updatedto_text <- function(last_date, aggregation) {
     .default = aggregation
   )
 
-  # allowed values
+  # Allowed values
   assert_that(
     all(agg %in% c("day", "week", "month", "year")),
     msg = glue("get_updatedto_text: invalid aggregation ({agg}) provided")
@@ -141,7 +145,7 @@ get_updatedto_text <- function(last_date, aggregation) {
 
 # This function generates warnings due to the way if_else works with dates
 # We will wrap it in a quietly adverb to handle the warnings, which are not
-# warnings we need to worry about
+# warnings we need to worry about.
 convert_date <- function(x) {
   ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
   if_else(
@@ -158,9 +162,10 @@ quietly_convert_date <- function(...) {
 
 
 #' Parse rebase dates
+#'
 #' Parse dates from the config spreadsheet into a format suitable for use in
-#' the SPC calculation function. Only needed as a helper function for
-#' `align_rebase_dates()`
+#'  the SPC calculation function. Only needed as a helper function for
+#'  `align_rebase_dates()`
 #'
 #' @param input character. A vector of length 1, containing quoted dates in ymd
 #' format, separated with commas eg '"2020-01-01", "2020-03-05"'
@@ -171,14 +176,14 @@ parse_rebase_dates <- function(input) {
   if (is.na(input)) {
     NULL
   } else {
-    # parse into individual character strings
+    # Parse into individual character strings
     vector <- input |>
       stringr::str_split_1("\\s*,\\s*") |>
-      stringr::str_remove_all("\\\"") |> # remove internal quotes
-      stringr::str_trim() # trim white space
+      stringr::str_remove_all("\\\"") |> # Remove internal quotes
+      stringr::str_trim() # Trim white space
 
-    # wrap the date parsing in tryCatch() to stop()
-    # if excel dates are not perfectly formed.
+    # Wrap the date parsing in tryCatch() to stop() if excel dates are not
+    # properly formed.
     tryCatch(
       lubridate::ymd(vector),
       error = function(c) stop("error in parse_rebase_dates: ", c),
@@ -235,10 +240,10 @@ align_rebase_dates <- function(input, measure_data) {
 #' @returns string. Name of the assurance type
 #' @noRd
 get_assurance_type <- function(spc, improvement_direction) {
-  imp_dir <- tolower(improvement_direction)
-  upl <- spc[["upl"]][1]
-  lpl <- spc[["lpl"]][1]
-  target <- spc[["target"]][1]
+  imp_dir <- tolower(improvement_direction) # nolint
+  upl <- spc[["upl"]][1] # nolint
+  lpl <- spc[["lpl"]][1] # nolint
+  target <- spc[["target"]][1] # nolint
 
   a <- dplyr::case_when(
     imp_dir == "neutral" ~ "Neutral",
@@ -248,7 +253,7 @@ get_assurance_type <- function(spc, improvement_direction) {
     upl < target & imp_dir == "decrease" ~ "PASS_TARG",
     lpl > target & imp_dir == "decrease" ~ "FAIL_TARG",
     upl < target & imp_dir == "increase" ~ "FAIL_TARG",
-    TRUE ~ ""
+    .default = ""
   )
 
   if (a == "") {
@@ -265,15 +270,13 @@ get_assurance_type <- function(spc, improvement_direction) {
 #' @param spc data frame. As returned from the {NHSRplotthedots} SPC package
 #' @param improvement_direction string. "Increase", "Decrease", or "Neutral"
 #'
-#' @return string. Name of the variation type
+#' @returns string. Name of the variation type
 #' @noRd
 #'
 get_variation_type <- function(spc, improvement_direction) {
-  vari <- tail(spc[["point_type"]], 1)
-  relative_to_mean <- tail(spc[["relative_to_mean"]], 1)
-  # need to provide a default value so the case_when works
-  if (is.null(relative_to_mean)) relative_to_mean <- 0
-  imp_dir <- tolower(improvement_direction)
+  vari <- tail(spc[["point_type"]], 1) # nolint
+  relative_to_mean <- tail(spc[["relative_to_mean"]], 1) %||% 0 # nolint
+  imp_dir <- tolower(improvement_direction) # nolint
 
   v <- dplyr::case_when(
     vari == "common_cause" ~ "CC",
@@ -282,10 +285,10 @@ get_variation_type <- function(spc, improvement_direction) {
     vari == "special_cause_concern" & imp_dir == "increase" ~ "SC_LO_CON",
     vari == "special_cause_concern" & imp_dir == "decrease" ~ "SC_HI_CON",
     vari == "special_cause_neutral" & relative_to_mean == -1 ~ "SC_LO_NEUTRAL",
-    vari == "special_cause_neutral" & relative_to_mean %in% c(1, 0) ~ "SC_HI_NEUTRAL",
+    vari == "special_cause_neutral" & relative_to_mean %in% c(1, 0) ~ "SC_HI_NEUTRAL", # nolint
     vari == "special_cause_neutral_low" ~ "SC_LO_NEUTRAL",
     vari == "special_cause_neutral_high" ~ "SC_HI_NEUTRAL",
-    TRUE ~ ""
+    .default = ""
   )
 
   if (v == "") {
@@ -317,25 +320,33 @@ get_variation_type <- function(spc, improvement_direction) {
 calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
   updated_to <- tryCatch(
     lubridate::dmy(updated_to),
-    warning = \(w) "calculate_stale_data: The updated_to date is not in the required '%d-%b-%Y' format."
+    warning = \(w) {
+      paste0(
+        "calculate_stale_data: The updated_to date is not in the required ",
+        "'%d-%b-%Y' format."
+      )
+    }
   )
 
-  assertthat::assert_that(
+  assert_that(
     !any(is.na(updated_to)),
     all(inherits(updated_to, "Date")),
-    msg = "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
+    msg = paste0(
+      "calculate_stale_data: Unable to convert the updated_to argument ",
+      "text to a valid date."
+    )
   )
 
-  assertthat::assert_that(
+  assert_that(
     all(lag %% 1 == 0),
     msg = "calculate_stale_data: The lag argument must be an integer."
   )
 
-  assertthat::assert_that(
+  assert_that(
     all(inherits(cutoff_dttm, "POSIXct")),
     msg = "calculate_stale_data: The cutoff_dttm argument must be a POSIXct."
   )
 
-  lag <- lubridate::days(lag) + lubridate::hms("23:59:59") # convert to a period
+  lag <- days(lag) + lubridate::hms("23:59:59") # Convert to a period
   if_else((updated_to + lag) < cutoff_dttm, "stale", "fresh")
 }

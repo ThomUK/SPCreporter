@@ -3,53 +3,57 @@
 #' @param measure_data list. List containing data frames of data in wide format
 #' @param report_config data frame. Config information for the report
 #' @param measure_config data frame. Config information for the measures
-#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
+#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last
+#'  date-time for data in the report eg. month-end)
 #'
-#' @returns data frame. A nested data frame containing source data for the report
+#' @returns data frame. A nested data frame containing source data for the
+#'  report
 #' @export
 spcr_make_data_bundle <- function(
     measure_data = test_measure_data,
     report_config = test_report_config,
     measure_config = test_measure_config,
     data_cutoff_dttm = Sys.time()) {
-  # check measure_data (list) columns and set `ref` column to character
+  # Check measure_data (list) columns and set `ref` column to character
   measure_data <- check_measure_data(measure_data)
-  # check report_config columns and set `ref` column to character
+  # Check report_config columns and set `ref` column to character
   report_config <- check_report_config(report_config)
-  # check measure_config columns and set `ref` column to character
+  # Check measure_config columns and set `ref` column to character
   measure_config <- check_measure_config(measure_config)
 
-  # measure data can contain two types of worksheet
-  # 1. a wide-format sheet containing aggregated counts, with dated columns (a_data)
-  # 2. a long-format sheet containing event-list data (e_data).
-  # separate them into a_data and e_data
+  # Measure data can contain two types of worksheet:
+  #   1. a wide-format sheet containing aggregated counts, with dated columns
+  #   (a_data)
+  #   2. a long-format sheet containing event-list data (e_data).
+  # Separate them into a_data and e_data:
   e_data <- measure_data |>
     purrr::pluck("events")
 
   a_data <- measure_data |>
     purrr::discard_at("events")
 
-  # a_data is closely related to the measure_data, but we use a different function to check it
+  # a_data is closely related to the measure_data, but we use a different
+  # function to check it.
   a_data <- check_a_data(a_data)
 
-  # check event_data columns and set `ref` column to character
+  # Check event_data columns and set `ref` column to character
   e_data <- check_e_data(e_data)
 
-  # process event data into time-between data
+  # Process event data into time-between data
   e_data_time_between <- process_event_data_t(e_data, data_cutoff_dttm)
 
-  # reduce measure_data list to a single data frame
+  # Reduce measure_data list to a single data frame
   a_data_df <- a_data |>
     dplyr::bind_rows(.id = "aggregation")
 
 
   # Create long version of the aggregated data, sorted by date (within each
-  # ref), and with the processed event data added to the end
+  # ref), and with the processed event data added to the end.
   measure_data_long <- a_data_df |>
     lengthen_measure_data() |>
     dplyr::bind_rows(e_data_time_between)
 
-  # check all required data is supplied
+  # Check all required data is supplied
   check_dataset_is_complete(report_config, measure_data_long)
 
   # Check reference numbers and measure names agree across both data frames.
@@ -61,17 +65,13 @@ spcr_make_data_bundle <- function(
 
   # measure_data in long format is joined on to the config files as a nested df
   # column. Then we mutate the data frame row by row, adding new variables and
-  # tidying up / formatting variables ready for reporting
+  # tidying up / formatting variables ready for reporting.
   nested_data <- report_config |>
-    # use measure names from report_config not from measure_config
+    # Use measure names from report_config not from measure_config
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
-    dplyr::mutate(
-      across("measure_name",
-        \(x) if_else(
-          .data[["spc_chart_type"]] == "t", paste(x, "(time-between)"), x
-        )
-      )
-    ) |>
+    dplyr::mutate(across("measure_name", \(x) {
+      if_else(.data[["spc_chart_type"]] == "t", paste(x, "(time-between)"), x)
+    })) |>
     dplyr::nest_join(
       measure_data_long,
       by = c("ref", "aggregation"),
@@ -80,57 +80,55 @@ spcr_make_data_bundle <- function(
     # Pull most recent date from each data frame in the measure_data column
     dplyr::mutate(
       data_cutoff_dttm = as.POSIXct(data_cutoff_dttm),
-      last_date = purrr::map_vec(.data[["measure_data"]], \(x) max(x[["date"]], na.rm = TRUE)),
-      # pull most recent data point from each df in the measure_data column
+      last_date = purrr::map_vec(.data[["measure_data"]], \(x) {
+        max(x[["date"]], na.rm = TRUE)
+      }),
+      # Pull most recent data point from each df in the measure_data column
       last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) {
         dplyr::slice_max(x, order_by = x[["date"]], n = 1)[["value"]]
       })
     )
 
   # Check that measure data that is supposed to be integer data is supplied as
-  # such, or raise a warning message
-  nested_data |>
-    dplyr::filter(if_any("unit", \(x) x == "integer")) |>
-    tidyr::hoist("measure_data", "value") |>
-    dplyr::select(all_of(c(x = "value", y = "ref"))) |>
-    purrr::pwalk(\(x, y) if (any(round(x) != x)) {
-      warning(
-        glue(
-          "spcr_make_data_bundle: ",
-          "Measure {y} is configured as an integer, ",
-          "but has been supplied with decimal data."
-        )
-      )
-    })
+  # such, or raise a warning message.
+  if (any(nested_data[["unit"]] == "integer")) {
+    nested_data |>
+      dplyr::filter(if_any("unit", \(x) x == "integer")) |>
+      tidyr::hoist("measure_data", "value") |>
+      dplyr::select(c(x = "value", y = "ref")) |>
+      purrr::pwalk(\(x, y) {
+        if (any(round(x) != x)) {
+          warning(glue(
+            "spcr_make_data_bundle: Measure {y} is configured as an integer, ",
+            "but has been supplied with decimal data."
+          ))
+        }
+      })
+  }
 
   nested_data |>
     dplyr::mutate(
-      across(
-        "improvement_direction",
-        \(x) dplyr::case_when(
+      across("improvement_direction", \(x) {
+        dplyr::case_when(
           .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
-          # a rather unlikely situation
+          # A rather unlikely situation
           .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
-          TRUE ~ x
+          .default = x
         )
-      ),
-      across(
-        "unit",
-        \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x)
-      ),
-      across(
-        "target",
-        \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x)
-      ),
+      }),
+      across("unit", \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x)),
+      across("target", \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x)),
       across("target_set_by", \(x) if_else(is.na(x), "-", x)),
-      across("last_data_point", \(x) dplyr::case_when(
-        is.na(x) ~ NA_character_,
-        x == Inf ~ NA_character_,
-        unit == "%" ~ paste0(round(x * 100, 1), "%"),
-        unit == "decimal" ~ as.character(round(x, 2)),
-        unit == "days" ~ paste0(x, "d"),
-        TRUE ~ as.character(round(x))
-      ))
+      across("last_data_point", \(x) {
+        dplyr::case_when(
+          is.na(x) ~ NA_character_,
+          x == Inf ~ NA_character_,
+          unit == "%" ~ paste0(round(x * 100, 1), "%"),
+          unit == "decimal" ~ as.character(round(x, 2)),
+          unit == "days" ~ paste0(x, "d"),
+          .default = as.character(round(x))
+        )
+      })
     ) |>
     dplyr::mutate(
       target_text = get_target_text(
@@ -141,7 +139,7 @@ spcr_make_data_bundle <- function(
       updated_to = purrr::map2_chr(
         .data[["last_date"]],
         .data[["aggregation"]],
-        get_updatedto_text # use map2_chr as this doesn't handle vectors well
+        get_updatedto_text # Use map2_chr as this doesn't handle vectors well
       ),
       stale_data = calculate_stale_data(
         .data[["updated_to"]],

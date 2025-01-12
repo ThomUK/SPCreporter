@@ -18,13 +18,16 @@
     lag <- 0
     cutoff_dttm <- as.POSIXct("2020-01-31 23:59:59")
 
-    # introduce the error
+    # Introduce the error
     updated_to <- as.POSIXct("2020-01-31")
 
-    # this will generate a warning message due to the incorrect date format
+    # This will generate a warning message due to the incorrect date format
     expect_error(
       calculate_stale_data(updated_to, lag, cutoff_dttm),
-      "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
+      paste0(
+        "calculate_stale_data: Unable to convert the updated_to ",
+        "argument text to a valid date."
+      )
     )
   })
 
@@ -32,7 +35,7 @@
   test_that({
 
     updated_to <- "31-Jan-2020"
-    # introduce an error
+    # Introduce an error
     lag <- 0.1
     cutoff_dttm <- as.POSIXct("2020-01-31 23:59:59")
 
@@ -48,7 +51,7 @@
     updated_to <- "31-Jan-2020"
     lag <- 0
     cutoff_dttm <- as.POSIXct("2020-01-31 23:59:59")
-    # introduce an error
+    # Introduce an error
     cutoff_dttm <- as.Date(cutoff_dttm)
 
     expect_error(
@@ -62,7 +65,7 @@
 
     updated_to <- "31-Jan-2020"
     lag <- 0
-    # report one month later
+    # Report one month later
     cutoff_dttm <- as.POSIXct("2020-02-28 23:59:59")
 
     expect_equal(

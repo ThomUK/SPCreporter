@@ -2,13 +2,13 @@
 "check_dataset_is_complete: happy path" |>
   test_that({
 
-    # this function is called when before the aggregation is manually changed from
-    # "events" to "none", so we need to create the renaming here
+    # This function is called when before the aggregation is manually changed
+    # from "events" to "none", so we need to create the renaming here.
     measure_data_df <- test_measure_data |>
       dplyr::bind_rows(.id = "aggregation") |>
       dplyr::mutate(aggregation = dplyr::case_when(
         aggregation == "events" ~ "none",
-        TRUE ~ aggregation
+        .default = aggregation
       ))
 
     expect_no_error(
@@ -26,7 +26,7 @@
       dplyr::bind_rows(.id = "aggregation") |>
       dplyr::mutate(aggregation = dplyr::case_when(
         aggregation == "events" ~ "none",
-        TRUE ~ aggregation
+        .default = aggregation
       ))
 
     report_config_plus_one <- test_report_config |>
@@ -38,19 +38,26 @@
         report_config_plus_one,
         measure_data_df
       ),
-      "Data is missing for 1 report items. The first is ref 9999, 'test', aggregation: week."
+      paste0(
+        "check_dataset_is_complete: ",
+        "Data is missing for 1 report items. The first is ref 9999, 'test', ",
+        "aggregation: week"
+      )
     )
 
     report_config_plus_two <- test_report_config |>
-      tibble::add_row(ref = 9998, measure_name = "test", aggregation = "none") |>
-      tibble::add_row(ref = 9999, measure_name = "test", aggregation = "week")
+      tibble::add_row(ref = 998, measure_name = "test", aggregation = "none") |>
+      tibble::add_row(ref = 999, measure_name = "test", aggregation = "week")
 
     expect_error(
       check_dataset_is_complete(
         report_config_plus_two,
         measure_data_df
       ),
-      "Data is missing for 2 report items. The first is ref 9998, 'test', aggregation: none."
+      paste0(
+        "Data is missing for 2 report items. The first is ref 998, 'test', ",
+        "aggregation: none"
+      )
     )
   })
 
@@ -59,7 +66,7 @@
 # check measure config
 "check measure config: coerces refs to character vectors" |>
   test_that({
-    # create the error by assigning numeric refs
+    # Create the error by assigning numeric refs
     measure_config <- tibble::tibble(
       ref = c(1, 2, 3),
       measure_name = c("M1", "M2", "M3"),
@@ -87,10 +94,10 @@
     )
   })
 
-"check measure config: errors helpfully when column names are missing or mis-spelled" |>
+"check measure config: errors helpfully when column names are missing or mis-spelled" |> # nolint
   test_that({
 
-    # create the error by omitting a required column (unit)
+    # Create the error by omitting a required column (unit)
     measure_config <- tibble::tibble(
       ref = c("1", "2", "3"),
       measure_name = c("M1", "M2", "M3"),
@@ -109,10 +116,13 @@
 
     expect_error(
       check_measure_config(measure_config),
-      "check_for_required_columns: Column 'unit' is missing from the 'measure_config' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'unit' is missing from the ",
+        "'measure_config' data frame. Check for typos in the column names."
+      )
     )
 
-    # error persists when the column is mis-spelled
+    # Error persists when the column is mis-spelled
     measure_config <- tibble::tibble(
       ref = c("1", "2", "3"),
       measure_name = c("M1", "M2", "M3"),
@@ -131,14 +141,17 @@
 
     expect_error(
       check_measure_config(measure_config),
-      "check_for_required_columns: Column 'unit' is missing from the 'measure_config' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'unit' is missing from the ",
+        "'measure_config' data frame. Check for typos in the column names."
+      )
     )
   })
 
 
 
 
-# check measure names
+# Check measure names
 "check measure names: happy path" |>
   test_that({
 
@@ -199,7 +212,7 @@
 
 
 
-# check report config
+# Check report config
 "check report config: coerces refs to character vectors" |>
   test_that({
 
@@ -221,10 +234,10 @@
     )
   })
 
-"check report config: errors helpfully when column names are missing or mis-spelled" |>
+"check report config: errors helpfully when column names are missing or mis-spelled" |> # nolint
   test_that({
 
-    # create the error by omitting a required column ('domain')
+    # Create the error by omitting a required column ('domain')
     report_config <- tibble::tibble(
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
@@ -235,10 +248,13 @@
 
     expect_error(
       check_report_config(report_config),
-      "check_for_required_columns: Column 'domain' is missing from the 'report_config' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'domain' is missing from the ",
+        "'report_config' data frame. Check for typos in the column names."
+      )
     )
 
-    # error persists when the column is mis-spelled
+    # Error persists when the column is mis-spelled
     report_config <- tibble::tibble(
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
@@ -249,14 +265,17 @@
 
     expect_error(
       check_report_config(report_config),
-      "check_for_required_columns: Column 'domain' is missing from the 'report_config' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'domain' is missing from the ",
+        "'report_config' data frame. Check for typos in the column names."
+      )
     )
   })
 
 "check report config: missing optional columns does not throw an error" |>
   test_that({
 
-    # assign numeric refs
+    # Assign numeric refs
     report_config <- tibble::tibble(
       ref = c(1, 2, 3, 1, 2, 3),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
@@ -268,7 +287,10 @@
 
     expect_message(
       check_report_config(report_config),
-      "i check_for_optional_columns: Optional column 'report_comment' is missing. Adding it."
+      paste0(
+        "i check_for_optional_columns: Optional column 'report_comment' ",
+        "is missing. Adding it."
+      )
     )
 
   })
@@ -306,7 +328,7 @@
 
     aggregated_datasheet <- tibble::tibble(
       ref = c(1, 2, 3),
-      # measure_name = c("M1", "M2", "M3"), # missing column
+      # measure_name = c("M1", "M2", "M3"), # Missing column
       comment = c("comment", "comment", "comment")
     )
 
@@ -325,7 +347,10 @@
 
     expect_error(
       check_measure_data(measure_data),
-      "check_for_required_columns: Column 'measure_name' is missing from the 'week' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'measure_name' is missing ",
+        "from the 'week' data frame. Check for typos in the column names."
+      )
     )
 
   })
@@ -355,7 +380,7 @@
 
     datasheet <- tibble::tibble(
       ref = c(1, 2, 3),
-      # measure_name = c("M1", "M2", "M3"), # missing column
+      # measure_name = c("M1", "M2", "M3"), # Missing column
       comment = c("comment", "comment", "comment")
     )
 
@@ -366,7 +391,10 @@
 
     expect_error(
       check_a_data(a_data),
-      "check_for_required_columns: Column 'measure_name' is missing from the 'week' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'measure_name' is missing ",
+        "from the 'week' data frame. Check for typos in the column names."
+      )
     )
 
   })
@@ -394,12 +422,16 @@
       ref = c(1, 2, 3),
       measure_name = c("M1", "M2", "M3"),
       comment = c("comment", "comment", "comment"),
-      # event_date_or_datetime = "there will be dates here" # missing column
+      # event_date_or_datetime = "there will be dates here" # Missing column
     )
 
     expect_error(
       check_e_data(e_data),
-      "check_for_required_columns: Column 'event_date_or_datetime' is missing from the 'events' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'event_date_or_datetime' ",
+        "is missing from the 'events' data frame. Check for typos in the ",
+        "column names."
+      )
     )
 
   })

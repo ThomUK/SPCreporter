@@ -1,18 +1,19 @@
 #' Check the incoming measure data and transform as needed
 #'
-#' @param measure_data list. A list of data frames containing a combination of aggregated data and event data
+#' @param measure_data list. A list of data frames containing a combination of
+#'  aggregated data and event data
 #'
 #' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
 check_measure_data <- function(measure_data) {
-  assertthat::assert_that(
+  assert_that(
     inherits(measure_data, "list"),
     msg = "check_measure_data: The data must be a list."
   )
 
   measure_data <- rlang::set_names(measure_data, tolower)
 
-  assertthat::assert_that(
+  assert_that(
     any(c("week", "month") %in% names(measure_data)),
     msg = paste0(
       "check_measure_data: ",
@@ -30,10 +31,9 @@ check_measure_data <- function(measure_data) {
     )
   measure_data |>
     purrr::keep_at(allowed_names) |>
-    purrr::iwalk(
-      \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name"))
-    ) |>
+    purrr::iwalk(\(x, nm) {
+      check_for_required_columns(x, nm, c("ref", "measure_name"))
+    }) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
 }
 
@@ -49,24 +49,23 @@ check_measure_data <- function(measure_data) {
 #' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
 check_a_data <- function(a_data) {
-  assertthat::assert_that(
+  assert_that(
     inherits(a_data, "list"),
     msg = "check_measure_data: The data must be a list."
   )
 
-  # We now only retain data frames from the list if they have a name
-  # matching one of the allowed aggregation levels. We then check that each
-  # data frame has the required columns and the 'ref' column is a character type
+  # We now only retain data frames from the list if they have a name matching
+  # one of the allowed aggregation levels. We then check that each data frame
+  # has the required columns and the 'ref' column is a character type.
   allowed_names <- c(
     "day", "week", "month",
     "calendar_year", "financial_year"
     )
   a_data |>
     purrr::keep_at(allowed_names) |>
-    purrr::iwalk(
-      \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name", "comment"))
-    )
+    purrr::iwalk(\(x, nm) {
+      check_for_required_columns(x, nm, c("ref", "measure_name", "comment"))
+    })
 }
 
 
@@ -82,18 +81,18 @@ check_a_data <- function(a_data) {
 #' @noRd
 check_e_data <- function(e_data) {
 
-  if(is.null(e_data)) stop("The 'events' worksheet is missing from 'measure_data'.")
+  if (is.null(e_data)) {
+    stop("The 'events' worksheet is missing from 'measure_data'.")
+  }
 
-  assertthat::assert_that(
+  assert_that(
     inherits(e_data, "data.frame"),
     msg = "check_event_data: The data must be a data frame."
   )
 
-  e_data |>
-    check_for_required_columns(
-      "events",
-      required_columns = c("ref", "measure_name", "event_date_or_datetime")
-    ) |>
+  check_for_required_columns(
+    e_data, "events", c("ref", "measure_name", "event_date_or_datetime")
+  ) |>
     dplyr::mutate(across("ref", as.character))
 }
 
@@ -108,7 +107,7 @@ check_e_data <- function(e_data) {
 #' @returns The input data frame after some checks and transformations
 #' @noRd
 check_report_config <- function(report_config) {
-  assertthat::assert_that(
+  assert_that(
     inherits(report_config, "data.frame"),
     msg = "check_report_config: The report config must be a data frame."
   )
@@ -145,12 +144,12 @@ check_report_config <- function(report_config) {
 #' @returns The input data frame after some checks and transformations
 #' @noRd
 check_measure_config <- function(measure_config) {
-  assertthat::assert_that(
+  assert_that(
     inherits(measure_config, "data.frame"),
     msg = "check_measure_config: config_data must be a data frame"
   )
 
-  # check for column names, and provide a helpful error message if needed
+  # Check for column names, and provide a helpful error message if needed
   required_columns <- c(
     "ref",
     "measure_name",
@@ -174,19 +173,20 @@ check_measure_config <- function(measure_config) {
   )
 
   measure_config |>
-    # check required cols are present
+    # Check required cols are present
     check_for_required_columns("measure_config", required_columns) |>
     check_for_optional_columns(optional_columns) |>
     dplyr::select(c(all_of(required_columns), any_of(optional_columns))) |>
 
     dplyr::mutate(
-      # default all cols to character (empty cols are imported as logical NAs)
+      # Default all cols to character (empty cols are imported as logical NAs)
       across(everything(), as.character),
       across("unit", tolower),
       across("improvement_direction", tolower),
       # " marks in the comment mess up the render process later
       across("rebase_comment", \(x) stringr::str_replace_all(x, "\\\"", "'")),
-      # target and allowable_days_lag are the only cols that should end up numeric
+      # `target` and `allowable_days_lag` are the only cols that should
+      # end up as numeric.
       across("target", \(x) as.numeric(dplyr::na_if(x, "-"))),
       across("allowable_days_lag", \(x) as.integer(tidyr::replace_na(x, "0")))
     )
@@ -207,7 +207,7 @@ check_measure_config <- function(measure_config) {
 #' @noRd
 check_measure_names <- function(ref_no, measure_data, measure_config) {
   # check that the config table includes this ref_no number
-  assertthat::assert_that(
+  assert_that(
     ref_no %in% measure_config[["ref"]],
     msg = glue(
       "check_measure_names: ",
@@ -215,7 +215,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
       "data frame.")
   )
 
-  # find the titles to compare
+  # Find the titles to compare
   m_titles <- measure_data |>
     dplyr::filter(if_any("ref", \(x) x == ref_no)) |>
     dplyr::pull("measure_name") |>
@@ -225,7 +225,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
     dplyr::pull("measure_name") |>
     unique()
 
-  assertthat::assert_that(
+  assert_that(
     length(c_title) == 1,
     msg = glue(
       "check_measure_names: ",
@@ -234,16 +234,22 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
       )
     )
 
-  # warn when the titles don't match
+  # Warn when the titles don't match
   m_titles |>
-    purrr::walk(
-      \(x) ifelse(
+    purrr::walk(\(x) {
+      ifelse(
         x == c_title,
         usethis::ui_silence(TRUE),
-        usethis::ui_warn(
-          c("check_measure_names: There is a name mismatch for measure ref: {ref_no}. The title in the data bundle is '{x}'. The title in the measure config is '{c_title}'.")
-      )))
-
+        usethis::ui_warn(c(
+          paste0(
+            "check_measure_names: There is a name mismatch for measure ref: ",
+            "{ref_no}."
+          ),
+          "The title in the data bundle is '{x}'.",
+          "The title in the measure config is '{c_title}'."
+        ))
+      )
+    })
   invisible(TRUE)
 }
 
@@ -266,14 +272,17 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
   missing_columns <- setdiff(required_columns, names(.data))
 
   if (length(missing_columns)) {
-    # find the name of the first missing col for the error message
-    first_missing_column <- missing_columns[1]
+    # Find the name of the first missing col for the error message
+    first_missing_column <- missing_columns[1] # nolint
 
-    # throw the error
-    usethis::ui_stop(
-      "check_for_required_columns: Column '{first_missing_column}' is missing from the '{df_name}' data frame. Check for typos in the column names."
-    )
-  } else .data
+    # Throw the error
+    usethis::ui_stop(paste0(
+      "check_for_required_columns: Column '{first_missing_column}' is missing ",
+      "from the '{df_name}' data frame. Check for typos in the column names."
+    ))
+  } else {
+    .data
+  }
 }
 
 
@@ -293,19 +302,20 @@ check_for_optional_columns <- function(.data, optional_columns) {
   missing_columns <- setdiff(optional_columns, names(.data))
   if (length(missing_columns)) {
     # find the name of the first missing col for the console message
-    first_missing_column <- missing_columns[1]
+    first_missing_column <- missing_columns[1] # nolint
 
-    usethis::ui_info(
-      c(
-        "check_for_optional_columns: Optional column '{first_missing_column}' is missing. Adding it."
-      )
-    )
+    usethis::ui_info(paste0(
+      "check_for_optional_columns: Optional column '{first_missing_column}' ",
+      "is missing. Adding it."
+    ))
+
     missing_columns |>
-      purrr::reduce(
-        \(x, y) tibble::add_column(x, {{y}} := NA_character_),
-        .init = .data
-      )
-  } else .data
+      purrr::reduce(\(x, y) {
+        tibble::add_column(x, {{y}} := NA_character_)
+      }, .init = .data)
+  } else {
+    .data
+  }
 }
 
 
@@ -316,28 +326,28 @@ check_for_optional_columns <- function(.data, optional_columns) {
 
 #' Check all required data items are provided
 #'
-#' @param report_config A data frame. The report config detailing required report items
+#' @param report_config A data frame. The report config detailing required
+#'  report items
 #' @param measure_data Data frame in wide format
 #'
 #' @returns logical TRUE if check is successful, else an error message
 check_dataset_is_complete <- function(report_config, measure_data) {
 
   missing_data <- report_config |>
-    dplyr::select(all_of(c("ref", "measure_name", "aggregation"))) |>
+    dplyr::select(c("ref", "measure_name", "aggregation")) |>
     dplyr::anti_join(measure_data, by = c("ref", "aggregation"))
 
-
-  # build an error message if there are missing data items
-  assertthat::assert_that(
+  # Build an error message if there are missing data items
+  assert_that(
     nrow(missing_data) == 0,
     msg = usethis::ui_stop(
-      dplyr::slice(missing_data, 1) |>
-        stringr::str_glue_data(
-          "check_dataset_is_complete: ",
-          "Data is missing for {nrow(missing_data)} report items. ",
-          "The first is ref {ref}, '{measure_name}', aggregation: {aggregation}."
-          )
-      ))
-
+      glue::glue_data(
+        dplyr::slice(missing_data, 1),
+        "check_dataset_is_complete: ",
+        "Data is missing for {nrow(missing_data)} report items. ",
+        "The first is ref {ref}, '{measure_name}', aggregation: {aggregation}"
+      )
+    )
+  )
   invisible(TRUE)
 }

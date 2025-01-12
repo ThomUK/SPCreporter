@@ -40,25 +40,31 @@
 
 "check input names" |>
   test_that({
-    ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
+    ymd_rx <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
     init_cols <- c("ref", "measure_name", "comment")
 
     df_names <- c("ref", "measure_name", "2022-01-01", "90210")
 
     expect_true(
       all(purrr::map_lgl(
-        df_names, \(x) x %in% init_cols |
-          stringr::str_detect(x, "^[0-9]{5}$") |
-          stringr::str_detect(x, ymd_regex)))
+        df_names, \(x) {
+          x %in% init_cols |
+            stringr::str_detect(x, "^[0-9]{5}$") |
+            stringr::str_detect(x, ymd_rx)
+        }
+      ))
     )
 
     df_names <- c(df_names, "other")
 
     expect_false(
-      all(purrr::map_lgl(
-      df_names, \(x) x %in% init_cols |
-        stringr::str_detect(x, "^[0-9]{5}$") |
-        stringr::str_detect(x, ymd_regex)))
+      all(
+        purrr::map_lgl(df_names, \(x) {
+          x %in% init_cols |
+            stringr::str_detect(x, "^[0-9]{5}$") |
+            stringr::str_detect(x, ymd_rx)
+        })
+      )
     )
   })
 
@@ -77,7 +83,9 @@
     )
 
     out1 <- .data |>
-      tidyr::pivot_longer(!any_of(init_cols), names_to = "date", values_drop_na = TRUE)
+      tidyr::pivot_longer(
+        !any_of(init_cols), names_to = "date", values_drop_na = TRUE
+      )
 
     tibble::tibble(
       ref = c(1, 2, 2),
@@ -90,7 +98,9 @@
 
 
     out2 <- .data |>
-      tidyr::pivot_longer(!any_of(init_cols), names_to = "date", values_drop_na = TRUE) |>
+      tidyr::pivot_longer(
+        !any_of(init_cols), names_to = "date", values_drop_na = TRUE
+      ) |>
       dplyr::mutate(across("date", quietly_convert_date))
 
     tibble::tibble(
@@ -102,4 +112,3 @@
     ) |>
       expect_equal(out2)
   })
-

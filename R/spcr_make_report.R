@@ -1,24 +1,38 @@
 #' Make the SPC Report
 #'
-#' @param data_bundle data frame. The pre-processed bundle of information (ideally made with `spcr_make_data_bundle()`)
-#' @param report_title string. The report title, printed at the top of the report
+#' @param data_bundle data frame. The pre-processed bundle of information
+#'  (ideally made with `spcr_make_data_bundle()`)
+#' @param report_title string. The report title, printed at the top of the
+#'  report
 #' @param subtitle string. The report subtitle, printed at the top of the report
-#' @param document_title string. A title for the document, as used in the HTML `<title>` tag or as the PDF document title. If left as NULL (the default), this function will use the `report_title` parameter and the current date to construct a title
+#' @param document_title string. A title for the document, as used in the HTML
+#'  `<title>` tag or as the PDF document title. If left as NULL (the default),
+#'  this function will use the `report_title` parameter and the current date
+#'  to construct a title
 #' @param report_ref string. A unique reference for the report
 #' @param logo_path string. File path of the logo to be used on the report
-#' @param department string. A text suffix positioned underneath the logo, for eg. department name
+#' @param department string. A text label positioned underneath the logo,
+#'  for example the department name
 #' @param department_text_colour string. The colour of the department text
 #' @param intro string. Intro text printed at the head of the report
 #' @param author_name string. The author's name
 #' @param author_email string. The author's contact email address
-#' @param paper_colour string. Customise the background colour using a hex code, or CSS colour name
-#' @param accordion_colour string. Customise the accordion colour using a hex code, or CSS colour name
-#' @param stale_colour string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name
-#' @param fresh_colour string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name
-#' @param output_directory string. The name of the directory in which to save the resulting report
-#' @param output_type vector. Specify what output types are needed.  Default is c("html", "csv"). "pdf" is also possible.
-#' @param include_dq_icon logical. Whether to include the data quality icon on the final report
-#' @param annotate_limits logical. Whether to add annotations to a secondary y axis for process limits and mean
+#' @param paper_colour string. Customise the background colour using a hex
+#'  code, or CSS colour name
+#' @param accordion_colour string. Customise the accordion colour using a hex
+#'  code, or CSS colour name
+#' @param stale_colour string. Customise the date lozenge to indicate that
+#'  data is stale, using a hex code, or CSS colour name
+#' @param fresh_colour string. Customise the date lozenge to indicate that
+#'  data is up to date, using a hex code, or CSS colour name
+#' @param output_directory string. The name of the directory in which to save
+#'  the resulting report
+#' @param output_type vector. Specify what output types are needed. The
+#'  default is c("html", "csv"). "pdf" is also possible.
+#' @param include_dq_icon logical. Whether to include the data quality icon
+#'  on the final report
+#' @param annotate_limits logical. Whether to add annotations to a
+#'  secondary y axis for process limits and mean
 #'
 #' @export
 spcr_make_report <- function(
@@ -45,35 +59,35 @@ spcr_make_report <- function(
   start_time <- Sys.time()
 
   # This dttm is the same for every row in the data bundle. The first will do.
-  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][[1]]
+  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][[1]] # nolint
 
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
-    dplyr::select(all_of(c(
+    dplyr::select(c(
       "target",
       "rebase_dates",
       "improvement_direction",
       "measure_data"
-    ))) |>
+    )) |>
     purrr::pmap(make_spc_data, .progress = "SPC data")
 
   # Create list of SPC charts
   spc_charts <- data_bundle |>
-    dplyr::select(all_of(c(
+    dplyr::select(c(
       "ref",
       "measure_name",
       "data_source",
       "unit",
       "spc_chart_type",
       "aggregation"
-    ))) |>
+    )) |>
     dplyr::mutate(label_limits = annotate_limits) |>
     dplyr::mutate(spc_data = spc_data) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
   tmp_files <- data_bundle |>
-    dplyr::select(all_of(c(x = "ref", y = "aggregation"))) |>
+    dplyr::select(c(x = "ref", y = "aggregation")) |>
     purrr::pmap_chr(\(x, y) glue("tmp_{x}_{y}_")) |>
     tempfile(fileext = ".png")
 
@@ -83,7 +97,7 @@ spcr_make_report <- function(
   spc_chart_uris <- tmp_files |>
     purrr::map_chr(knitr::image_uri)
 
-  data_bundle_full <- data_bundle |>
+  data_bundle_full <- data_bundle |> # nolint
     dplyr::mutate(
       spc_data = spc_data,
       spc_chart_uri = spc_chart_uris,
@@ -130,8 +144,8 @@ spcr_make_report <- function(
     gsub(" ", "_", report_title), "_", time_stamp, ".html"
   )
 
-  # create a document title (HTML <title>), unless already supplied
-  # `pagetitle` in YAML/Pandoc
+  # Create a document title (HTML <title>), unless already supplied
+  # `pagetitle` in YAML/Pandoc.
   # https://community.rstudio.com/t/r-markdown-html-output-title/47294
   if (is.null(document_title)) {
     document_title <- paste0(
@@ -139,7 +153,7 @@ spcr_make_report <- function(
     )
   }
 
-  # render the html output
+  # Render the html output
   usethis::ui_info("Making HTML output...")
 
   rmarkdown::render(
@@ -155,24 +169,24 @@ spcr_make_report <- function(
     output_file = output_file_name
   )
 
-  # print the full path to the console
+  # Print the full path to the console
   wd <- getwd() |>
-    stringr::str_remove("^\\\\{1}") # if network location, remove an initial '\'
+    stringr::str_remove("^\\\\{1}") # If network location, remove an initial '\'
   path <- file.path(wd, output_directory, output_file_name)
   usethis::ui_info("HTML filepath: {path}")
   usethis::ui_done("HTML output complete.")
 
-  # open the result in the browser
+  # Open the result in the browser
   utils::browseURL(path)
 
-  # render a pdf if needed
+  # Render a pdf if needed
   if ("pdf" %in% output_type) {
     convert_to_pdf(path)
   }
 
   beepr::beep()
 
-  process_duration <- lubridate::as.period(Sys.time() - start_time) |>
+  process_duration <- lubridate::as.period(Sys.time() - start_time) |> # nolint
     round() |>
     tolower()
 
@@ -208,7 +222,7 @@ make_spc_data <- function(
   ) {
   measure_data |>
     # remove duplicate dttms using `slice_max` to keep just one row per date
-    dplyr::slice_max(value, n = 1, with_ties = FALSE, by = "date") |>
+    dplyr::slice_max(pick("value"), n = 1, with_ties = FALSE, by = "date") |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
       value_field = "value",
@@ -236,7 +250,7 @@ make_spc_chart <- function(
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""),
+      y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""), # nolint
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,
@@ -252,7 +266,7 @@ make_spc_chart <- function(
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
 
-  # conditionally add the "hollow" final data point to rare-event charts
+  # Conditionally add the "hollow" final data point to rare-event charts
   if (spc_chart_type == "t") {
     plot +
       ggplot2::annotate(
@@ -261,7 +275,7 @@ make_spc_chart <- function(
         y = dplyr::last(spc_data[["y"]]),
         shape = "circle filled",
         colour = "grey65", # #a6a6a6 (matches plotthedots grey)
-        fill = NA,   # so the PTD dot can be seen
+        fill = NA, # So the PTD dot can be seen
         size = 5,
         stroke = 2
       )
