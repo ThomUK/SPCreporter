@@ -75,7 +75,7 @@ get_target_text <- function(target, improvement_direction, unit) {
     is.na(target) ~ "-",
     imp_dir == "neutral" ~ "Neutral",
     unit == "%" ~ paste0(round(target * 100, 1), "%"),
-    TRUE ~ as.character(round(target, 2)) # covers decimal and integer
+    .default = as.character(round(target, 2)) # covers decimal and integer
   )
 
   dplyr::case_when(
@@ -85,7 +85,7 @@ get_target_text <- function(target, improvement_direction, unit) {
     !is.na(target) & imp_dir == "decrease" ~ paste0("\u2264 ", string),
     # \u2265 is: ≥
     !is.na(target) & imp_dir == "increase" ~ paste0("\u2265 ", string),
-    TRUE ~ string
+    .default = string
   )
 }
 
@@ -253,7 +253,7 @@ get_assurance_type <- function(spc, improvement_direction) {
     upl < target & imp_dir == "decrease" ~ "PASS_TARG",
     lpl > target & imp_dir == "decrease" ~ "FAIL_TARG",
     upl < target & imp_dir == "increase" ~ "FAIL_TARG",
-    TRUE ~ ""
+    .default = ""
   )
 
   if (a == "") {
@@ -288,7 +288,7 @@ get_variation_type <- function(spc, improvement_direction) {
     vari == "special_cause_neutral" & relative_to_mean %in% c(1, 0) ~ "SC_HI_NEUTRAL",
     vari == "special_cause_neutral_low" ~ "SC_LO_NEUTRAL",
     vari == "special_cause_neutral_high" ~ "SC_HI_NEUTRAL",
-    TRUE ~ ""
+    .default = ""
   )
 
   if (v == "") {

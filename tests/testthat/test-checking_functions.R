@@ -8,7 +8,7 @@
       dplyr::bind_rows(.id = "aggregation") |>
       dplyr::mutate(aggregation = dplyr::case_when(
         aggregation == "events" ~ "none",
-        TRUE ~ aggregation
+        .default = aggregation
       ))
 
     expect_no_error(
@@ -26,7 +26,7 @@
       dplyr::bind_rows(.id = "aggregation") |>
       dplyr::mutate(aggregation = dplyr::case_when(
         aggregation == "events" ~ "none",
-        TRUE ~ aggregation
+        .default = aggregation
       ))
 
     report_config_plus_one <- test_report_config |>

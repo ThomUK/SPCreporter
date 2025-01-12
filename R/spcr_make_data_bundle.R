@@ -113,7 +113,7 @@ spcr_make_data_bundle <- function(
           .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
           # a rather unlikely situation
           .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
-          TRUE ~ x
+          .default = x
         )
       }),
       across("unit", \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x)),
