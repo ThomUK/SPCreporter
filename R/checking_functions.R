@@ -273,7 +273,7 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
 
   if (length(missing_columns)) {
     # find the name of the first missing col for the error message
-    first_missing_column <- missing_columns[1]
+    first_missing_column <- missing_columns[1] # nolint
 
     # throw the error
     usethis::ui_stop(paste0(
@@ -302,7 +302,7 @@ check_for_optional_columns <- function(.data, optional_columns) {
   missing_columns <- setdiff(optional_columns, names(.data))
   if (length(missing_columns)) {
     # find the name of the first missing col for the console message
-    first_missing_column <- missing_columns[1]
+    first_missing_column <- missing_columns[1] # nolint
 
     usethis::ui_info(paste0(
       "check_for_optional_columns: Optional column '{first_missing_column}' ",

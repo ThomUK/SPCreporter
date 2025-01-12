@@ -24,7 +24,7 @@
     )
   })
 
-"spcr_make_data_bundle: there is a helpful error if the 'events' worksheet is missing" |>
+"spcr_make_data_bundle: there is a helpful error if the 'events' worksheet is missing" |> # nolint
   test_that({
 
     measure_data_no_events <- test_measure_data
@@ -41,7 +41,7 @@
 
   })
 
-"spcr_make_data_bundle: it is possible to make a data_bundle if no event data is supplied" |>
+"spcr_make_data_bundle: it is possible to make a data_bundle if no event data is supplied" |> # nolint
   test_that({
 
     measure_data_no_events <- test_measure_data

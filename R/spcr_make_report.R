@@ -59,7 +59,7 @@ spcr_make_report <- function(
   start_time <- Sys.time()
 
   # This dttm is the same for every row in the data bundle. The first will do.
-  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][[1]]
+  data_cutoff_dttm <- data_bundle[["data_cutoff_dttm"]][[1]] # nolint
 
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
@@ -97,7 +97,7 @@ spcr_make_report <- function(
   spc_chart_uris <- tmp_files |>
     purrr::map_chr(knitr::image_uri)
 
-  data_bundle_full <- data_bundle |>
+  data_bundle_full <- data_bundle |> # nolint
     dplyr::mutate(
       spc_data = spc_data,
       spc_chart_uri = spc_chart_uris,
@@ -186,7 +186,7 @@ spcr_make_report <- function(
 
   beepr::beep()
 
-  process_duration <- lubridate::as.period(Sys.time() - start_time) |>
+  process_duration <- lubridate::as.period(Sys.time() - start_time) |> # nolint
     round() |>
     tolower()
 
@@ -250,7 +250,7 @@ make_spc_chart <- function(
       percentage_y_axis = unit == "%",
       main_title = paste0("#", ref, " - ", measure_name),
       x_axis_label = NULL,
-      y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""),
+      y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""), # nolint
       x_axis_breaks = "1 month",
       x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
       label_limits = label_limits,

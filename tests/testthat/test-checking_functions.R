@@ -94,7 +94,7 @@
     )
   })
 
-"check measure config: errors helpfully when column names are missing or mis-spelled" |>
+"check measure config: errors helpfully when column names are missing or mis-spelled" |> # nolint
   test_that({
 
     # create the error by omitting a required column (unit)
@@ -234,7 +234,7 @@
     )
   })
 
-"check report config: errors helpfully when column names are missing or mis-spelled" |>
+"check report config: errors helpfully when column names are missing or mis-spelled" |> # nolint
   test_that({
 
     # create the error by omitting a required column ('domain')

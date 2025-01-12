@@ -69,9 +69,9 @@ lengthen_measure_data <- function(.data) {
 #' @returns A character string suitable for inclusion in the report
 #' @noRd
 get_target_text <- function(target, improvement_direction, unit) {
-  imp_dir <- tolower(improvement_direction)
+  imp_dir <- tolower(improvement_direction) # nolint
 
-  string <- dplyr::case_when(
+  string <- dplyr::case_when( # nolint
     is.na(target) ~ "-",
     imp_dir == "neutral" ~ "Neutral",
     unit == "%" ~ paste0(round(target * 100, 1), "%"),
@@ -240,10 +240,10 @@ align_rebase_dates <- function(input, measure_data) {
 #' @returns string. Name of the assurance type
 #' @noRd
 get_assurance_type <- function(spc, improvement_direction) {
-  imp_dir <- tolower(improvement_direction)
-  upl <- spc[["upl"]][1]
-  lpl <- spc[["lpl"]][1]
-  target <- spc[["target"]][1]
+  imp_dir <- tolower(improvement_direction) # nolint
+  upl <- spc[["upl"]][1] # nolint
+  lpl <- spc[["lpl"]][1] # nolint
+  target <- spc[["target"]][1] # nolint
 
   a <- dplyr::case_when(
     imp_dir == "neutral" ~ "Neutral",
@@ -285,7 +285,7 @@ get_variation_type <- function(spc, improvement_direction) {
     vari == "special_cause_concern" & imp_dir == "increase" ~ "SC_LO_CON",
     vari == "special_cause_concern" & imp_dir == "decrease" ~ "SC_HI_CON",
     vari == "special_cause_neutral" & relative_to_mean == -1 ~ "SC_LO_NEUTRAL",
-    vari == "special_cause_neutral" & relative_to_mean %in% c(1, 0) ~ "SC_HI_NEUTRAL",
+    vari == "special_cause_neutral" & relative_to_mean %in% c(1, 0) ~ "SC_HI_NEUTRAL", # nolint
     vari == "special_cause_neutral_low" ~ "SC_LO_NEUTRAL",
     vari == "special_cause_neutral_high" ~ "SC_HI_NEUTRAL",
     .default = ""
