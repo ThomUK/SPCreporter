@@ -33,7 +33,7 @@ process_event_data_t <- function(event_data, data_cutoff_dttm) {
         units = "days"
       ))
     ) |>
-    dplyr::filter(!is.na(.data$time_between)) |>
+    dplyr::filter(if_any("time_between", \(x) !is.na(x))) |>
     dplyr::ungroup() |>
 
     # fill in the gaps left by adding the "today" event
