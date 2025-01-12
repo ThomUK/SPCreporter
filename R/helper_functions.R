@@ -5,7 +5,7 @@
 #' @returns data frame. Data frame in long format
 #' @noRd
 lengthen_measure_data <- function(.data) {
-  assertthat::assert_that(
+  assert_that(
     inherits(.data, "data.frame"),
     msg = "lengthen_measure_data: The data must be a data frame."
   )
@@ -14,7 +14,7 @@ lengthen_measure_data <- function(.data) {
   ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
   init_cols <- c("aggregation", "measure_prefix", "ref", "measure_name", "comment")
 
-  assertthat::assert_that(
+  assert_that(
     all(purrr::map_lgl(
       names(.data), \(x) x %in% init_cols |
         stringr::str_detect(x, "^[0-9]{5}$") |
@@ -320,22 +320,22 @@ calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
     warning = \(w) "calculate_stale_data: The updated_to date is not in the required '%d-%b-%Y' format."
   )
 
-  assertthat::assert_that(
+  assert_that(
     !any(is.na(updated_to)),
     all(inherits(updated_to, "Date")),
     msg = "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
   )
 
-  assertthat::assert_that(
+  assert_that(
     all(lag %% 1 == 0),
     msg = "calculate_stale_data: The lag argument must be an integer."
   )
 
-  assertthat::assert_that(
+  assert_that(
     all(inherits(cutoff_dttm, "POSIXct")),
     msg = "calculate_stale_data: The cutoff_dttm argument must be a POSIXct."
   )
 
-  lag <- lubridate::days(lag) + lubridate::hms("23:59:59") # convert to a period
+  lag <- days(lag) + lubridate::hms("23:59:59") # convert to a period
   if_else((updated_to + lag) < cutoff_dttm, "stale", "fresh")
 }

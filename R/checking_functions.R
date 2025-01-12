@@ -5,14 +5,14 @@
 #' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
 check_measure_data <- function(measure_data) {
-  assertthat::assert_that(
+  assert_that(
     inherits(measure_data, "list"),
     msg = "check_measure_data: The data must be a list."
   )
 
   measure_data <- rlang::set_names(measure_data, tolower)
 
-  assertthat::assert_that(
+  assert_that(
     any(c("week", "month") %in% names(measure_data)),
     msg = paste0(
       "check_measure_data: ",
@@ -49,7 +49,7 @@ check_measure_data <- function(measure_data) {
 #' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
 check_a_data <- function(a_data) {
-  assertthat::assert_that(
+  assert_that(
     inherits(a_data, "list"),
     msg = "check_measure_data: The data must be a list."
   )
@@ -84,7 +84,7 @@ check_e_data <- function(e_data) {
 
   if(is.null(e_data)) stop("The 'events' worksheet is missing from 'measure_data'.")
 
-  assertthat::assert_that(
+  assert_that(
     inherits(e_data, "data.frame"),
     msg = "check_event_data: The data must be a data frame."
   )
@@ -108,7 +108,7 @@ check_e_data <- function(e_data) {
 #' @returns The input data frame after some checks and transformations
 #' @noRd
 check_report_config <- function(report_config) {
-  assertthat::assert_that(
+  assert_that(
     inherits(report_config, "data.frame"),
     msg = "check_report_config: The report config must be a data frame."
   )
@@ -145,7 +145,7 @@ check_report_config <- function(report_config) {
 #' @returns The input data frame after some checks and transformations
 #' @noRd
 check_measure_config <- function(measure_config) {
-  assertthat::assert_that(
+  assert_that(
     inherits(measure_config, "data.frame"),
     msg = "check_measure_config: config_data must be a data frame"
   )
@@ -207,7 +207,7 @@ check_measure_config <- function(measure_config) {
 #' @noRd
 check_measure_names <- function(ref_no, measure_data, measure_config) {
   # check that the config table includes this ref_no number
-  assertthat::assert_that(
+  assert_that(
     ref_no %in% measure_config[["ref"]],
     msg = glue(
       "check_measure_names: ",
@@ -225,7 +225,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
     dplyr::pull("measure_name") |>
     unique()
 
-  assertthat::assert_that(
+  assert_that(
     length(c_title) == 1,
     msg = glue(
       "check_measure_names: ",
@@ -328,7 +328,7 @@ check_dataset_is_complete <- function(report_config, measure_data) {
 
 
   # build an error message if there are missing data items
-  assertthat::assert_that(
+  assert_that(
     nrow(missing_data) == 0,
     msg = usethis::ui_stop(
       dplyr::slice(missing_data, 1) |>

@@ -34,8 +34,8 @@
 
     aggregation <- "month"
 
-    o1 <- lubridate::ceiling_date(d1, aggregation) - lubridate::days(1)
-    o2 <- lubridate::ceiling_date(d2, aggregation) - lubridate::days(1)
+    o1 <- lubridate::ceiling_date(d1, aggregation) - days(1)
+    o2 <- lubridate::ceiling_date(d2, aggregation) - days(1)
 
     expect_equal(o1, desired_result)
     expect_equal(o2, desired_result)
