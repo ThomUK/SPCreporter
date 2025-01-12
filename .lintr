@@ -1,0 +1,10 @@
+linters: linters_with_defaults(
+    commented_code_linter = NULL,
+    indentation_linter = NULL
+  ) # see vignette("lintr")
+encoding: "UTF-8"
+exclusions: list(
+    "vignettes/get_started.Rmd",
+    "vignettes/multiple_reports.Rmd",
+    "inst/Rmd/Report.Rmd"
+  )
