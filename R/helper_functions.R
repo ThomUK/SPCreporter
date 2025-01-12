@@ -51,8 +51,8 @@ lengthen_measure_data <- function(.data) {
     ) |>
     dplyr::mutate(across("date", quietly_convert_date)) |>
     # Sort data from oldest to latest by measure - it should already be sorted
-    # (pivot_longer draws from L-R wide data)... but let's make sure
-    dplyr::arrange(across(all_of(c("ref", "date"))))
+    # (pivot_longer draws from L-R wide data)... but let's make sure.
+    dplyr::arrange(pick(c("ref", "date")))
 }
 
 

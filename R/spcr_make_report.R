@@ -222,7 +222,7 @@ make_spc_data <- function(
   ) {
   measure_data |>
     # remove duplicate dttms using `slice_max` to keep just one row per date
-    dplyr::slice_max(value, n = 1, with_ties = FALSE, by = "date") |>
+    dplyr::slice_max(pick("value"), n = 1, with_ties = FALSE, by = "date") |>
     NHSRplotthedots::ptd_spc(
       rebase = align_rebase_dates(rebase_dates, measure_data),
       value_field = "value",
