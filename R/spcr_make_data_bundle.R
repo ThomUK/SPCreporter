@@ -89,19 +89,7 @@ spcr_make_data_bundle <- function(
 
   # Check that measure data that is supposed to be integer data is supplied as
   # such, or raise a warning message
-  nested_data |>
-    dplyr::filter(if_any("unit", \(x) x == "integer")) |>
-    tidyr::hoist("measure_data", "value") |>
-    dplyr::select(all_of(c(x = "value", y = "ref"))) |>
-    purrr::pwalk(\(x, y) if (any(round(x) != x)) {
-      warning(
-        glue(
-          "spcr_make_data_bundle: ",
-          "Measure {y} is configured as an integer, ",
-          "but has been supplied with decimal data."
-        )
-      )
-    })
+      dplyr::select(c(x = "value", y = "ref")) |>
 
   nested_data |>
     dplyr::mutate(

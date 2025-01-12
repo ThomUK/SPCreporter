@@ -323,7 +323,7 @@ check_for_optional_columns <- function(.data, optional_columns) {
 check_dataset_is_complete <- function(report_config, measure_data) {
 
   missing_data <- report_config |>
-    dplyr::select(all_of(c("ref", "measure_name", "aggregation"))) |>
+    dplyr::select(c("ref", "measure_name", "aggregation")) |>
     dplyr::anti_join(measure_data, by = c("ref", "aggregation"))
 
 

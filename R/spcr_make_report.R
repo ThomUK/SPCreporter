@@ -49,31 +49,31 @@ spcr_make_report <- function(
 
   # Create list of source data for SPC charts
   spc_data <- data_bundle |>
-    dplyr::select(all_of(c(
+    dplyr::select(c(
       "target",
       "rebase_dates",
       "improvement_direction",
       "measure_data"
-    ))) |>
+    )) |>
     purrr::pmap(make_spc_data, .progress = "SPC data")
 
   # Create list of SPC charts
   spc_charts <- data_bundle |>
-    dplyr::select(all_of(c(
+    dplyr::select(c(
       "ref",
       "measure_name",
       "data_source",
       "unit",
       "spc_chart_type",
       "aggregation"
-    ))) |>
+    )) |>
     dplyr::mutate(label_limits = annotate_limits) |>
     dplyr::mutate(spc_data = spc_data) |>
     purrr::pmap(make_spc_chart, .progress = "SPC charts")
 
 
   tmp_files <- data_bundle |>
-    dplyr::select(all_of(c(x = "ref", y = "aggregation"))) |>
+    dplyr::select(c(x = "ref", y = "aggregation")) |>
     purrr::pmap_chr(\(x, y) glue("tmp_{x}_{y}_")) |>
     tempfile(fileext = ".png")
 
