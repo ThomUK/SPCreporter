@@ -6,9 +6,9 @@
 #'
 #' @returns A data frame with calculated dates and time-between information
 #' @noRd
-process_event_data_t <- function(event_data, data_cutoff_dttm){
+process_event_data_t <- function(event_data, data_cutoff_dttm) {
 
-  if(nrow(event_data) == 0) return(NULL)
+  if (nrow(event_data) == 0) return(NULL)
 
   event_data |>
     dplyr::mutate(aggregation = "none") |>

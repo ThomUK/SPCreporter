@@ -114,7 +114,7 @@ get_updatedto_text <- function(last_date, aggregation) {
 
   last_date <- as.Date(last_date) # handles dttm being passed in by mistake
 
-  # Rename "calendar_year" and "none" aggregations to work with ceiling_date()
+  # rename "calendar_year" and "none" aggregations to work with ceiling_date()
   agg <- dplyr::case_when(
     aggregation == "calendar_year" ~ "year",
     # aggregation == "financial_year" ~ "3 months", # TODO
