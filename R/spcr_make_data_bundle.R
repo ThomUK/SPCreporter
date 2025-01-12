@@ -114,15 +114,9 @@ spcr_make_data_bundle <- function(
           .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
           TRUE ~ x
         )
-      ),
-      across(
-        "unit",
-        \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x)
-      ),
-      across(
-        "target",
-        \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x)
-      ),
+      }),
+      across("unit", \(x) if_else(.data[["spc_chart_type"]] == "t", "days", x)),
+      across("target", \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x)),
       across("target_set_by", \(x) if_else(is.na(x), "-", x)),
       across("last_data_point", \(x) {
         dplyr::case_when(

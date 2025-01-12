@@ -90,11 +90,9 @@ check_e_data <- function(e_data) {
     msg = "check_event_data: The data must be a data frame."
   )
 
-  e_data |>
-    check_for_required_columns(
-      "events",
-      required_columns = c("ref", "measure_name", "event_date_or_datetime")
-    ) |>
+  check_for_required_columns(
+    e_data, "events", c("ref", "measure_name", "event_date_or_datetime")
+  ) |>
     dplyr::mutate(across("ref", as.character))
 }
 

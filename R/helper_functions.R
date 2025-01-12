@@ -273,11 +273,9 @@ get_assurance_type <- function(spc, improvement_direction) {
 #' @noRd
 #'
 get_variation_type <- function(spc, improvement_direction) {
-  vari <- tail(spc[["point_type"]], 1)
-  relative_to_mean <- tail(spc[["relative_to_mean"]], 1)
-  # need to provide a default value so the case_when works
-  if (is.null(relative_to_mean)) relative_to_mean <- 0
-  imp_dir <- tolower(improvement_direction)
+  vari <- tail(spc[["point_type"]], 1) # nolint
+  relative_to_mean <- tail(spc[["relative_to_mean"]], 1) %||% 0 # nolint
+  imp_dir <- tolower(improvement_direction) # nolint
 
   v <- dplyr::case_when(
     vari == "common_cause" ~ "CC",
