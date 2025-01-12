@@ -27,19 +27,25 @@ spcr_make_report(
 )
 }
 \arguments{
-\item{data_bundle}{data frame. The pre-processed bundle of information (ideally made with \code{spcr_make_data_bundle()})}
+\item{data_bundle}{data frame. The pre-processed bundle of information
+(ideally made with \code{spcr_make_data_bundle()})}
 
-\item{report_title}{string. The report title, printed at the top of the report}
+\item{report_title}{string. The report title, printed at the top of the
+report}
 
 \item{subtitle}{string. The report subtitle, printed at the top of the report}
 
-\item{document_title}{string. A title for the document, as used in the HTML \verb{<title>} tag or as the PDF document title. If left as NULL (the default), this function will use the \code{report_title} parameter and the current date to construct a title}
+\item{document_title}{string. A title for the document, as used in the HTML
+\verb{<title>} tag or as the PDF document title. If left as NULL (the default),
+this function will use the \code{report_title} parameter and the current date
+to construct a title}
 
 \item{report_ref}{string. A unique reference for the report}
 
 \item{logo_path}{string. File path of the logo to be used on the report}
 
-\item{department}{string. A text suffix positioned underneath the logo, for eg. department name}
+\item{department}{string. A text label positioned underneath the logo,
+for example the department name}
 
 \item{department_text_colour}{string. The colour of the department text}
 
@@ -49,21 +55,29 @@ spcr_make_report(
 
 \item{author_email}{string. The author's contact email address}
 
-\item{paper_colour}{string. Customise the background colour using a hex code, or CSS colour name}
+\item{paper_colour}{string. Customise the background colour using a hex
+code, or CSS colour name}
 
-\item{accordion_colour}{string. Customise the accordion colour using a hex code, or CSS colour name}
+\item{accordion_colour}{string. Customise the accordion colour using a hex
+code, or CSS colour name}
 
-\item{stale_colour}{string. Customise the date lozenge to indicate that data is stale, using a hex code, or CSS colour name}
+\item{stale_colour}{string. Customise the date lozenge to indicate that
+data is stale, using a hex code, or CSS colour name}
 
-\item{fresh_colour}{string. Customise the date lozenge to indicate that data is up to date, using a hex code, or CSS colour name}
+\item{fresh_colour}{string. Customise the date lozenge to indicate that
+data is up to date, using a hex code, or CSS colour name}
 
-\item{output_directory}{string. The name of the directory in which to save the resulting report}
+\item{output_directory}{string. The name of the directory in which to save
+the resulting report}
 
-\item{output_type}{vector. Specify what output types are needed.  Default is c("html", "csv"). "pdf" is also possible.}
+\item{output_type}{vector. Specify what output types are needed. The
+default is c("html", "csv"). "pdf" is also possible.}
 
-\item{include_dq_icon}{logical. Whether to include the data quality icon on the final report}
+\item{include_dq_icon}{logical. Whether to include the data quality icon
+on the final report}
 
-\item{annotate_limits}{logical. Whether to add annotations to a secondary y axis for process limits and mean}
+\item{annotate_limits}{logical. Whether to add annotations to a
+secondary y axis for process limits and mean}
 }
 \description{
 Make the SPC Report

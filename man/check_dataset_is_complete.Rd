@@ -7,7 +7,8 @@
 check_dataset_is_complete(report_config, measure_data)
 }
 \arguments{
-\item{report_config}{A data frame. The report config detailing required report items}
+\item{report_config}{A data frame. The report config detailing required
+report items}
 
 \item{measure_data}{Data frame in wide format}
 }

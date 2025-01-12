@@ -31,11 +31,10 @@
 
 "list containing either 'week' or 'month' is allowed" |>
   test_that({
-
     expect_no_error(
       list(
-        week = data.frame(ref = 1, measure_name = "M1", comment = NA)
         # month list item is not provided
+        week = data.frame(ref = 1, measure_name = "M1", comment = NA)
       ) |>
         check_measure_data()
     )

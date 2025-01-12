@@ -54,9 +54,9 @@ check_a_data <- function(a_data) {
     msg = "check_measure_data: The data must be a list."
   )
 
-  # We now only retain data frames from the list if they have a name
-  # matching one of the allowed aggregation levels. We then check that each
-  # data frame has the required columns and the 'ref' column is a character type
+  # We now only retain data frames from the list if they have a name matching
+  # one of the allowed aggregation levels. We then check that each data frame
+  # has the required columns and the 'ref' column is a character type.
   allowed_names <- c(
     "day", "week", "month",
     "calendar_year", "financial_year"

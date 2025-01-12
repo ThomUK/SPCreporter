@@ -1,9 +1,10 @@
 #' Process event data into a time-between data frame
 #'
 #' @param event_data data frame. Raw event data
-#' @param data_cutoff_dttm POSIXct. The data cutoff datetime used to calculate the final point position
+#' @param data_cutoff_dttm POSIXct. The data cutoff datetime used to calculate
+#'  the final point position
 #'
-#' @return data frame. A data frame with calculated dates and time-between information added
+#' @returns A data frame with calculated dates and time-between information
 #' @noRd
 process_event_data_t <- function(event_data, data_cutoff_dttm){
 

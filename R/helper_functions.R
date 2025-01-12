@@ -2,7 +2,7 @@
 #'
 #' @param .data data frame. Data frame in wide format
 #'
-#' @returns data frame. Data frame in long format
+#' @returns A data frame in long format
 #' @noRd
 lengthen_measure_data <- function(.data) {
   assert_that(
@@ -43,8 +43,8 @@ lengthen_measure_data <- function(.data) {
     )
   )
 
-  # pivot incoming measure_data from wide to long,
-  # and convert date column to date format
+  # Pivot incoming measure_data from wide to long, and convert date column
+  # to date format.
   .data |>
     tidyr::pivot_longer(
       !any_of(init_cols), names_to = "date", values_drop_na = TRUE
@@ -145,7 +145,7 @@ get_updatedto_text <- function(last_date, aggregation) {
 
 # This function generates warnings due to the way if_else works with dates
 # We will wrap it in a quietly adverb to handle the warnings, which are not
-# warnings we need to worry about
+# warnings we need to worry about.
 convert_date <- function(x) {
   ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
   if_else(
@@ -162,9 +162,10 @@ quietly_convert_date <- function(...) {
 
 
 #' Parse rebase dates
+#'
 #' Parse dates from the config spreadsheet into a format suitable for use in
-#' the SPC calculation function. Only needed as a helper function for
-#' `align_rebase_dates()`
+#'  the SPC calculation function. Only needed as a helper function for
+#'  `align_rebase_dates()`
 #'
 #' @param input character. A vector of length 1, containing quoted dates in ymd
 #' format, separated with commas eg '"2020-01-01", "2020-03-05"'
@@ -181,8 +182,8 @@ parse_rebase_dates <- function(input) {
       stringr::str_remove_all("\\\"") |> # remove internal quotes
       stringr::str_trim() # trim white space
 
-    # wrap the date parsing in tryCatch() to stop()
-    # if excel dates are not perfectly formed.
+    # Wrap the date parsing in tryCatch() to stop() if excel dates are not
+    # properly formed.
     tryCatch(
       lubridate::ymd(vector),
       error = function(c) stop("error in parse_rebase_dates: ", c),
@@ -269,7 +270,7 @@ get_assurance_type <- function(spc, improvement_direction) {
 #' @param spc data frame. As returned from the {NHSRplotthedots} SPC package
 #' @param improvement_direction string. "Increase", "Decrease", or "Neutral"
 #'
-#' @return string. Name of the variation type
+#' @returns string. Name of the variation type
 #' @noRd
 #'
 get_variation_type <- function(spc, improvement_direction) {

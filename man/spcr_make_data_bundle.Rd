@@ -18,10 +18,12 @@ spcr_make_data_bundle(
 
 \item{measure_config}{data frame. Config information for the measures}
 
-\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)}
+\item{data_cutoff_dttm}{POSIXct. The data cutoff date-time (the last
+date-time for data in the report eg. month-end)}
 }
 \value{
-data frame. A nested data frame containing source data for the report
+data frame. A nested data frame containing source data for the
+report
 }
 \description{
 Make a bundle of data
