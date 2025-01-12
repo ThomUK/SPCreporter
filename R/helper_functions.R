@@ -10,9 +10,15 @@ lengthen_measure_data <- function(.data) {
     msg = "lengthen_measure_data: The data must be a data frame."
   )
 
-  # Should match date strings of the form 2022-06-01
-  ymd_regex <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
-  init_cols <- c("aggregation", "measure_prefix", "ref", "measure_name", "comment")
+  # should match date strings of the form 2022-06-01
+  ymd_rx <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
+  init_cols <- c(
+    "aggregation",
+    "measure_prefix",
+    "ref",
+    "measure_name",
+    "comment"
+  )
 
   assert_that(
     all(purrr::map_lgl(
@@ -27,14 +33,9 @@ lengthen_measure_data <- function(.data) {
         stringr::str_flatten_comma(paste0("'", init_cols, "'")),
         "and valid date formats.",
         "One invalid column name found is:",
-        head(
-          stringr::str_subset(
-            setdiff(names(.data), init_cols),
-            stringr::str_glue("^[0-9]{5}$|{ymd_regex}"),
-            negate = TRUE
-          ),
-          1
-        ),
+        head(stringr::str_subset(
+          setdiff(names(.data), init_cols), glue("^[0-9]{5}$|{ymd_rx}"), TRUE
+        ), 1),
         collapse = " "
       )
     )
@@ -43,7 +44,9 @@ lengthen_measure_data <- function(.data) {
   # pivot incoming measure_data from wide to long,
   # and convert date column to date format
   .data |>
-    tidyr::pivot_longer(!any_of(init_cols), names_to = "date", values_drop_na = TRUE) |>
+    tidyr::pivot_longer(
+      !any_of(init_cols), names_to = "date", values_drop_na = TRUE
+    ) |>
     dplyr::mutate(across("date", quietly_convert_date)) |>
     # Sort data from oldest to latest by measure - it should already be sorted
     # (pivot_longer draws from L-R wide data)... but let's make sure
@@ -96,7 +99,6 @@ get_target_text <- function(target, improvement_direction, unit) {
 #' @param aggregation string. e.g. "month"
 #'
 #' @returns A date in "%d-%b-%Y" (day-month-year) format
-#'
 #' @noRd
 get_updatedto_text <- function(last_date, aggregation) {
   assert_that(
@@ -317,13 +319,21 @@ get_variation_type <- function(spc, improvement_direction) {
 calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
   updated_to <- tryCatch(
     lubridate::dmy(updated_to),
-    warning = \(w) "calculate_stale_data: The updated_to date is not in the required '%d-%b-%Y' format."
+    warning = \(w) {
+      paste0(
+        "calculate_stale_data: The updated_to date is not in the required ",
+        "'%d-%b-%Y' format."
+      )
+    }
   )
 
   assert_that(
     !any(is.na(updated_to)),
     all(inherits(updated_to, "Date")),
-    msg = "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
+    msg = paste0(
+      "calculate_stale_data: Unable to convert the updated_to argument ",
+      "text to a valid date."
+    )
   )
 
   assert_that(

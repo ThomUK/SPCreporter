@@ -77,7 +77,9 @@
     )
 
     out1 <- .data |>
-      tidyr::pivot_longer(!any_of(init_cols), names_to = "date", values_drop_na = TRUE)
+      tidyr::pivot_longer(
+        !any_of(init_cols), names_to = "date", values_drop_na = TRUE
+      )
 
     tibble::tibble(
       ref = c(1, 2, 2),
@@ -90,7 +92,9 @@
 
 
     out2 <- .data |>
-      tidyr::pivot_longer(!any_of(init_cols), names_to = "date", values_drop_na = TRUE) |>
+      tidyr::pivot_longer(
+        !any_of(init_cols), names_to = "date", values_drop_na = TRUE
+      ) |>
       dplyr::mutate(across("date", quietly_convert_date))
 
     tibble::tibble(

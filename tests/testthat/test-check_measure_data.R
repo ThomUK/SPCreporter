@@ -10,7 +10,10 @@
   test_that({
     expect_error(
       check_measure_data(list(`Once in a blue moon` = 1)),
-      "check_measure_data: One element of measure_data must be named 'week' or 'month'"
+      paste0(
+        "check_measure_data: One element of measure_data must be ",
+        "named 'week' or 'month'"
+      )
     )
   })
 
@@ -50,7 +53,8 @@
   test_that({
     expect_no_error(
       list(
-        Week = data.frame(ref = 1, measure_name = "M1", comment = NA) # Week not week
+        # Week not week
+        Week = data.frame(ref = 1, measure_name = "M1", comment = NA)
       ) |>
         check_measure_data()
     )
@@ -114,7 +118,10 @@ measure_data <- list(
 
     expect_error(
       check_measure_data(measure_data),
-      "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'ref' is missing from the ",
+        "'week' data frame. Check for typos in the column names."
+      )
     )
 
     # error persists when the column is mis-spelled
@@ -122,6 +129,9 @@ measure_data <- list(
 
     expect_error(
       check_measure_data(measure_data),
-      "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
+      paste0(
+        "check_for_required_columns: Column 'ref' is missing from the ",
+        "'week' data frame. Check for typos in the column names."
+      )
     )
   })

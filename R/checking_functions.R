@@ -1,6 +1,7 @@
 #' Check the incoming measure data and transform as needed
 #'
-#' @param measure_data list. A list of data frames containing a combination of aggregated data and event data
+#' @param measure_data list. A list of data frames containing a combination of
+#'  aggregated data and event data
 #'
 #' @returns The input list of data frames, after checking for necessary columns
 #' @noRd
@@ -82,7 +83,9 @@ check_a_data <- function(a_data) {
 #' @noRd
 check_e_data <- function(e_data) {
 
-  if(is.null(e_data)) stop("The 'events' worksheet is missing from 'measure_data'.")
+  if (is.null(e_data)) {
+    stop("The 'events' worksheet is missing from 'measure_data'.")
+  }
 
   assert_that(
     inherits(e_data, "data.frame"),
@@ -186,7 +189,8 @@ check_measure_config <- function(measure_config) {
       across("improvement_direction", tolower),
       # " marks in the comment mess up the render process later
       across("rebase_comment", \(x) stringr::str_replace_all(x, "\\\"", "'")),
-      # target and allowable_days_lag are the only cols that should end up numeric
+      # `target` and `allowable_days_lag` are the only cols that should
+      # end up as numeric.
       across("target", \(x) as.numeric(dplyr::na_if(x, "-"))),
       across("allowable_days_lag", \(x) as.integer(tidyr::replace_na(x, "0")))
     )
@@ -240,10 +244,16 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
       \(x) ifelse(
         x == c_title,
         usethis::ui_silence(TRUE),
-        usethis::ui_warn(
-          c("check_measure_names: There is a name mismatch for measure ref: {ref_no}. The title in the data bundle is '{x}'. The title in the measure config is '{c_title}'.")
-      )))
-
+        usethis::ui_warn(c(
+          paste0(
+            "check_measure_names: There is a name mismatch for measure ref: ",
+            "{ref_no}."
+          ),
+          "The title in the data bundle is '{x}'.",
+          "The title in the measure config is '{c_title}'."
+        ))
+      )
+    })
   invisible(TRUE)
 }
 
@@ -270,10 +280,13 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
     first_missing_column <- missing_columns[1]
 
     # throw the error
-    usethis::ui_stop(
-      "check_for_required_columns: Column '{first_missing_column}' is missing from the '{df_name}' data frame. Check for typos in the column names."
-    )
-  } else .data
+    usethis::ui_stop(paste0(
+      "check_for_required_columns: Column '{first_missing_column}' is missing ",
+      "from the '{df_name}' data frame. Check for typos in the column names."
+    ))
+  } else {
+    .data
+  }
 }
 
 
@@ -295,11 +308,11 @@ check_for_optional_columns <- function(.data, optional_columns) {
     # find the name of the first missing col for the console message
     first_missing_column <- missing_columns[1]
 
-    usethis::ui_info(
-      c(
-        "check_for_optional_columns: Optional column '{first_missing_column}' is missing. Adding it."
-      )
-    )
+    usethis::ui_info(paste0(
+      "check_for_optional_columns: Optional column '{first_missing_column}' ",
+      "is missing. Adding it."
+    ))
+
     missing_columns |>
       purrr::reduce(
         \(x, y) tibble::add_column(x, {{y}} := NA_character_),
@@ -316,7 +329,8 @@ check_for_optional_columns <- function(.data, optional_columns) {
 
 #' Check all required data items are provided
 #'
-#' @param report_config A data frame. The report config detailing required report items
+#' @param report_config A data frame. The report config detailing required
+#'  report items
 #' @param measure_data Data frame in wide format
 #'
 #' @returns logical TRUE if check is successful, else an error message
@@ -326,18 +340,17 @@ check_dataset_is_complete <- function(report_config, measure_data) {
     dplyr::select(c("ref", "measure_name", "aggregation")) |>
     dplyr::anti_join(measure_data, by = c("ref", "aggregation"))
 
-
   # build an error message if there are missing data items
   assert_that(
     nrow(missing_data) == 0,
     msg = usethis::ui_stop(
-      dplyr::slice(missing_data, 1) |>
-        stringr::str_glue_data(
-          "check_dataset_is_complete: ",
-          "Data is missing for {nrow(missing_data)} report items. ",
-          "The first is ref {ref}, '{measure_name}', aggregation: {aggregation}."
-          )
-      ))
-
+      glue::glue_data(
+        dplyr::slice(missing_data, 1),
+        "check_dataset_is_complete: ",
+        "Data is missing for {nrow(missing_data)} report items. ",
+        "The first is ref {ref}, '{measure_name}', aggregation: {aggregation}"
+      )
+    )
+  )
   invisible(TRUE)
 }

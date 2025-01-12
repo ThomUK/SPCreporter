@@ -24,7 +24,10 @@
     # this will generate a warning message due to the incorrect date format
     expect_error(
       calculate_stale_data(updated_to, lag, cutoff_dttm),
-      "calculate_stale_data: Unable to convert the updated_to argument text to a valid date."
+      paste0(
+        "calculate_stale_data: Unable to convert the updated_to ",
+        "argument text to a valid date."
+      )
     )
   })
 

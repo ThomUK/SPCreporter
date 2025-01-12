@@ -3,9 +3,11 @@
 #' @param measure_data list. List containing data frames of data in wide format
 #' @param report_config data frame. Config information for the report
 #' @param measure_config data frame. Config information for the measures
-#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last date-time for data in the report eg. month-end)
+#' @param data_cutoff_dttm POSIXct. The data cutoff date-time (the last
+#'  date-time for data in the report eg. month-end)
 #'
-#' @returns data frame. A nested data frame containing source data for the report
+#' @returns data frame. A nested data frame containing source data for the
+#'  report
 #' @export
 spcr_make_data_bundle <- function(
     measure_data = test_measure_data,
@@ -29,7 +31,8 @@ spcr_make_data_bundle <- function(
   a_data <- measure_data |>
     purrr::discard_at("events")
 
-  # a_data is closely related to the measure_data, but we use a different function to check it
+  # a_data is closely related to the measure_data, but we use a different
+  # function to check it.
   a_data <- check_a_data(a_data)
 
   # check event_data columns and set `ref` column to character
@@ -89,7 +92,20 @@ spcr_make_data_bundle <- function(
 
   # Check that measure data that is supposed to be integer data is supplied as
   # such, or raise a warning message
+  if (any(nested_data[["unit"]] == "integer")) {
+    nested_data |>
+      dplyr::filter(if_any("unit", \(x) x == "integer")) |>
+      tidyr::hoist("measure_data", "value") |>
       dplyr::select(c(x = "value", y = "ref")) |>
+      purrr::pwalk(\(x, y) {
+        if (any(round(x) != x)) {
+          warning(glue(
+            "spcr_make_data_bundle: Measure {y} is configured as an integer, ",
+            "but has been supplied with decimal data."
+          ))
+        }
+      })
+  }
 
   nested_data |>
     dplyr::mutate(
