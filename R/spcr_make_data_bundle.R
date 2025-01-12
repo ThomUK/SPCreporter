@@ -68,13 +68,9 @@ spcr_make_data_bundle <- function(
   nested_data <- report_config |>
     # use measure names from report_config not from measure_config
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
-    dplyr::mutate(
-      across("measure_name",
-        \(x) if_else(
-          .data[["spc_chart_type"]] == "t", paste(x, "(time-between)"), x
-        )
-      )
-    ) |>
+    dplyr::mutate(across("measure_name", \(x) {
+      if_else(.data[["spc_chart_type"]] == "t", paste(x, "(time-between)"), x)
+    })) |>
     dplyr::nest_join(
       measure_data_long,
       by = c("ref", "aggregation"),
@@ -83,7 +79,9 @@ spcr_make_data_bundle <- function(
     # Pull most recent date from each data frame in the measure_data column
     dplyr::mutate(
       data_cutoff_dttm = as.POSIXct(data_cutoff_dttm),
-      last_date = purrr::map_vec(.data[["measure_data"]], \(x) max(x[["date"]], na.rm = TRUE)),
+      last_date = purrr::map_vec(.data[["measure_data"]], \(x) {
+        max(x[["date"]], na.rm = TRUE)
+      }),
       # pull most recent data point from each df in the measure_data column
       last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) {
         dplyr::slice_max(x, order_by = x[["date"]], n = 1)[["value"]]
@@ -109,9 +107,8 @@ spcr_make_data_bundle <- function(
 
   nested_data |>
     dplyr::mutate(
-      across(
-        "improvement_direction",
-        \(x) dplyr::case_when(
+      across("improvement_direction", \(x) {
+        dplyr::case_when(
           .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
           # a rather unlikely situation
           .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
@@ -127,14 +124,16 @@ spcr_make_data_bundle <- function(
         \(x) if_else(.data[["spc_chart_type"]] == "t", NA, x)
       ),
       across("target_set_by", \(x) if_else(is.na(x), "-", x)),
-      across("last_data_point", \(x) dplyr::case_when(
-        is.na(x) ~ NA_character_,
-        x == Inf ~ NA_character_,
-        unit == "%" ~ paste0(round(x * 100, 1), "%"),
-        unit == "decimal" ~ as.character(round(x, 2)),
-        unit == "days" ~ paste0(x, "d"),
-        TRUE ~ as.character(round(x))
-      ))
+      across("last_data_point", \(x) {
+        dplyr::case_when(
+          is.na(x) ~ NA_character_,
+          x == Inf ~ NA_character_,
+          unit == "%" ~ paste0(round(x * 100, 1), "%"),
+          unit == "decimal" ~ as.character(round(x, 2)),
+          unit == "days" ~ paste0(x, "d"),
+          .default = as.character(round(x))
+        )
+      })
     ) |>
     dplyr::mutate(
       target_text = get_target_text(

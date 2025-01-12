@@ -22,9 +22,11 @@ lengthen_measure_data <- function(.data) {
 
   assert_that(
     all(purrr::map_lgl(
-      names(.data), \(x) x %in% init_cols |
+      names(.data), \(x) {
+        x %in% init_cols |
         stringr::str_detect(x, "^[0-9]{5}$") |
-        stringr::str_detect(x, ymd_regex)
+        stringr::str_detect(x, ymd_rx)
+      }
     )),
     msg = usethis::ui_stop(
       paste(

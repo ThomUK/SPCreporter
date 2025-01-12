@@ -31,10 +31,9 @@ check_measure_data <- function(measure_data) {
     )
   measure_data |>
     purrr::keep_at(allowed_names) |>
-    purrr::iwalk(
-      \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name"))
-    ) |>
+    purrr::iwalk(\(x, nm) {
+      check_for_required_columns(x, nm, c("ref", "measure_name"))
+    }) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
 }
 
@@ -64,10 +63,9 @@ check_a_data <- function(a_data) {
     )
   a_data |>
     purrr::keep_at(allowed_names) |>
-    purrr::iwalk(
-      \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name", "comment"))
-    )
+    purrr::iwalk(\(x, nm) {
+      check_for_required_columns(x, nm, c("ref", "measure_name", "comment"))
+    })
 }
 
 
@@ -240,8 +238,8 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
 
   # warn when the titles don't match
   m_titles |>
-    purrr::walk(
-      \(x) ifelse(
+    purrr::walk(\(x) {
+      ifelse(
         x == c_title,
         usethis::ui_silence(TRUE),
         usethis::ui_warn(c(
@@ -314,11 +312,12 @@ check_for_optional_columns <- function(.data, optional_columns) {
     ))
 
     missing_columns |>
-      purrr::reduce(
-        \(x, y) tibble::add_column(x, {{y}} := NA_character_),
-        .init = .data
-      )
-  } else .data
+      purrr::reduce(\(x, y) {
+        tibble::add_column(x, {{y}} := NA_character_)
+      }, .init = .data)
+  } else {
+    .data
+  }
 }
 
 
