@@ -144,8 +144,8 @@ spcr_make_report <- function(
     gsub(" ", "_", report_title), "_", time_stamp, ".html"
   )
 
-  # create a document title (HTML <title>), unless already supplied
-  # `pagetitle` in YAML/Pandoc
+  # Create a document title (HTML <title>), unless already supplied
+  # `pagetitle` in YAML/Pandoc.
   # https://community.rstudio.com/t/r-markdown-html-output-title/47294
   if (is.null(document_title)) {
     document_title <- paste0(
@@ -153,7 +153,7 @@ spcr_make_report <- function(
     )
   }
 
-  # render the html output
+  # Render the html output
   usethis::ui_info("Making HTML output...")
 
   rmarkdown::render(
@@ -169,17 +169,17 @@ spcr_make_report <- function(
     output_file = output_file_name
   )
 
-  # print the full path to the console
+  # Print the full path to the console
   wd <- getwd() |>
-    stringr::str_remove("^\\\\{1}") # if network location, remove an initial '\'
+    stringr::str_remove("^\\\\{1}") # If network location, remove an initial '\'
   path <- file.path(wd, output_directory, output_file_name)
   usethis::ui_info("HTML filepath: {path}")
   usethis::ui_done("HTML output complete.")
 
-  # open the result in the browser
+  # Open the result in the browser
   utils::browseURL(path)
 
-  # render a pdf if needed
+  # Render a pdf if needed
   if ("pdf" %in% output_type) {
     convert_to_pdf(path)
   }
@@ -266,7 +266,7 @@ make_spc_chart <- function(
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
 
-  # conditionally add the "hollow" final data point to rare-event charts
+  # Conditionally add the "hollow" final data point to rare-event charts
   if (spc_chart_type == "t") {
     plot +
       ggplot2::annotate(
@@ -275,7 +275,7 @@ make_spc_chart <- function(
         y = dplyr::last(spc_data[["y"]]),
         shape = "circle filled",
         colour = "grey65", # #a6a6a6 (matches plotthedots grey)
-        fill = NA,   # so the PTD dot can be seen
+        fill = NA, # So the PTD dot can be seen
         size = 5,
         stroke = 2
       )

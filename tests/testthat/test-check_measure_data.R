@@ -98,7 +98,7 @@ measure_data <- list(
 
 "it coerces refs to character vectors" |>
   test_that({
-    # create the error by assigning numeric refs
+    # Create the error by assigning numeric refs
     measure_data[["week"]]$ref <- c(1, 2, 3)
     measure_data[["month"]]$ref <- c(1, 2, 3)
 
@@ -112,7 +112,7 @@ measure_data <- list(
 
 "it errors helpfully when column names are missing or mis-spelled" |>
   test_that({
-    # create the error by removing a required column
+    # Create the error by removing a required column
     measure_data[["week"]]$ref <- NULL
 
     expect_error(
@@ -123,7 +123,7 @@ measure_data <- list(
       )
     )
 
-    # error persists when the column is mis-spelled
+    # Error persists when the column is mis-spelled
     measure_data[["week"]]$Reference <- c(1, 2, 3)
 
     expect_error(

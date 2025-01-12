@@ -10,7 +10,7 @@ lengthen_measure_data <- function(.data) {
     msg = "lengthen_measure_data: The data must be a data frame."
   )
 
-  # should match date strings of the form 2022-06-01
+  # Should match date strings of the form 2022-06-01
   ymd_rx <- "^20[0-9]{2}-[0-9]{1,2}-[0-9]{1,2}$"
   init_cols <- c(
     "aggregation",
@@ -112,9 +112,9 @@ get_updatedto_text <- function(last_date, aggregation) {
     msg = "get_updatedto_text: Multiple values for `aggregation` provided"
   )
 
-  last_date <- as.Date(last_date) # handles dttm being passed in by mistake
+  last_date <- as.Date(last_date) # Handles dttm being passed in by mistake
 
-  # rename "calendar_year" and "none" aggregations to work with ceiling_date()
+  # Rename "calendar_year" and "none" aggregations to work with ceiling_date()
   agg <- dplyr::case_when(
     aggregation == "calendar_year" ~ "year",
     # aggregation == "financial_year" ~ "3 months", # TODO
@@ -122,7 +122,7 @@ get_updatedto_text <- function(last_date, aggregation) {
     .default = aggregation
   )
 
-  # allowed values
+  # Allowed values
   assert_that(
     all(agg %in% c("day", "week", "month", "year")),
     msg = glue("get_updatedto_text: invalid aggregation ({agg}) provided")
@@ -176,11 +176,11 @@ parse_rebase_dates <- function(input) {
   if (is.na(input)) {
     NULL
   } else {
-    # parse into individual character strings
+    # Parse into individual character strings
     vector <- input |>
       stringr::str_split_1("\\s*,\\s*") |>
-      stringr::str_remove_all("\\\"") |> # remove internal quotes
-      stringr::str_trim() # trim white space
+      stringr::str_remove_all("\\\"") |> # Remove internal quotes
+      stringr::str_trim() # Trim white space
 
     # Wrap the date parsing in tryCatch() to stop() if excel dates are not
     # properly formed.
@@ -347,6 +347,6 @@ calculate_stale_data <- function(updated_to, lag, cutoff_dttm) {
     msg = "calculate_stale_data: The cutoff_dttm argument must be a POSIXct."
   )
 
-  lag <- days(lag) + lubridate::hms("23:59:59") # convert to a period
+  lag <- days(lag) + lubridate::hms("23:59:59") # Convert to a period
   if_else((updated_to + lag) < cutoff_dttm, "stale", "fresh")
 }

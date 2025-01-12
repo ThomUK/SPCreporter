@@ -20,12 +20,12 @@ process_event_data_t <- function(event_data, data_cutoff_dttm) {
     dplyr::group_by(pick("ref")) |>
     dplyr::arrange(pick("event_date_or_datetime")) |>
 
-    # add the theoretical "today" event to each group
+    # Add the theoretical "today" event to each group
     dplyr::group_modify(\(x, y) {
       tibble::add_row(x, event_date_or_datetime = data_cutoff_dttm)
     }) |>
 
-    # calculate the time between events, in days
+    # Calculate the time between events, in days
     dplyr::mutate(
       time_between = as.integer(difftime(
         .data[["event_date_or_datetime"]],
@@ -36,7 +36,7 @@ process_event_data_t <- function(event_data, data_cutoff_dttm) {
     dplyr::filter(if_any("time_between", \(x) !is.na(x))) |>
     dplyr::ungroup() |>
 
-    # fill in the gaps left by adding the "today" event
+    # Fill in the gaps left by adding the "today" event
     tidyr::fill("aggregation", "measure_name") |>
     dplyr::relocate("aggregation") |>
     dplyr::rename(

@@ -1,6 +1,6 @@
 "updatedto_text handles dttms correctly 1" |>
   test_that({
-    # failing test for current behaviour (11 March 2024)
+    # Failing test for current behaviour (11 March 2024)
 
     d1 <- lubridate::as_date("2024-02-01")
     d2 <- lubridate::as_datetime("2024-02-01")
@@ -21,12 +21,12 @@
 
 "updatedto_text handles dttms correctly 2" |>
   test_that({
-    # failing test for current behaviour (11 March 2024)
+    # Failing test for current behaviour (11 March 2024)
 
     d1 <- lubridate::as_date("2024-02-01")
     d2 <- lubridate::as_datetime("2024-02-01")
 
-    # the function needs to operate on a date not a datetime
+    # The function needs to operate on a date not a datetime
     d1 <- as.Date(d1)
     d2 <- as.Date(d2)
 
@@ -45,7 +45,7 @@
 "general input/output test for get_updatedto_text() part 1" |>
   test_that({
     d1 <- lubridate::as_date("2024-02-01") # A Thursday
-    exp_out <- "29-Feb-2024" # character not date
+    exp_out <- "29-Feb-2024" # Character not date
 
     od1 <- get_updatedto_text(d1, "none")
     expect_identical(od1, exp_out)
@@ -54,21 +54,21 @@
     expect_identical(od2, exp_out)
 
     od3 <- get_updatedto_text(d1, "day")
-    expect_identical(od3, "01-Feb-2024") # character not date
+    expect_identical(od3, "01-Feb-2024") # Character not date
 
     od4 <- get_updatedto_text(d1, "calendar_year")
-    expect_identical(od4, "31-Dec-2024") # character not date
+    expect_identical(od4, "31-Dec-2024") # Character not date
 
     od5 <- get_updatedto_text(d1, "week")
     # Should give us the following Sunday (4 Feb)
-    expect_identical(od5, "04-Feb-2024") # character not date
+    expect_identical(od5, "04-Feb-2024") # Character not date
   })
 
 
 "general input/output test for get_updatedto_text() part 2" |>
   test_that({
     d1 <- lubridate::as_date("2024-01-01") # A Monday
-    exp_out <- "31-Jan-2024" # character not date
+    exp_out <- "31-Jan-2024" # Character not date
 
     od1 <- get_updatedto_text(d1, "none")
     expect_identical(od1, exp_out)
@@ -77,21 +77,21 @@
     expect_identical(od2, exp_out)
 
     od3 <- get_updatedto_text(d1, "day")
-    expect_identical(od3, "01-Jan-2024") # character not date
+    expect_identical(od3, "01-Jan-2024") # Character not date
 
     od4 <- get_updatedto_text(d1, "calendar_year")
-    expect_identical(od4, "31-Dec-2024") # character not date
+    expect_identical(od4, "31-Dec-2024") # Character not date
 
     od5 <- get_updatedto_text(d1, "week")
     # Should give us the following Sunday (7 Jan)
-    expect_identical(od5, "07-Jan-2024") # character not date
+    expect_identical(od5, "07-Jan-2024") # Character not date
 
-    # financial year still to be implemented
+    # Financial year still to be implemented
 
 
     # try some errors
     expect_error(
-      get_updatedto_text(d1, "quarter"), # not implemented
+      get_updatedto_text(d1, "quarter"), # Not implemented
       "get_updatedto_text: invalid aggregation (quarter) provided",
       fixed = TRUE
     )

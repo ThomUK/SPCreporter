@@ -14,11 +14,11 @@ spcr_make_data_bundle <- function(
     report_config = test_report_config,
     measure_config = test_measure_config,
     data_cutoff_dttm = Sys.time()) {
-  # check measure_data (list) columns and set `ref` column to character
+  # Check measure_data (list) columns and set `ref` column to character
   measure_data <- check_measure_data(measure_data)
-  # check report_config columns and set `ref` column to character
+  # Check report_config columns and set `ref` column to character
   report_config <- check_report_config(report_config)
-  # check measure_config columns and set `ref` column to character
+  # Check measure_config columns and set `ref` column to character
   measure_config <- check_measure_config(measure_config)
 
   # Measure data can contain two types of worksheet:
@@ -36,24 +36,24 @@ spcr_make_data_bundle <- function(
   # function to check it.
   a_data <- check_a_data(a_data)
 
-  # check event_data columns and set `ref` column to character
+  # Check event_data columns and set `ref` column to character
   e_data <- check_e_data(e_data)
 
-  # process event data into time-between data
+  # Process event data into time-between data
   e_data_time_between <- process_event_data_t(e_data, data_cutoff_dttm)
 
-  # reduce measure_data list to a single data frame
+  # Reduce measure_data list to a single data frame
   a_data_df <- a_data |>
     dplyr::bind_rows(.id = "aggregation")
 
 
   # Create long version of the aggregated data, sorted by date (within each
-  # ref), and with the processed event data added to the end
+  # ref), and with the processed event data added to the end.
   measure_data_long <- a_data_df |>
     lengthen_measure_data() |>
     dplyr::bind_rows(e_data_time_between)
 
-  # check all required data is supplied
+  # Check all required data is supplied
   check_dataset_is_complete(report_config, measure_data_long)
 
   # Check reference numbers and measure names agree across both data frames.
@@ -65,9 +65,9 @@ spcr_make_data_bundle <- function(
 
   # measure_data in long format is joined on to the config files as a nested df
   # column. Then we mutate the data frame row by row, adding new variables and
-  # tidying up / formatting variables ready for reporting
+  # tidying up / formatting variables ready for reporting.
   nested_data <- report_config |>
-    # use measure names from report_config not from measure_config
+    # Use measure names from report_config not from measure_config
     dplyr::left_join(dplyr::select(measure_config, !"measure_name"), "ref") |>
     dplyr::mutate(across("measure_name", \(x) {
       if_else(.data[["spc_chart_type"]] == "t", paste(x, "(time-between)"), x)
@@ -83,14 +83,14 @@ spcr_make_data_bundle <- function(
       last_date = purrr::map_vec(.data[["measure_data"]], \(x) {
         max(x[["date"]], na.rm = TRUE)
       }),
-      # pull most recent data point from each df in the measure_data column
+      # Pull most recent data point from each df in the measure_data column
       last_data_point = purrr::map_vec(.data[["measure_data"]], \(x) {
         dplyr::slice_max(x, order_by = x[["date"]], n = 1)[["value"]]
       })
     )
 
   # Check that measure data that is supposed to be integer data is supplied as
-  # such, or raise a warning message
+  # such, or raise a warning message.
   if (any(nested_data[["unit"]] == "integer")) {
     nested_data |>
       dplyr::filter(if_any("unit", \(x) x == "integer")) |>
@@ -111,7 +111,7 @@ spcr_make_data_bundle <- function(
       across("improvement_direction", \(x) {
         dplyr::case_when(
           .data[["spc_chart_type"]] == "t" & x == "decrease" ~ "increase",
-          # a rather unlikely situation
+          # A rather unlikely situation
           .data[["spc_chart_type"]] == "t" & x == "increase" ~ "decrease",
           .default = x
         )
@@ -139,7 +139,7 @@ spcr_make_data_bundle <- function(
       updated_to = purrr::map2_chr(
         .data[["last_date"]],
         .data[["aggregation"]],
-        get_updatedto_text # use map2_chr as this doesn't handle vectors well
+        get_updatedto_text # Use map2_chr as this doesn't handle vectors well
       ),
       stale_data = calculate_stale_data(
         .data[["updated_to"]],

@@ -65,11 +65,11 @@ test_that("it returns correct string in failing conditions", {
   )
 
 
-  # improvement direction = decrease
+  # Improvement direction = decrease
   spc <- data.frame(
     upl = 3,
     lpl = 1,
-    target = 0 # the target is below process limits
+    target = 0 # The target is below process limits
   )
 
   expect_equal(
@@ -79,11 +79,11 @@ test_that("it returns correct string in failing conditions", {
 })
 
 test_that("it returns correct string in passing conditions", {
-  # improvement direction = increase
+  # Improvement direction = increase
   spc <- data.frame(
     upl = 3,
     lpl = 1,
-    target = 0.5 # the target is below process limits
+    target = 0.5 # The target is below process limits
   )
 
   expect_equal(
@@ -91,9 +91,9 @@ test_that("it returns correct string in passing conditions", {
     "PASS_TARG"
   )
 
-  # improvement direction = decrease
+  # Improvement direction = decrease
   spc <- data.frame(
-    target = 4, # the target is above process limits
+    target = 4, # The target is above process limits
     upl = 3,
     lpl = 1
   )

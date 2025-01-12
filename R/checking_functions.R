@@ -149,7 +149,7 @@ check_measure_config <- function(measure_config) {
     msg = "check_measure_config: config_data must be a data frame"
   )
 
-  # check for column names, and provide a helpful error message if needed
+  # Check for column names, and provide a helpful error message if needed
   required_columns <- c(
     "ref",
     "measure_name",
@@ -173,13 +173,13 @@ check_measure_config <- function(measure_config) {
   )
 
   measure_config |>
-    # check required cols are present
+    # Check required cols are present
     check_for_required_columns("measure_config", required_columns) |>
     check_for_optional_columns(optional_columns) |>
     dplyr::select(c(all_of(required_columns), any_of(optional_columns))) |>
 
     dplyr::mutate(
-      # default all cols to character (empty cols are imported as logical NAs)
+      # Default all cols to character (empty cols are imported as logical NAs)
       across(everything(), as.character),
       across("unit", tolower),
       across("improvement_direction", tolower),
@@ -215,7 +215,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
       "data frame.")
   )
 
-  # find the titles to compare
+  # Find the titles to compare
   m_titles <- measure_data |>
     dplyr::filter(if_any("ref", \(x) x == ref_no)) |>
     dplyr::pull("measure_name") |>
@@ -234,7 +234,7 @@ check_measure_names <- function(ref_no, measure_data, measure_config) {
       )
     )
 
-  # warn when the titles don't match
+  # Warn when the titles don't match
   m_titles |>
     purrr::walk(\(x) {
       ifelse(
@@ -272,10 +272,10 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
   missing_columns <- setdiff(required_columns, names(.data))
 
   if (length(missing_columns)) {
-    # find the name of the first missing col for the error message
+    # Find the name of the first missing col for the error message
     first_missing_column <- missing_columns[1] # nolint
 
-    # throw the error
+    # Throw the error
     usethis::ui_stop(paste0(
       "check_for_required_columns: Column '{first_missing_column}' is missing ",
       "from the '{df_name}' data frame. Check for typos in the column names."
@@ -337,7 +337,7 @@ check_dataset_is_complete <- function(report_config, measure_data) {
     dplyr::select(c("ref", "measure_name", "aggregation")) |>
     dplyr::anti_join(measure_data, by = c("ref", "aggregation"))
 
-  # build an error message if there are missing data items
+  # Build an error message if there are missing data items
   assert_that(
     nrow(missing_data) == 0,
     msg = usethis::ui_stop(

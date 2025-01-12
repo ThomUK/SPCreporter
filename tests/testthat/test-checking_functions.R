@@ -66,7 +66,7 @@
 # check measure config
 "check measure config: coerces refs to character vectors" |>
   test_that({
-    # create the error by assigning numeric refs
+    # Create the error by assigning numeric refs
     measure_config <- tibble::tibble(
       ref = c(1, 2, 3),
       measure_name = c("M1", "M2", "M3"),
@@ -97,7 +97,7 @@
 "check measure config: errors helpfully when column names are missing or mis-spelled" |> # nolint
   test_that({
 
-    # create the error by omitting a required column (unit)
+    # Create the error by omitting a required column (unit)
     measure_config <- tibble::tibble(
       ref = c("1", "2", "3"),
       measure_name = c("M1", "M2", "M3"),
@@ -122,7 +122,7 @@
       )
     )
 
-    # error persists when the column is mis-spelled
+    # Error persists when the column is mis-spelled
     measure_config <- tibble::tibble(
       ref = c("1", "2", "3"),
       measure_name = c("M1", "M2", "M3"),
@@ -151,7 +151,7 @@
 
 
 
-# check measure names
+# Check measure names
 "check measure names: happy path" |>
   test_that({
 
@@ -212,7 +212,7 @@
 
 
 
-# check report config
+# Check report config
 "check report config: coerces refs to character vectors" |>
   test_that({
 
@@ -237,7 +237,7 @@
 "check report config: errors helpfully when column names are missing or mis-spelled" |> # nolint
   test_that({
 
-    # create the error by omitting a required column ('domain')
+    # Create the error by omitting a required column ('domain')
     report_config <- tibble::tibble(
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
@@ -254,7 +254,7 @@
       )
     )
 
-    # error persists when the column is mis-spelled
+    # Error persists when the column is mis-spelled
     report_config <- tibble::tibble(
       ref = c("1", "2", "3", "1", "2", "3"),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
@@ -275,7 +275,7 @@
 "check report config: missing optional columns does not throw an error" |>
   test_that({
 
-    # assign numeric refs
+    # Assign numeric refs
     report_config <- tibble::tibble(
       ref = c(1, 2, 3, 1, 2, 3),
       measure_name = c("M1", "M2", "M3", "M1", "M2", "M3"),
@@ -328,7 +328,7 @@
 
     aggregated_datasheet <- tibble::tibble(
       ref = c(1, 2, 3),
-      # measure_name = c("M1", "M2", "M3"), # missing column
+      # measure_name = c("M1", "M2", "M3"), # Missing column
       comment = c("comment", "comment", "comment")
     )
 
@@ -380,7 +380,7 @@
 
     datasheet <- tibble::tibble(
       ref = c(1, 2, 3),
-      # measure_name = c("M1", "M2", "M3"), # missing column
+      # measure_name = c("M1", "M2", "M3"), # Missing column
       comment = c("comment", "comment", "comment")
     )
 
@@ -422,7 +422,7 @@
       ref = c(1, 2, 3),
       measure_name = c("M1", "M2", "M3"),
       comment = c("comment", "comment", "comment"),
-      # event_date_or_datetime = "there will be dates here" # missing column
+      # event_date_or_datetime = "there will be dates here" # Missing column
     )
 
     expect_error(

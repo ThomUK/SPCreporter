@@ -33,7 +33,7 @@
     expect_error(
       spcr_make_data_bundle(
         measure_data_no_events,
-        test_report_config, # note this will still be calling for t charts
+        test_report_config, # Note this will still be calling for t charts
         test_measure_config
       ),
       "The 'events' worksheet is missing from 'measure_data'."
@@ -53,7 +53,7 @@
     )
 
     report_config <- test_report_config |>
-      dplyr::filter(spc_chart_type != "t") # event data needed for t charts
+      dplyr::filter(spc_chart_type != "t") # Event data needed for t charts
 
     expect_no_error(
       spcr_make_data_bundle(
@@ -70,7 +70,7 @@
 "test data bundle process" |>
   test_that({
 
-    # stub out the Sys.time call with a repeating value
+    # Stub out the Sys.time call with a repeating value
     spcr_make_data_bundle |>
       mockery::stub("Sys.time", as.POSIXct("2023-12-04 21:25:25"))
 
@@ -80,8 +80,8 @@
       test_measure_config
     )
 
-    # some spot checks on the above conversion of the last_data_point to the
-    # appropriate character format
+    # Some spot checks on the above conversion of the last_data_point to the
+    # appropriate character format.
     expect_equal(db[["last_data_point"]][[1]], "222")
     expect_equal(db[["last_data_point"]][[2]], "73%")
     expect_equal(db[["last_data_point"]][[3]], "0.46")
@@ -127,12 +127,12 @@
 
   })
 
-# this is more properly a test for the check_measure_names() function
-# but it's good to test it as part of the make_bundle() workflow too
+# This is more properly a test for the check_measure_names() function
+# but it's good to test it as part of the make_bundle() workflow too.
 "error for name mismatches before other errors" |>
   test_that({
 
-    # a measure_name mismatch in the measure config will throw a warning
+    # A measure_name mismatch in the measure config will throw a warning
     test_measure_config2 <- test_measure_config |>
       dplyr::mutate(across("measure_name", \(x) {
         stringr::str_replace(x, "Capacity", "Capaciteeee")
@@ -151,7 +151,7 @@
       )
     )
 
-    # a measure_name mismatch in the measure data will throw a warning
+    # A measure_name mismatch in the measure data will throw a warning
     test_measure_data2 <- test_measure_data |>
       purrr::modify_at("month", \(x) {
         dplyr::mutate(x, across("measure_name", \(x) {
@@ -172,7 +172,7 @@
       )
     )
 
-    # but a measure_name change in the report config should not throw an error
+    # But a measure_name change in the report config should not throw an error
     test_report_config2 <- test_report_config |>
       dplyr::mutate(across("measure_name", \(x) {
         stringr::str_replace(x, "Widgets", "widgets")
@@ -185,5 +185,4 @@
         measure_config = test_measure_config
       )
     )
-
   })
