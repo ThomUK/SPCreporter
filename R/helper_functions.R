@@ -191,9 +191,9 @@ align_rebase_dates <- function(input, measure_data) {
 #' @noRd
 get_assurance_type <- function(spc, improvement_direction) {
   imp_dir <- tolower(improvement_direction)
-  upl <- spc[["upl"]][1]
-  lpl <- spc[["lpl"]][1]
-  target <- spc[["target"]][1]
+  upl <- tail(spc[["upl"]], 1)
+  lpl <- tail(spc[["lpl"]], 1)
+  target <- tail(spc[["target"]], 1)
 
   a <- dplyr::case_when(
     imp_dir == "neutral" ~ "Neutral",
