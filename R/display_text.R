@@ -20,10 +20,8 @@ get_target_text <- function(target, improvement_direction, unit) {
   dplyr::case_when(
     target == 0 & imp_dir == "decrease" ~ string,
     target == 1 & unit == "%" & imp_dir == "increase" ~ string,
-    # ≤ is: ≤
-    !is.na(target) & imp_dir == "decrease" ~ paste0("≤ ", string),
-    # ≥ is: ≥
-    !is.na(target) & imp_dir == "increase" ~ paste0("≥ ", string),
+    !is.na(target) & imp_dir == "decrease" ~ paste0("\u2264 ", string),
+    !is.na(target) & imp_dir == "increase" ~ paste0("\u2265 ", string),
     TRUE ~ string
   )
 }
