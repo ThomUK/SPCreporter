@@ -72,3 +72,27 @@ test_that("it returns correct strings when improvement direction is decrease", {
     "SC_LO_IMP"
   )
 })
+
+test_that("an unrecognised improvement direction with a special cause point errors", {
+  spc <- data.frame(
+    point_type = "special_cause_improvement",
+    relative_to_mean = 1
+  )
+
+  expect_error(
+    get_variation_type(spc, "upward"),
+    "Unable to determine SPC variation type"
+  )
+})
+
+test_that("an unrecognised point_type errors", {
+  spc <- data.frame(
+    point_type = "special_cause_unknown",
+    relative_to_mean = 0
+  )
+
+  expect_error(
+    get_variation_type(spc, "increase"),
+    "Unable to determine SPC variation type"
+  )
+})

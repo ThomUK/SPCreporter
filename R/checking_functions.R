@@ -51,7 +51,7 @@ check_measure_data <- function(measure_data) {
 check_a_data <- function(a_data) {
   assertthat::assert_that(
     inherits(a_data, "list"),
-    msg = "check_measure_data: The data must be a list."
+    msg = "check_a_data: The data must be a list."
   )
 
   # We now only retain data frames from the list if they have a name
@@ -61,12 +61,18 @@ check_a_data <- function(a_data) {
     "day", "week", "month",
     "calendar_year", "financial_year"
     )
+  required_columns <- c("ref", "measure_name", "comment")
+
   a_data |>
     purrr::keep_at(allowed_names) |>
-    purrr::iwalk(
-      \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name", "comment"))
-    )
+    purrr::iwalk(\(x, nm) check_for_required_columns(x, nm, required_columns)) |>
+    purrr::iwalk(\(x, nm) assertthat::assert_that(
+      ncol(x) > length(required_columns),
+      msg = paste0(
+        "measure_data: No date columns found in the '", nm, "' sheet or dataframe. ",
+        "The data must contain at least one and probably more date column(s) (which will contain the data to be plotted)."
+      )
+    ))
 }
 
 
@@ -118,11 +124,6 @@ check_report_config <- function(report_config) {
     "ref", "measure_name", "domain", "spc_chart_type", "aggregation"
   )
 
-  assert_that(
-    !any(is.na(report_config[["aggregation"]])),
-    msg = "check_report_config: Some aggregation values are blank."
-  )
-
   optional_columns <- c("report_comment")
 
   # check required cols are present
@@ -131,7 +132,12 @@ check_report_config <- function(report_config) {
     check_for_optional_columns(optional_columns) |>
     dplyr::select(c(all_of(required_columns), any_of(optional_columns))) |>
     dplyr::distinct() |>
-    dplyr::mutate(across("ref", as.character))
+    dplyr::mutate(
+      across("ref", as.character),
+      across(c("spc_chart_type", "aggregation"), tolower)
+    ) |>
+    check_for_allowed_values("spc_chart_type", c("xmr", "t")) |>
+    check_for_allowed_values("aggregation", c("day", "week", "month", "calendar_year", "financial_year", "none"))
 }
 
 
@@ -189,7 +195,9 @@ check_measure_config <- function(measure_config) {
       # target and allowable_days_lag are the only cols that should end up numeric
       across("target", \(x) as.numeric(dplyr::na_if(x, "-"))),
       across("allowable_days_lag", \(x) as.integer(tidyr::replace_na(x, "0")))
-    )
+    ) |>
+    check_for_allowed_values("improvement_direction", c("increase", "decrease", "neutral")) |>
+    check_for_allowed_values("unit", c("integer", "decimal", "%"))
 }
 
 
@@ -279,6 +287,28 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
 
 
 
+
+
+#' Check that a column contains only allowed values
+#'
+#' @param .data A data frame
+#' @param col_name character. The column to validate
+#' @param allowed_values character. The set of permitted values
+#'
+#' @returns The original data frame, or an error if invalid values are found
+#' @noRd
+check_for_allowed_values <- function(.data, col_name, allowed_values) {
+  bad <- setdiff(.data[[col_name]], allowed_values)
+  assertthat::assert_that(
+    length(bad) == 0,
+    msg = paste0(
+      "'", col_name, "' must be one of ",
+      paste(paste0("'", allowed_values, "'"), collapse = ", "), ". ",
+      "Invalid value(s): ", paste(bad, collapse = ", "), "."
+    )
+  )
+  .data
+}
 
 
 #' Certain variables are optional in measure_config. If supplied, we want to
