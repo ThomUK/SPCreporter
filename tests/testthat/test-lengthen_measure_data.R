@@ -63,6 +63,19 @@
   })
 
 
+"only init columns and no date columns causes an error (pivot_longer requires at least one column)" |>
+  test_that({
+    .data <- tibble::tibble(
+      ref = 1L,
+      measure_name = "a name",
+      comment = "a comment"
+      # no date columns
+    )
+
+    expect_error(lengthen_measure_data(.data))
+  })
+
+
 "check_pipeline" |>
   test_that({
 

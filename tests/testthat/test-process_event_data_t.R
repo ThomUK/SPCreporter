@@ -23,6 +23,37 @@
 
   })
 
+"process_event_data_t: single event produces one row (time from event to cutoff)" |>
+  test_that({
+    e_data <- tibble::tibble(
+      ref = "1",
+      measure_name = "Name",
+      event_date_or_datetime = as.POSIXct("2020-01-01")
+    )
+    cutoff_dttm <- as.POSIXct("2020-01-11 23:59:59")
+
+    result <- process_event_data_t(e_data, cutoff_dttm)
+
+    expect_equal(nrow(result), 1L)
+    expect_equal(result[["value"]], 10L) # 10 whole days between event and cutoff
+    expect_equal(result[["date"]], cutoff_dttm)
+  })
+
+"process_event_data_t: events with identical datetimes produce a zero time-between row" |>
+  test_that({
+    e_data <- tibble::tibble(
+      ref = "1",
+      measure_name = "Name",
+      event_date_or_datetime = as.POSIXct(c("2020-01-05", "2020-01-05"))
+    )
+    cutoff_dttm <- as.POSIXct("2020-01-15")
+
+    result <- process_event_data_t(e_data, cutoff_dttm)
+
+    expect_equal(nrow(result), 2L)
+    expect_equal(result[["value"]], c(0L, 10L))
+  })
+
 "process_event_data_t: passing in an empty event list returns NULL" |>
   test_that({
 

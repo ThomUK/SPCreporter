@@ -138,6 +138,68 @@
 
 
 
+"check measure config: invalid improvement_direction throws an error" |>
+  test_that({
+    measure_config <- tibble::tibble(
+      ref = "1", measure_name = "M1", data_source = "S1",
+      data_owner = "O1", accountable_person = "L1",
+      unit = "integer", improvement_direction = "upward",
+      target = NA, target_set_by = NA, data_quality = "GGGG",
+      rebase_dates = NA, rebase_comment = NA
+    )
+
+    expect_error(
+      check_measure_config(measure_config),
+      "'improvement_direction' must be one of.*Invalid value\\(s\\): upward"
+    )
+  })
+
+"check measure config: valid improvement_direction values are accepted" |>
+  test_that({
+    for (dir in c("increase", "Increase", "decrease", "Decrease", "neutral", "Neutral")) {
+      measure_config <- tibble::tibble(
+        ref = "1", measure_name = "M1", data_source = "S1",
+        data_owner = "O1", accountable_person = "L1",
+        unit = "integer", improvement_direction = dir,
+        target = NA, target_set_by = NA, data_quality = "GGGG",
+        rebase_dates = NA, rebase_comment = NA
+      )
+      expect_no_error(check_measure_config(measure_config))
+    }
+  })
+
+"check measure config: invalid unit throws an error" |>
+  test_that({
+    measure_config <- tibble::tibble(
+      ref = "1", measure_name = "M1", data_source = "S1",
+      data_owner = "O1", accountable_person = "L1",
+      unit = "percent", improvement_direction = "increase",
+      target = NA, target_set_by = NA, data_quality = "GGGG",
+      rebase_dates = NA, rebase_comment = NA
+    )
+
+    expect_error(
+      check_measure_config(measure_config),
+      "'unit' must be one of.*Invalid value\\(s\\): percent"
+    )
+  })
+
+"check measure config: valid unit values are accepted" |>
+  test_that({
+    for (u in c("integer", "Integer", "decimal", "Decimal", "%")) {
+      measure_config <- tibble::tibble(
+        ref = "1", measure_name = "M1", data_source = "S1",
+        data_owner = "O1", accountable_person = "L1",
+        unit = u, improvement_direction = "increase",
+        target = NA, target_set_by = NA, data_quality = "GGGG",
+        rebase_dates = NA, rebase_comment = NA
+      )
+      expect_no_error(check_measure_config(measure_config))
+    }
+  })
+
+
+
 # check measure names
 "check measure names: happy path" |>
   test_that({
@@ -273,6 +335,42 @@
 
   })
 
+"check report config: invalid spc_chart_type throws an error" |>
+  test_that({
+    report_config <- tibble::tibble(
+      ref = "1", measure_name = "M1", domain = "D1",
+      spc_chart_type = "bar", aggregation = "month"
+    )
+
+    expect_error(
+      check_report_config(report_config),
+      "'spc_chart_type' must be one of.*Invalid value\\(s\\): bar"
+    )
+  })
+
+"check report config: invalid aggregation throws an error" |>
+  test_that({
+    report_config <- tibble::tibble(
+      ref = "1", measure_name = "M1", domain = "D1",
+      spc_chart_type = "xmr", aggregation = "quarter"
+    )
+
+    expect_error(
+      check_report_config(report_config),
+      "'aggregation' must be one of.*Invalid value\\(s\\): quarter"
+    )
+  })
+
+"check report config: spc_chart_type and aggregation are case-insensitive" |>
+  test_that({
+    report_config <- tibble::tibble(
+      ref = "1", measure_name = "M1", domain = "D1",
+      spc_chart_type = "XMR", aggregation = "Month"
+    )
+
+    expect_no_error(check_report_config(report_config))
+  })
+
 "check measure_data: happy path" |>
   test_that({
 
@@ -330,6 +428,23 @@
 
   })
 
+"check_dataset_is_complete: empty report_config passes without error" |>
+  test_that({
+    empty_config <- tibble::tibble(
+      ref = character(), measure_name = character(), aggregation = character()
+    )
+
+    measure_data_df <- tibble::tibble(
+      ref = "1", measure_name = "M1", aggregation = "month"
+    )
+
+    expect_no_error(
+      check_dataset_is_complete(empty_config, measure_data_df)
+    )
+  })
+
+
+
 "check a_data: happy path" |>
   test_that({
 
@@ -348,6 +463,14 @@
       check_a_data(a_data)
     )
 
+  })
+
+"check a_data: non-list input throws an error" |>
+  test_that({
+    expect_error(
+      check_a_data(data.frame(ref = 1, measure_name = "M1", comment = "c")),
+      "check_a_data: The data must be a list."
+    )
   })
 
 "check a_data: missing columns throw an error" |>
