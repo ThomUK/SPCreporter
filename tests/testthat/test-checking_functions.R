@@ -451,7 +451,8 @@
     datasheet <- tibble::tibble(
       ref = c(1, 2, 3),
       measure_name = c("M1", "M2", "M3"),
-      comment = c("comment", "comment", "comment")
+      comment = c("comment", "comment", "comment"),
+      "2024-01-01" = c(1, 2, 3)
     )
 
     a_data <- list(
@@ -470,6 +471,19 @@
     expect_error(
       check_a_data(data.frame(ref = 1, measure_name = "M1", comment = "c")),
       "check_a_data: The data must be a list."
+    )
+  })
+
+"check a_data: data frame with no date columns throws an error" |>
+  test_that({
+    datasheet <- tibble::tibble(
+      ref = 1, measure_name = "M1", comment = "c"
+      # no date columns
+    )
+
+    expect_error(
+      check_a_data(list(week = datasheet)),
+      "No date columns found in the 'week' sheet"
     )
   })
 

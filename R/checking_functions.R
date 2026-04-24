@@ -61,12 +61,18 @@ check_a_data <- function(a_data) {
     "day", "week", "month",
     "calendar_year", "financial_year"
     )
+  required_columns <- c("ref", "measure_name", "comment")
+
   a_data |>
     purrr::keep_at(allowed_names) |>
-    purrr::iwalk(
-      \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name", "comment"))
-    )
+    purrr::iwalk(\(x, nm) check_for_required_columns(x, nm, required_columns)) |>
+    purrr::iwalk(\(x, nm) assertthat::assert_that(
+      ncol(x) > length(required_columns),
+      msg = paste0(
+        "measure_data: No date columns found in the '", nm, "' sheet or dataframe. ",
+        "The data must contain at least one and probably more date column(s) (which will contain the data to be plotted)."
+      )
+    ))
 }
 
 
