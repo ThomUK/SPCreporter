@@ -3,6 +3,12 @@
 
 # {SPCreporter}
 
+<!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/ThomUK/SPCreporter/graph/badge.svg)](https://app.codecov.io/gh/ThomUK/SPCreporter)
+<!-- badges: end -->
+
 {SPCreporter} is a simple way to add value to your performance reporting
 using statistical process control. It produces reports similar to this
 [**example report**](report_examples/My_Example_Report.html).

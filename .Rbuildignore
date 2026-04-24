@@ -9,5 +9,4 @@
 ^docs$
 ^pkgdown$
 ^\.github$
-.*\.xlsx$
-.*\.code-workspace$
+^codecov\.yml$
