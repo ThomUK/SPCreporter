@@ -1,60 +1,55 @@
-"it errors if the data is not a list" |>
-  test_that({
-    expect_error(
-      check_measure_data(tibble::tibble(this_is = "not a list")),
-      "check_measure_data: The data must be a list."
-    )
-  })
+test_that("it errors if the data is not a list", {
+  expect_error(
+    check_measure_data(tibble::tibble(this_is = "not a list")),
+    "check_measure_data: The data must be a list."
+  )
+})
 
-"list contains at least one of the required items" |>
-  test_that({
-    expect_error(
-      check_measure_data(list(`Once in a blue moon` = 1)),
-      "check_measure_data: One element of measure_data must be named 'week' or 'month'"
-    )
-  })
+test_that("list contains at least one of the required items", {
+  expect_error(
+    check_measure_data(list(`Once in a blue moon` = 1)),
+    "check_measure_data: One element of measure_data must be named 'week' or 'month'"
+  )
+})
 
-"list containing extra elements is allowed" |>
-  test_that({
-    expect_no_error(
-      list(
-        week = data.frame(ref = 1, measure_name = "M1", comment = NA),
-        month = data.frame(ref = 2, measure_name = "M2", comment = NA),
-        asdf = data.frame(some = "other data") # extra element
-      ) |>
-        check_measure_data()
-    )
-  })
+test_that("list containing extra elements is allowed", {
+  expect_no_error(
+    list(
+      week = data.frame(ref = 1, measure_name = "M1", comment = NA),
+      month = data.frame(ref = 2, measure_name = "M2", comment = NA),
+      asdf = data.frame(some = "other data") # extra element
+    ) |>
+      check_measure_data()
+  )
+})
 
-"list containing either 'week' or 'month' is allowed" |>
-  test_that({
+test_that("list containing either 'week' or 'month' is allowed", {
 
-    expect_no_error(
-      list(
-        week = data.frame(ref = 1, measure_name = "M1", comment = NA)
-        # month list item is not provided
-      ) |>
-        check_measure_data()
-    )
+  expect_no_error(
+    list(
+      week = data.frame(ref = 1, measure_name = "M1", comment = NA)
+      # month list item is not provided
+    ) |>
+      check_measure_data()
+  )
 
-    expect_no_error(
-      list(
-        # week list item is not provided
-        month = data.frame(ref = 2, measure_name = "M2", comment = NA)
-      ) |>
-        check_measure_data()
-    )
-  })
+  expect_no_error(
+    list(
+      # week list item is not provided
+      month = data.frame(ref = 2, measure_name = "M2", comment = NA)
+    ) |>
+      check_measure_data()
+  )
+})
 
-"capitalised list items are allowed" |>
-  test_that({
-    expect_no_error(
-      list(
-        Week = data.frame(ref = 1, measure_name = "M1", comment = NA) # Week not week
-      ) |>
-        check_measure_data()
-    )
-  })
+test_that("capitalised list items are allowed", {
+  expect_no_error(
+    list(
+      Week = data.frame(ref = 1, measure_name = "M1", comment = NA) # Week not week
+    ) |>
+      check_measure_data()
+  )
+})
 
 measure_data <- list(
   week = tibble::tibble(
@@ -93,35 +88,33 @@ measure_data <- list(
   )
 )
 
-"it coerces refs to character vectors" |>
-  test_that({
-    # create the error by assigning numeric refs
-    measure_data[["week"]]$ref <- c(1, 2, 3)
-    measure_data[["month"]]$ref <- c(1, 2, 3)
+test_that("it coerces refs to character vectors", {
+  # create the error by assigning numeric refs
+  measure_data[["week"]]$ref <- c(1, 2, 3)
+  measure_data[["month"]]$ref <- c(1, 2, 3)
 
-    r <- check_measure_data(measure_data)
+  r <- check_measure_data(measure_data)
 
-    expect_equal(
-      r[["week"]]$ref,
-      c("1", "2", "3")
-    )
-  })
+  expect_equal(
+    r[["week"]]$ref,
+    c("1", "2", "3")
+  )
+})
 
-"it errors helpfully when column names are missing or mis-spelled" |>
-  test_that({
-    # create the error by removing a required column
-    measure_data[["week"]]$ref <- NULL
+test_that("it errors helpfully when column names are missing or mis-spelled", {
+  # create the error by removing a required column
+  measure_data[["week"]]$ref <- NULL
 
-    expect_error(
-      check_measure_data(measure_data),
-      "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
-    )
+  expect_error(
+    check_measure_data(measure_data),
+    "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
+  )
 
-    # error persists when the column is mis-spelled
-    measure_data[["week"]]$Reference <- c(1, 2, 3)
+  # error persists when the column is mis-spelled
+  measure_data[["week"]]$Reference <- c(1, 2, 3)
 
-    expect_error(
-      check_measure_data(measure_data),
-      "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
-    )
-  })
+  expect_error(
+    check_measure_data(measure_data),
+    "check_for_required_columns: Column 'ref' is missing from the 'week' data frame. Check for typos in the column names."
+  )
+})
