@@ -54,3 +54,24 @@ make_measure_data <- function(dates) {
     # parse_rebase_dates(NA) returns NULL; map_vec over NULL gives empty/NA
     expect_true(length(result) == 0 || all(is.na(result)))
   })
+
+
+"align_rebase_dates: rebase date before all data dates rounds up to first data date" |>
+  test_that({
+    md <- make_measure_data(c("2022-01-01", "2022-02-01", "2022-03-01"))
+    # 2021-06-01 is before all data -> rounds up to the earliest data date
+    expect_equal(
+      align_rebase_dates("2021-06-01", md),
+      as.Date("2022-01-01")
+    )
+  })
+
+
+"align_rebase_dates: empty measure_data returns rebase date unchanged" |>
+  test_that({
+    md <- tibble::tibble(date = as.Date(character(0)))
+    expect_equal(
+      align_rebase_dates("2022-03-15", md),
+      as.Date("2022-03-15")
+    )
+  })

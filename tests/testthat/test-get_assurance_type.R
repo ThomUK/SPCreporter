@@ -104,6 +104,29 @@ test_that("it returns correct string in passing conditions", {
   )
 })
 
+test_that("target exactly equal to lpl is treated as within limits (RND_TARG)", {
+  spc <- data.frame(upl = 3, lpl = 1, target = 1)
+
+  expect_equal(get_assurance_type(spc, "increase"), "RND_TARG")
+  expect_equal(get_assurance_type(spc, "decrease"), "RND_TARG")
+})
+
+test_that("target exactly equal to upl is treated as within limits (RND_TARG)", {
+  spc <- data.frame(upl = 3, lpl = 1, target = 3)
+
+  expect_equal(get_assurance_type(spc, "increase"), "RND_TARG")
+  expect_equal(get_assurance_type(spc, "decrease"), "RND_TARG")
+})
+
+test_that("an unrecognised improvement direction with target outside limits errors", {
+  spc <- data.frame(upl = 3, lpl = 1, target = 5)
+
+  expect_error(
+    get_assurance_type(spc, "upward"),
+    "Unable to determine SPC assurance type"
+  )
+})
+
 test_that("it uses the most recent row, not the first, for upl/lpl", {
   # Simulates a real ptd_spc output where a single-point first rebase phase
   # produces NA limits for that row, while the current (last) rows have valid

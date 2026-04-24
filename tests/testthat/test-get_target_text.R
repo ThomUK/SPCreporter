@@ -59,3 +59,21 @@ test_that("it rounds decimals", {
     "\u2265 0.96"
   )
 })
+
+test_that("target of 0 with decrease direction omits the <= symbol", {
+  # A target of zero with "decrease" is a floor: adding \u2264 0 would be
+  # misleading, so the code intentionally returns the bare value.
+  expect_equal(
+    get_target_text(0, "decrease", "decimal"),
+    "0"
+  )
+})
+
+test_that("target of 100% with increase direction omits the >= symbol", {
+  # A target of 1 (100%) with "increase" is a ceiling: adding \u2265 100% would
+  # be misleading, so the code intentionally returns the bare value.
+  expect_equal(
+    get_target_text(1, "increase", "%"),
+    "100%"
+  )
+})
