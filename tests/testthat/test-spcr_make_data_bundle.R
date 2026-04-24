@@ -96,13 +96,13 @@
       report_config = test_report_config,
       measure_config = test_measure_config)
 
-    expect_length(out, 26)
+    expect_length(out, 27)
     expect_equal(nrow(out), nrow(test_report_config))
     expect_type(out[["ref"]], "character")
     expect_type(out[["target"]], "double")
     expect_type(out[["allowable_days_lag"]], "integer")
     expect_type(out[["measure_data"]], "list")
-    expect_s3_class(out[["last_date"]], "Date")
+    expect_s3_class(out[["last_date"]], "POSIXct")
     expect_type(out[["updated_to"]], "character")
     expect_type(out[["domain_heading"]], "logical")
 
@@ -120,7 +120,7 @@
       report_config = test_report_config,
       measure_config = test_measure_config2)
 
-    expect_length(out2, 26)
+    expect_length(out2, 27)
     expect_equal(nrow(out2), nrow(test_report_config))
 
   })

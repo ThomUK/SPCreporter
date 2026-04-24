@@ -32,10 +32,12 @@ check_measure_data <- function(measure_data) {
     purrr::keep_at(allowed_names) |>
     purrr::iwalk(
       \(x, nm) check_for_required_columns(
-        x, nm, required_columns = c("ref", "measure_name", "comment"))
+        x, nm, required_columns = c("ref", "measure_name"))
     ) |>
     purrr::map(\(x) dplyr::mutate(x, across("ref", as.character)))
 }
+
+
 
 
 
@@ -70,6 +72,8 @@ check_a_data <- function(a_data) {
 
 
 
+
+
 #' Check the e_data (event data) and transform as needed
 #'
 #' @param e_data data frame. A data frame of event data (in long format).
@@ -88,10 +92,11 @@ check_e_data <- function(e_data) {
   e_data |>
     check_for_required_columns(
       "events",
-      required_columns = c("ref", "measure_name", "comment", "event_date_or_datetime")
+      required_columns = c("ref", "measure_name", "event_date_or_datetime")
     ) |>
     dplyr::mutate(across("ref", as.character))
 }
+
 
 
 
@@ -113,6 +118,11 @@ check_report_config <- function(report_config) {
     "ref", "measure_name", "domain", "spc_chart_type", "aggregation"
   )
 
+  assert_that(
+    !any(is.na(report_config[["aggregation"]])),
+    msg = "check_report_config: Some aggregation values are blank."
+  )
+
   optional_columns <- c("report_comment")
 
   # check required cols are present
@@ -123,6 +133,7 @@ check_report_config <- function(report_config) {
     dplyr::distinct() |>
     dplyr::mutate(across("ref", as.character))
 }
+
 
 
 
@@ -269,6 +280,7 @@ check_for_required_columns <- function(.data, df_name, required_columns) {
 
 
 
+
 #' Certain variables are optional in measure_config. If supplied, we want to
 #' keep them, but if not supplied we want to add them with contents = `NA`.
 #'
@@ -329,4 +341,3 @@ check_dataset_is_complete <- function(report_config, measure_data) {
 
   invisible(TRUE)
 }
-
