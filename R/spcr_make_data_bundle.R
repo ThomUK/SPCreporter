@@ -48,6 +48,8 @@ spcr_make_data_bundle <- function(
     lengthen_measure_data() |>
     dplyr::bind_rows(e_data_time_between)
 
+  check_for_duplicate_dates(measure_data_long)
+
   # check all required data is supplied
   check_dataset_is_complete(report_config, measure_data_long)
 
