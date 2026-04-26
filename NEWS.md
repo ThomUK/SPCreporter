@@ -2,6 +2,8 @@
 
 ## Feature addition
 
+* X-axis date labels are now thinned automatically when a chart spans more than 40 months. Labels step through every-2-months (Jan/Mar/May/Jul/Sep/Nov), quarterly (Jan/Apr/Jul/Oct), 6-monthly (Jan/Jul), and annually (Jan) as the date range grows. The threshold is stored as the internal constant `.x_axis_label_threshold`.
+
 ## Useability
 
 ## Bugfix
