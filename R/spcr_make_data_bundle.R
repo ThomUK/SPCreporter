@@ -23,20 +23,19 @@ spcr_make_data_bundle <- function(
   # 1. a wide-format sheet containing aggregated counts, with dated columns (a_data)
   # 2. a long-format sheet containing event-list data (e_data).
   # separate them into a_data and e_data
-  e_data <- measure_data |>
-    purrr::pluck("events")
-
   a_data <- measure_data |>
     purrr::discard_at("events")
 
   # a_data is closely related to the measure_data, but we use a different function to check it
   a_data <- check_a_data(a_data)
 
-  # check event_data columns and set `ref` column to character
-  e_data <- check_e_data(e_data)
-
-  # process event data into time-between data
-  e_data_time_between <- process_event_data_t(e_data, data_cutoff_dttm)
+  # event data is optional — process only if supplied
+  if ("events" %in% names(measure_data)) {
+    e_data <- check_e_data(measure_data[["events"]])
+    e_data_time_between <- process_event_data_t(e_data, data_cutoff_dttm)
+  } else {
+    e_data_time_between <- NULL
+  }
 
   # reduce measure_data list to a single data frame
   a_data_df <- a_data |>
