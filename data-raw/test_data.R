@@ -6,7 +6,7 @@
 
 
 # read in measure data from the two worksheets in the example file
-example_files <- here::here("inst", "example_data")
+example_files <- here::here("inst", "extdata")
 data_file <- here::here(example_files, "data.xlsx")
 
 test_measure_data <- list(
