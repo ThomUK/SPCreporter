@@ -182,6 +182,52 @@ spcr_make_report <- function(
 }
 
 
+# When the number of x-axis month-labels exceeds this threshold, labels are thinned
+.x_axis_label_threshold <- 40L
+
+#' Return the number of months between x-axis breaks given the total month span
+#' @noRd
+x_axis_break_months <- function(n_months) {
+  threshold <- .x_axis_label_threshold
+  dplyr::case_when(
+    n_months <= threshold            ~ 1L,
+    n_months <= threshold * 2L       ~ 2L,
+    n_months <= threshold * 3L       ~ 3L,
+    n_months <= threshold * 6L       ~ 6L,
+    TRUE                             ~ 12L
+  )
+}
+
+#' Generate x-axis break dates aligned to calendar anchor months
+#'
+#' Returns NULL when months_per_break == 1 (no thinning needed).
+#' Otherwise returns first-of-month Date values for the anchor months
+#' (e.g. Jan/Mar/May/Jul/Sep/Nov for 2-month breaks) that fall within
+#' the date range of spc_data.
+#' @noRd
+x_axis_break_dates <- function(spc_data, months_per_break) {
+  if (months_per_break == 1L) return(NULL)
+
+  anchor_months <- switch(
+    as.character(months_per_break),
+    "2"  = c(1L, 3L, 5L, 7L, 9L, 11L),
+    "3"  = c(1L, 4L, 7L, 10L),
+    "6"  = c(1L, 7L),
+    "12" = 1L
+  )
+
+  min_date <- min(spc_data[["x"]])
+  max_date <- max(spc_data[["x"]])
+  min_year <- as.integer(format(min_date, "%Y"))
+  max_year <- as.integer(format(max_date, "%Y"))
+
+  breaks <- purrr::map(seq(min_year, max_year), \(yr) {
+    as.Date(paste0(yr, "-", formatC(anchor_months, width = 2L, flag = "0"), "-01"))
+  }) |>
+    purrr::list_c()
+
+  breaks[breaks >= min_date & breaks <= max_date]
+}
 
 #' Write a ggplot2 chart to a temporary png file (wrapper round `ggsave()`)
 #' @noRd
@@ -230,6 +276,15 @@ make_spc_chart <- function(
   label_limits,
   spc_data
   ) {
+  n_months <- (as.integer(format(max(spc_data[["x"]]), "%Y")) -
+               as.integer(format(min(spc_data[["x"]]), "%Y"))) * 12L +
+              as.integer(format(max(spc_data[["x"]]), "%m")) -
+              as.integer(format(min(spc_data[["x"]]), "%m")) + 1L
+  months_per_break <- x_axis_break_months(n_months)
+  custom_breaks <- x_axis_break_dates(spc_data, months_per_break)
+
+  date_fmt <- if (aggregation == "week" && months_per_break == 1L) "%d-%b-%Y" else "%b '%y"
+
   plot <- spc_data |>
     NHSRplotthedots::ptd_create_ggplot(
       point_size = 4, # PTD default is 2.5
@@ -238,7 +293,7 @@ make_spc_chart <- function(
       x_axis_label = NULL,
       y_axis_label = if_else(spc_chart_type == "t", "Days since previous occurrence", ""),
       x_axis_breaks = "1 month",
-      x_axis_date_format = if_else(aggregation == "week", "%d-%b-%Y", "%b '%y"),
+      x_axis_date_format = date_fmt,
       label_limits = label_limits,
       icons_position = "none",
       break_lines = "limits"
@@ -251,6 +306,13 @@ make_spc_chart <- function(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
       legend.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 0, unit = "pt")
     )
+
+  if (!is.null(custom_breaks)) {
+    plot <- plot + ggplot2::scale_x_date(
+      breaks = custom_breaks,
+      labels = scales::label_date(date_fmt)
+    )
+  }
 
   # conditionally add the "hollow" final data point to rare-event charts
   if (spc_chart_type == "t") {
