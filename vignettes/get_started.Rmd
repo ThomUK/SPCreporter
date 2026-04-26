@@ -19,13 +19,13 @@ This vignette covers how to get started with {SPCreporter}.  We are going to pro
 
 ## Preliminary step
 
-The example uses three _xlsx_ files which are located in the "example_data" folder of the package.  This preliminary step is not necessary when working with your own data, but to access the files bundled with the package, we need to run this line.
+The example uses three _xlsx_ files which are located in the "extdata" folder of the package.  This preliminary step is not necessary when working with your own data, but to access the files bundled with the package, we need to run this line.
 
 ```{r}
 #| eval: false
 
 # set up to read the package files. You will not need to do this to read your own data.
-path_to_example_files <- system.file("example_data", package="SPCreporter")
+path_to_example_files <- system.file("extdata", package="SPCreporter")
 ```
 
 ## 1. Read the data in
