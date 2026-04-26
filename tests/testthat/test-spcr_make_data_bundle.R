@@ -22,7 +22,7 @@ test_that("spcr_make_data_bundle: it accepts a custom cutoff dttm", {
   )
 })
 
-test_that("spcr_make_data_bundle: there is a helpful error if the 'events' worksheet is missing", {
+test_that("spcr_make_data_bundle: errors when t-chart is requested but no events supplied", {
 
   measure_data_no_events <- test_measure_data
   measure_data_no_events[["events"]] <- NULL
@@ -30,10 +30,28 @@ test_that("spcr_make_data_bundle: there is a helpful error if the 'events' works
   expect_error(
     spcr_make_data_bundle(
       measure_data_no_events,
-      test_report_config, # note this will still be calling for t charts
+      test_report_config, # still includes t charts
       test_measure_config
     ),
-    "The 'events' worksheet is missing from 'measure_data'."
+    "Data is missing"
+  )
+
+})
+
+test_that("spcr_make_data_bundle: succeeds without events element when no t-charts requested", {
+
+  measure_data_no_events <- test_measure_data
+  measure_data_no_events[["events"]] <- NULL
+
+  report_config_no_t <- test_report_config |>
+    dplyr::filter(spc_chart_type != "t")
+
+  expect_no_error(
+    spcr_make_data_bundle(
+      measure_data_no_events,
+      report_config_no_t,
+      test_measure_config
+    )
   )
 
 })
