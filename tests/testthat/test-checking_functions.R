@@ -514,3 +514,53 @@ test_that("check e_data: missing columns throw an error", {
   )
 
 })
+
+test_that("check e_data: accepts 'id' column as alias for 'ref'", {
+  e_data <- tibble::tibble(
+    id = c("1", "2", "3"),
+    measure_name = c("M1", "M2", "M3"),
+    event_date_or_datetime = "2023-01-01"
+  )
+
+  result <- check_e_data(e_data)
+  expect_true("ref" %in% names(result))
+  expect_false("id" %in% names(result))
+  expect_equal(result[["ref"]], c("1", "2", "3"))
+})
+
+test_that("check e_data: accepts 'ID' column as alias for 'ref'", {
+  e_data <- tibble::tibble(
+    ID = c("1", "2", "3"),
+    measure_name = c("M1", "M2", "M3"),
+    event_date_or_datetime = "2023-01-01"
+  )
+
+  result <- check_e_data(e_data)
+  expect_true("ref" %in% names(result))
+  expect_false("id" %in% names(result))
+  expect_equal(result[["ref"]], c("1", "2", "3"))
+})
+
+test_that("check e_data: 'ref' takes precedence when both 'ref' and 'id' are present", {
+  e_data <- tibble::tibble(
+    ref = c("A", "B"),
+    id = c("1", "2"),
+    measure_name = c("M1", "M2"),
+    event_date_or_datetime = "2023-01-01"
+  )
+
+  result <- check_e_data(e_data)
+  expect_equal(result[["ref"]], c("A", "B"))
+})
+
+test_that("check e_data: normalises column names to lowercase", {
+  e_data <- tibble::tibble(
+    REF = c("1", "2"),
+    MEASURE_NAME = c("M1", "M2"),
+    EVENT_DATE_OR_DATETIME = "2023-01-01"
+  )
+
+  result <- check_e_data(e_data)
+  expect_true("ref" %in% names(result))
+  expect_true("measure_name" %in% names(result))
+})

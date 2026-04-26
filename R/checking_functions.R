@@ -95,6 +95,12 @@ check_e_data <- function(e_data) {
     msg = "check_event_data: The data must be a data frame."
   )
 
+  e_data <- rlang::set_names(e_data, tolower)
+
+  if ("id" %in% names(e_data) && !"ref" %in% names(e_data)) {
+    e_data <- dplyr::rename(e_data, ref = "id")
+  }
+
   e_data |>
     check_for_required_columns(
       "events",
