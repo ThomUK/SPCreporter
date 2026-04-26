@@ -377,3 +377,34 @@ check_dataset_is_complete <- function(report_config, measure_data) {
 
   invisible(TRUE)
 }
+
+
+
+#' Check that measure_data_long contains no duplicate dates per ref/aggregation
+#'
+#' @param measure_data_long A data frame in long format as produced by
+#'   lengthen_measure_data() and bind_rows()
+#'
+#' @returns invisible TRUE, or an informative error listing the first duplicate
+#' @noRd
+check_for_duplicate_dates <- function(measure_data_long) {
+  first_dup <- measure_data_long |>
+    dplyr::count(
+      dplyr::across(all_of(c("ref", "aggregation", "date")))
+    ) |>
+    dplyr::filter(.data[["n"]] > 1) |>
+    dplyr::slice(1)
+
+  assertthat::assert_that(
+    nrow(first_dup) == 0,
+    msg = first_dup |>
+      stringr::str_glue_data(
+        "check_for_duplicate_dates: ",
+        "Duplicate dates found in the data. ",
+        "This can happen when data is accidentally supplied from two sources. ",
+        "First duplicate: ref '{ref}', aggregation '{aggregation}', date '{date}'."
+      )
+  )
+
+  invisible(TRUE)
+}

@@ -564,3 +564,53 @@ test_that("check e_data: normalises column names to lowercase", {
   expect_true("ref" %in% names(result))
   expect_true("measure_name" %in% names(result))
 })
+
+test_that("check_for_duplicate_dates: happy path with no duplicates", {
+  data <- tibble::tibble(
+    ref = c("1", "1", "2"),
+    aggregation = "month",
+    date = as.Date(c("2022-01-01", "2022-02-01", "2022-01-01")),
+    value = c(10, 20, 30)
+  )
+  expect_no_error(check_for_duplicate_dates(data))
+})
+
+test_that("check_for_duplicate_dates: errors with informative message on duplicate", {
+  data <- tibble::tibble(
+    ref = c("1", "1"),
+    aggregation = "month",
+    date = as.Date(c("2022-01-01", "2022-01-01")),
+    value = c(10, 10)
+  )
+  expect_error(
+    check_for_duplicate_dates(data),
+    "check_for_duplicate_dates: Duplicate dates found in the data."
+  )
+  expect_error(
+    check_for_duplicate_dates(data),
+    "ref '1'"
+  )
+  expect_error(
+    check_for_duplicate_dates(data),
+    "This can happen when data is accidentally supplied from two sources."
+  )
+})
+
+test_that("spcr_make_data_bundle: errors with helpful message when measure data supplied twice", {
+  # Simulate accidentally duplicated monthly data (same ref supplied twice)
+  doubled_month <- dplyr::bind_rows(
+    test_measure_data[["month"]],
+    test_measure_data[["month"]]
+  )
+  measure_data_duped <- test_measure_data
+  measure_data_duped[["month"]] <- doubled_month
+
+  expect_error(
+    spcr_make_data_bundle(
+      measure_data_duped,
+      test_report_config,
+      test_measure_config
+    ),
+    "check_for_duplicate_dates: Duplicate dates found in the data."
+  )
+})
