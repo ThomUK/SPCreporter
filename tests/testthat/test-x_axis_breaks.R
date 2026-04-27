@@ -62,3 +62,30 @@ test_that("x_axis_break_dates returns only dates within the data range", {
     }
   }
 })
+
+test_that("x_axis_n_effective returns n_months for monthly aggregation", {
+  expect_equal(x_axis_n_effective("month", 40L, 40L), 40L)
+  expect_equal(x_axis_n_effective("month", 10L, 50L), 10L)
+})
+
+test_that("x_axis_n_effective returns n_points for weekly aggregation", {
+  expect_equal(x_axis_n_effective("week", 10L, 40L), 40L)
+  expect_equal(x_axis_n_effective("week", 10L, 50L), 50L)
+})
+
+test_that("weekly data with > 40 points produces thinned x-axis labels", {
+  # 12 months of weekly data ≈ 52 points; n_months ≈ 12 (no thinning with old logic)
+  # new logic uses n_points = 52 which exceeds threshold of 40 → thinning expected
+  expect_gt(x_axis_n_effective("week", 12L, 52L), .x_axis_label_threshold)
+})
+
+test_that("weekly data with <= 40 points is not thinned", {
+  expect_lte(x_axis_n_effective("week", 8L, 35L), .x_axis_label_threshold)
+})
+
+test_that("monthly data behaviour is unchanged by x_axis_n_effective", {
+  # 40 months → effective = 40 → no thinning
+  expect_equal(x_axis_break_months(x_axis_n_effective("month", 40L, 40L)), 1L)
+  # 41 months → effective = 41 → thinning
+  expect_equal(x_axis_break_months(x_axis_n_effective("month", 41L, 41L)), 2L)
+})
