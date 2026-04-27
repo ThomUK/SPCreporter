@@ -185,6 +185,15 @@ spcr_make_report <- function(
 # When the number of x-axis month-labels exceeds this threshold, labels are thinned
 .x_axis_label_threshold <- 40L
 
+#' Return the effective label count for x-axis thinning decisions
+#'
+#' For weekly aggregation the actual data point count is used because the
+#' date range in months greatly underestimates the number of visible labels.
+#' @noRd
+x_axis_n_effective <- function(aggregation, n_months, n_points) {
+  if (aggregation == "week") n_points else n_months
+}
+
 #' Return the number of months between x-axis breaks given the total month span
 #' @noRd
 x_axis_break_months <- function(n_months) {
@@ -280,7 +289,9 @@ make_spc_chart <- function(
                as.integer(format(min(spc_data[["x"]]), "%Y"))) * 12L +
               as.integer(format(max(spc_data[["x"]]), "%m")) -
               as.integer(format(min(spc_data[["x"]]), "%m")) + 1L
-  months_per_break <- x_axis_break_months(n_months)
+  months_per_break <- x_axis_break_months(
+    x_axis_n_effective(aggregation, n_months, nrow(spc_data))
+  )
   custom_breaks <- x_axis_break_dates(spc_data, months_per_break)
 
   date_fmt <- if (aggregation == "week" && months_per_break == 1L) "%d-%b-%Y" else "%b '%y"
