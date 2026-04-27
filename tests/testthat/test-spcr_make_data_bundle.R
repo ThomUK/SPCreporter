@@ -1,4 +1,47 @@
 
+test_that("spcr_make_data_bundle: succeeds with empty a_data when only t-charts requested", {
+  test_data <- list(
+    month = tibble::tribble(~ref, ~measure_name, ~comment),
+    events = tibble::tribble(
+      ~ref, ~measure_name, ~comment, ~event_date_or_datetime,
+      "1", "Test data", "A comment", lubridate::as_date("2023-01-01"),
+      "1", "Test data", "A comment", lubridate::as_date("2023-06-01")
+    )
+  )
+  rc <- tibble::tribble(
+    ~ref, ~measure_name, ~domain, ~spc_chart_type, ~aggregation, ~report_comment,
+    "1", "Test data", NA_character_, "t", "none", NA_character_
+  )
+  mc <- tibble::tribble(
+    ~ref, ~measure_name, ~unit, ~data_source, ~data_owner, ~accountable_person,
+    ~improvement_direction, ~target, ~target_set_by, ~data_quality, ~rebase_dates, ~rebase_comment,
+    "1", "Test data", "integer", "source", "owner", "person", "decrease", 0, "person", "GGGG", "", ""
+  )
+
+  expect_no_error(spcr_make_data_bundle(test_data, rc, mc))
+})
+
+test_that("spcr_make_data_bundle: empty a_data still errors when xmr-chart data is missing", {
+  test_data <- list(
+    month = tibble::tribble(~ref, ~measure_name, ~comment),
+    events = tibble::tribble(
+      ~ref, ~measure_name, ~comment, ~event_date_or_datetime,
+      "1", "Test data", "A comment", lubridate::as_date("2023-01-01")
+    )
+  )
+  rc <- tibble::tribble(
+    ~ref, ~measure_name, ~domain, ~spc_chart_type, ~aggregation, ~report_comment,
+    "1", "Test data", NA_character_, "xmr", "month", NA_character_
+  )
+  mc <- tibble::tribble(
+    ~ref, ~measure_name, ~unit, ~data_source, ~data_owner, ~accountable_person,
+    ~improvement_direction, ~target, ~target_set_by, ~data_quality, ~rebase_dates, ~rebase_comment,
+    "1", "Test data", "integer", "source", "owner", "person", "decrease", 0, "person", "GGGG", "", ""
+  )
+
+  expect_error(spcr_make_data_bundle(test_data, rc, mc), "Data is missing")
+})
+
 test_that("spcr_make_data_bundle: happy path", {
 
   expect_no_error(

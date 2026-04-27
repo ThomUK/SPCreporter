@@ -61,6 +61,25 @@ test_that("check input names", {
 
 
 
+test_that("returns empty tibble for 0-row input", {
+  empty_df <- tibble::tibble(
+    aggregation = character(),
+    ref = character(),
+    measure_name = character(),
+    comment = character()
+  )
+
+  result <- lengthen_measure_data(empty_df)
+
+  expect_equal(nrow(result), 0)
+  expect_true("date" %in% names(result))
+  expect_true("value" %in% names(result))
+  expect_s3_class(result[["date"]], "Date")
+  expect_type(result[["value"]], "double")
+})
+
+
+
 test_that("check_pipeline", {
 
   init_cols <- c("ref", "measure_name", "comment")

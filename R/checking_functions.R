@@ -66,7 +66,7 @@ check_a_data <- function(a_data) {
   a_data |>
     purrr::keep_at(allowed_names) |>
     purrr::iwalk(\(x, nm) check_for_required_columns(x, nm, required_columns)) |>
-    purrr::iwalk(\(x, nm) assertthat::assert_that(
+    purrr::iwalk(\(x, nm) if (nrow(x) > 0) assertthat::assert_that(
       ncol(x) > length(required_columns),
       msg = paste0(
         "measure_data: No date columns found in the '", nm, "' sheet or dataframe. ",
