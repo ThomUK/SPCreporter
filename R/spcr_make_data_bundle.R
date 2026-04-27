@@ -42,13 +42,16 @@ spcr_make_data_bundle <- function(
     dplyr::bind_rows(.id = "aggregation")
 
 
-  # Create long version of the aggregated data, sorted by date (within each
-  # ref), and with the processed event data added to the end
-  measure_data_long <- a_data_df |>
-    lengthen_measure_data() |>
-    dplyr::bind_rows(e_data_time_between)
+  # Create long version of the aggregated data. Duplicate-date check runs here,
+  # before event rows are appended — event data legitimately has duplicate dates
+  # when multiple events occur on the same day (time-between = 0).
+  agg_data_long <- a_data_df |>
+    lengthen_measure_data()
 
-  check_for_duplicate_dates(measure_data_long)
+  check_for_duplicate_dates(agg_data_long)
+
+  measure_data_long <- agg_data_long |>
+    dplyr::bind_rows(e_data_time_between)
 
   # check all required data is supplied
   check_dataset_is_complete(report_config, measure_data_long)
