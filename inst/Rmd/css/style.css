@@ -168,3 +168,7 @@ table {
   max-width: 500px;
   margin-bottom: 1.5rem;
 }
+
+#icon-key table {
+  max-width: 100%;
+}
