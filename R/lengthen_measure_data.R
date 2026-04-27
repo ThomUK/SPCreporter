@@ -40,6 +40,14 @@ lengthen_measure_data <- function(.data) {
     )
   )
 
+  if (nrow(.data) == 0) {
+    return(
+      dplyr::select(.data, any_of(init_cols)) |>
+        dplyr::mutate(across(any_of(init_cols), as.character)) |>
+        tibble::add_column(date = as.Date(character(0)), value = numeric(0))
+    )
+  }
+
   # pivot incoming measure_data from wide to long,
   # and convert date column to date format
   .data |>
