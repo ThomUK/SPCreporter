@@ -77,6 +77,60 @@ test_that("spcr_make_data_bundle: happy path", {
   )
 })
 
+test_that("spcr_make_data_bundle: data after data_cutoff_dttm is excluded from bundle", {
+  # Build minimal aggregated data spanning Jan–Mar 2023, cutoff at end of Jan
+  test_data <- list(
+    month = tibble::tribble(
+      ~ref, ~measure_name, ~comment, ~`2023-01-01`, ~`2023-02-01`, ~`2023-03-01`,
+      "1",  "Test data",   "",       10,             20,            30
+    )
+  )
+  rc <- tibble::tribble(
+    ~ref, ~measure_name, ~domain, ~spc_chart_type, ~aggregation, ~report_comment,
+    "1",  "Test data",   NA_character_, "xmr", "month",  NA_character_
+  )
+  mc <- tibble::tribble(
+    ~ref, ~measure_name, ~unit, ~data_source, ~data_owner, ~accountable_person,
+    ~improvement_direction, ~target, ~target_set_by, ~data_quality, ~rebase_dates, ~rebase_comment,
+    "1", "Test data", "integer", "source", "owner", "person", "increase", NA, "person", "GGGG", "", ""
+  )
+
+  cutoff <- as.POSIXct("2023-01-31 23:59:59")
+  db <- spcr_make_data_bundle(test_data, rc, mc, data_cutoff_dttm = cutoff)
+
+  dates_in_bundle <- db[["measure_data"]][[1]][["date"]]
+  expect_true(all(dates_in_bundle <= as.Date(cutoff)))
+  expect_false(as.Date("2023-02-01") %in% dates_in_bundle)
+  expect_false(as.Date("2023-03-01") %in% dates_in_bundle)
+})
+
+test_that("spcr_make_data_bundle: data before or on data_cutoff_dttm is preserved", {
+  test_data <- list(
+    month = tibble::tribble(
+      ~ref, ~measure_name, ~comment, ~`2023-01-01`, ~`2023-02-01`, ~`2023-03-01`,
+      "1",  "Test data",   "",       10,             20,            30
+    )
+  )
+  rc <- tibble::tribble(
+    ~ref, ~measure_name, ~domain, ~spc_chart_type, ~aggregation, ~report_comment,
+    "1",  "Test data",   NA_character_, "xmr", "month",  NA_character_
+  )
+  mc <- tibble::tribble(
+    ~ref, ~measure_name, ~unit, ~data_source, ~data_owner, ~accountable_person,
+    ~improvement_direction, ~target, ~target_set_by, ~data_quality, ~rebase_dates, ~rebase_comment,
+    "1", "Test data", "integer", "source", "owner", "person", "increase", NA, "person", "GGGG", "", ""
+  )
+
+  cutoff <- as.POSIXct("2023-03-31 23:59:59")
+  db <- spcr_make_data_bundle(test_data, rc, mc, data_cutoff_dttm = cutoff)
+
+  dates_in_bundle <- db[["measure_data"]][[1]][["date"]]
+  expect_length(dates_in_bundle, 3)
+  expect_true(as.Date("2023-01-01") %in% dates_in_bundle)
+  expect_true(as.Date("2023-02-01") %in% dates_in_bundle)
+  expect_true(as.Date("2023-03-01") %in% dates_in_bundle)
+})
+
 test_that("spcr_make_data_bundle: it accepts a custom cutoff dttm", {
 
   expect_no_error(

@@ -46,7 +46,8 @@ spcr_make_data_bundle <- function(
   # before event rows are appended — event data legitimately has duplicate dates
   # when multiple events occur on the same day (time-between = 0).
   agg_data_long <- a_data_df |>
-    lengthen_measure_data()
+    lengthen_measure_data() |>
+    dplyr::filter(date <= as.Date(data_cutoff_dttm))
 
   check_for_duplicate_dates(agg_data_long)
 
